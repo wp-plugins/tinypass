@@ -365,8 +365,9 @@ function tinypass_check_content($content) {
 
 function tinypass_install() {
 	//add_option($name, $value, $deprecated, $autoload);
-	add_option('tinypass_aid', '', '', true);
-	add_option('tinypass_private_key', '', '', true);
+
+	add_option('tinypass_aid', 'QdXYalSxyk', '', true);
+	add_option('tinypass_private_key', 'zXKpS9HhU9GdOn2jEH0kmzKW6jN4phrSbQ56ip9r', '', true);
 	add_option('tinypass_env', 0, '', true);
 	add_option('tinypass_access_message', __("To continue, please purchase using TinyPass"), '', true);
 
