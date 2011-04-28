@@ -17,6 +17,8 @@ See http://www.tinypass.com/
 
 == Installation ==
 
+PHP requirements: PHP 5.3+, mbstring, bcmath, mcrypt
+
 1. Upload TinyPass for WordPress to your wp-content/plugins directory.
 2. Activate it in "Plugins" menu in WordPress.
 3. Go to Plugins->TinyPass Configuration and enter your aid, secret_key, and environment.  This values can be retrieved from your
