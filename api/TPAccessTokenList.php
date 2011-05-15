@@ -1,6 +1,6 @@
 <?php
 
-require_once 'TPSecurityUtils.php';
+require_once 'TPRIDHash.php';
 require_once 'TPAccessToken.php';
 
 class TPAccessTokenList {
@@ -45,12 +45,12 @@ class TPAccessTokenList {
 	}
 
 	public function contains($rid) {
-		$ridHash = TPSecurityUtils::hashCode($rid);
+		$ridHash = TPRIDHash::hashCode($rid);
 		return array_key_exists($ridHash, $this->tokens);
 	}
 
 	public function getToken($rid) {
-		$ridHash = TPSecurityUtils::hashCode($rid);
+		$ridHash = TPRIDHash::hashCode($rid);
 		if(array_key_exists($ridHash, $this->tokens)){
 			return $this->tokens[$ridHash];
 		}
@@ -62,7 +62,7 @@ class TPAccessTokenList {
 	}
 
 	public function addResource($rid, $expiration) {
-		$ridHash = TPSecurityUtils::hashCode($rid);
+		$ridHash = TPRIDHash::hashCode($rid);
 		$this->add($ridHash, new TPAccessToken($ridHash, $expiration));
 	}
 
@@ -70,12 +70,15 @@ class TPAccessTokenList {
 		if (count($this->tokens) >= TPAccessTokenList::$MAX) {
 			array_pop($this->tokens);
 		}
-		$this->tokens[$ridHash] = $token;
+		if($ridHash instanceof TPRIDHash)
+			$this->tokens[$ridHash->getHash()] = $token;
+		else
+			$this->tokens[$ridHash] = $token;
 
 	}
 
 	public function isAccessGranted($rid) {
-		$hash = TPSecurityUtils::hashCode($rid);
+		$hash = TPRIDHash::hashCode($rid);
 		if (array_key_exists($hash, $this->tokens)) {
 			$token = $this->tokens[$hash];
 			$expires = $token->getExpiration();

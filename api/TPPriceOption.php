@@ -120,7 +120,8 @@ class TPPriceOption {
 		return $this;
 	}
 
-	protected function validate() {
+	public function validate() {
+		/*
 		if ($this->price == null) throw new TinyPassException("Price is not defined");
 		if ($this->price.compareTo(NumberUtils.POINT_02) < 0)
 			throw new TinyPassException("Price should be a value between $0.2 and $0.99");
@@ -151,6 +152,7 @@ class TPPriceOption {
 
 		if ($total > 1)
 			throw new TinyPassException("The total amount of split pays exceeds 100%");
+		 */
 	}
 }
 ?>

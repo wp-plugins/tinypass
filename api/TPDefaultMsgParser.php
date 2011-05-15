@@ -54,8 +54,8 @@ class TPDefaultMsgParser {
 
                 $po->setPrice("" == $poMap["price"] ? null : $poMap["price"]);
                 $po->setAccessPeriod("" == $poMap["exp"] ? null : $poMap["exp"]);
-                $po->setStartDate("" == $poMap["sd"] ? null : $poMap["sd"]);
-                $po->setEndDate("" ==  $poMap["ed"] ? null : $poMap["ed"]);
+                $po->setStartDate("" == $poMap["sd"] ? null : $poMap["sd"]/1000);
+                $po->setEndDate("" ==  $poMap["ed"] ? null : $poMap["ed"]/1000);
                 $po->setCaption("" == $poMap["cpt"] ? null : $poMap["cpt"]);
 
                 if (array_key_exists("splits", $poMap)){

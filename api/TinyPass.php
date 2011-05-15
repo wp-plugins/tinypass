@@ -8,6 +8,7 @@ require_once 'TPVersion.php';
 class TinyPass {
 
 	public static $API_PREPARE = "/jsapi/prepare.js";
+	public static $API_DATA = "/jsapi/data";
 
 	protected $accessTokenList;
 	private $ww;
@@ -88,7 +89,7 @@ class TinyPass {
 		}
 
 		$rid = $resource->getRID();
-		if ($this->accessTokenList != null && $this->_isAccessGranted($resource)) {
+		if ($this->accessTokenList != null && $this->accessTokenList->isAccessGranted($rid)) {
 			return true;
 		} else {
 			if ($resource->isTrial()) {
@@ -116,16 +117,6 @@ class TinyPass {
 
 	private function isAccessGrantedForRID($aid) {
 		return $this->accessTokenList->isAccessGranted($aid);
-	}
-
-	private function _isAccessGranted(TPResource $resource) {
-		return $this->accessTokenList != null && (
-						$resource->getMinPrice() == null ||
-						$this->accessTokenList->isAccessGranted($resource->getRID())
-										|| $resource->getBundledResource() != null
-										&& $resource->isUpSell()
-										&& $this->accessTokenList->isAccessGranted($resource->getBundledResource()->getRID())
-		);
 	}
 
 
