@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, permium content, paid content, monetization, micro payment, access control
 Requires at least: 3.1.0
 Tested up to: 3.1.0
-Stable tag: 0.1 
+Stable tag: 0.2 
 
 Provide integration between wordpress and TinyPass service
 
@@ -17,7 +17,7 @@ See http://www.tinypass.com/
 
 == Installation ==
 
-PHP requirements: PHP 5.3+, mbstring, bcmath, mcrypt
+PHP requirements: PHP 5.2+, mbstring, mcrypt
 
 1. Upload TinyPass for WordPress to your wp-content/plugins directory.
 2. Activate it in "Plugins" menu in WordPress.
