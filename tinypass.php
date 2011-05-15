@@ -290,6 +290,7 @@ function tinypass_check_content($content) {
 
 		$tp = new TinyPass($env, $aid, $secret_key);
 		$resource = $tp->initResource($resource_id, $resource_name);
+		$ticket = new TPTicket($resource);
 
 		for($i = 1; $i <= 3; $i++) {
 			$key = "opt" . $i;
@@ -305,8 +306,8 @@ function tinypass_check_content($content) {
 					$po->setAccessPeriod($meta[$key."_access_period"] . ' ' . $meta[$key."_access_period_type"]);
 				}
 
-				$resource->addPriceOption($po);
-				$tp->getWebWidget()->addResource($resource);
+				$ticket->addPriceOption($po);
+				$tp->getWebWidget()->addTicket($ticket);
 			}
 		}
 
