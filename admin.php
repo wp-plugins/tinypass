@@ -34,21 +34,30 @@ wp_enqueue_style( 'jquery-ui-1.8.2.custom.css', TINYPASSS_PLUGIN_PATH . 'css/jqu
 
 
 function tinypass_conf() {
-	global $akismet_nonce, $wpcom_api_key;
 
 	if ( isset($_POST['submit']) ) {
 
-		if ( isset( $_POST['aid'] ) )
-			update_option( 'tinypass_aid', $_POST['aid'] );
+		if ( isset( $_POST['aid_prod'] ) )
+			update_option( 'tinypass_aid_prod', $_POST['aid_prod'] );
 
-		if ( isset( $_POST['secret_key'] ) )
-			update_option( 'tinypass_secret_key', $_POST['secret_key']);
+		if ( isset( $_POST['secret_key_prod'] ) )
+			update_option( 'tinypass_secret_key_prod', $_POST['secret_key_prod']);
+
+		if ( isset( $_POST['aid_sand'] ) )
+			update_option( 'tinypass_aid_sand', $_POST['aid_sand'] );
+
+		if ( isset( $_POST['secret_key_sand'] ) )
+			update_option( 'tinypass_secret_key_sand', $_POST['secret_key_sand']);
 
 		if ( isset( $_POST['access_message'] ) )
 			update_option( 'tinypass_access_message', $_POST['access_message']);
 
 		if ( isset( $_POST['env'] ) )
 			update_option( 'tinypass_env', $_POST['env']);
+
+		update_option( 'tinypass_enabled', 'off');
+		if ( isset( $_POST['enabled'] ) )
+			update_option( 'tinypass_enabled', $_POST['enabled']);
 	}
 
 	?>
@@ -61,29 +70,15 @@ function tinypass_conf() {
 	<form action="" method="post" id="tinypass-conf" style="margin-left:30px; ">
 
 		<table class="form-table">
-			<tr valign="top">
-				<th scope="row"><?php _e('TinyPass Application ID'); ?></th>
-				<td>
-					<input id="aid" name="aid" type="text" size="10" maxlength="10" value="<?php echo get_option('tinypass_aid'); ?>"/>
-					<span class="description">The application ID that will corresponding to this website.  Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
-				</td>
-			</tr>
 
 			<tr valign="top">
-				<th scope="row"><?php _e('TinyPass Application Secret Key'); ?></th>
+				<th scope="row"><?php _e('TinyPass Enabled'); ?></th>
 				<td>
-					<input id="secret_key" name="secret_key" type="text" size="40" maxlength="40" value="<?php echo get_option('tinypass_secret_key'); ?>" style="" />
-					<span class="description">Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
-				</td>
-			</tr>
-
-
-			<tr valign="top">
-				<th scope="row"><?php _e('Denied access message'); ?></th>
-				<td>
-					<input id="access_message" name="access_message" type="text" size="60" maxlength="255" value="<?php echo get_option('tinypass_access_message'); ?>" style="" />
-					<br>
-					<span class="description">This message will be displayed when access is denied to a resource</span>
+						<?php if(get_option('tinypass_enabled', 'on') == 'on'): ?>
+					<input type="checkbox" name="enabled" checked=true><label>Enabled</label><br>
+						<?php else: ?>
+					<input type="checkbox" name="enabled"><label>Enabled</label><br>
+						<?php endif; ?>
 				</td>
 			</tr>
 
@@ -100,6 +95,44 @@ function tinypass_conf() {
 				</td>
 			</tr>
 
+			<tr valign="top">
+				<th scope="row"><?php _e('Application ID (Sandbox)'); ?></th>
+				<td>
+					<input id="aid_sand" name="aid_sand" type="text" size="10" maxlength="10" value="<?php echo get_option('tinypass_aid_sand'); ?>"/>
+					<span class="description">The application ID that will corresponding to this website.  Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
+				</td>
+			</tr>
+
+			<tr valign="top">
+				<th scope="row"><?php _e('Application Secret Key (Sandbox)'); ?></th>
+				<td>
+					<input id="secret_key_sand" name="secret_key_sand" type="text" size="40" maxlength="40" value="<?php echo get_option('tinypass_secret_key_sand'); ?>" style="" />
+					<span class="description">Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
+				</td>
+			</tr>
+
+			<tr valign="top">
+				<th scope="row"><?php _e('Application ID (Live)'); ?></th>
+				<td>
+					<input id="aid_prod" name="aid_prod" type="text" size="10" maxlength="10" value="<?php echo get_option('tinypass_aid_prod'); ?>"/>
+				</td>
+			</tr>
+
+			<tr valign="top">
+				<th scope="row"><?php _e('Application Secret Key (Live)'); ?></th>
+				<td>
+					<input id="secret_key_prod" name="secret_key_prod" type="text" size="40" maxlength="40" value="<?php echo get_option('tinypass_secret_key_prod'); ?>" style="" />
+				</td>
+			</tr>
+
+			<tr valign="top">
+				<th scope="row"><?php _e('Denied access message'); ?></th>
+				<td>
+					<textarea cols="80" rows="12" name="access_message" ><?php echo get_option('tinypass_access_message')?></textarea>
+					<br>
+					<span class="description">This message will be displayed when access is denied to a resource</span>
+				</td>
+			</tr>
 
 		</table>
 

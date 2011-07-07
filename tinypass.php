@@ -17,7 +17,7 @@ register_deactivation_hook(__FILE__,'tinypass_uninstall');
 
 add_action('add_meta_boxes', 'tinypass_post_options_box');
 add_action('save_post', 'tinypass_save_postdata');
-add_filter('the_content', "tinypass_check_content", 0);
+add_filter('the_content', 'tinypass_check_content', 0);
 
 add_filter( 'the_content_more_link', 'my_more_link', 10, 2 );
 
@@ -36,8 +36,10 @@ function tinypass_save_postdata($post_id) {
 	// verify this came from the our screen and with proper authorization,
 	// because save_post can be triggered at other times
 
-	if ( !wp_verify_nonce( $_POST['tinypass_noncename'], plugin_basename(__FILE__) ) )
-		return $post_id;
+	if(isset($_POST['tinypass_noncename'])) {
+		if ( !wp_verify_nonce( $_POST['tinypass_noncename'], plugin_basename(__FILE__) ) )
+			return $post_id;
+	}
 
 	// verify if this is an auto save routine.
 	// If it is our form has not been submitted, so we dont want to do anything
@@ -45,6 +47,7 @@ function tinypass_save_postdata($post_id) {
 		return $post_id;
 
 
+	/*
 	// Check permissions
 	if ( 'page' == $_POST['post_type'] ) {
 		if ( !current_user_can( 'edit_page', $post_id ) )
@@ -54,13 +57,16 @@ function tinypass_save_postdata($post_id) {
 		if ( !current_user_can( 'edit_post', $post_id ) )
 			return $post_id;
 	}
+	*/
 
 	// OK, we're authenticated: we need to find and save the data
 
-
 	delete_post_meta($post_id, 'tinypass_meta');
 
-	$data = $_POST['tinypass'];
+	$data = array();
+
+	if(isset($_POST['tinypass']))
+		$data = $_POST['tinypass'];
 
 	if(isset($data['resource_id']) && $data['resource_id'] == '') {
 		$data['resource_id'] = '';
@@ -84,6 +90,12 @@ function tinypass_post_options_box() {
 					__( 'TinyPass Options'),
 					'tinypass_post_options_box_display',
 					'post'
+	);
+	add_meta_box(
+					'tinypass_post_options',
+					__( 'TinyPass Options'),
+					'tinypass_post_options_box_display',
+					'page'
 	);
 }
 
@@ -260,7 +272,13 @@ function __isset($data, $key) {
 function tinypass_check_content($content) {
 	global $post;
 
+
+	$tinypass_enabled = get_option('tinypass_enabled', 'off');
+	if($tinypass_enabled != 'on')
+		return $content;
+
 	$meta = get_post_meta($post->ID, 'tinypass_meta', true);
+
 
 	if(isset($meta['enabled']) && $meta['enabled'] == 'on') {
 
@@ -271,6 +289,7 @@ function tinypass_check_content($content) {
 		if($resource_id == '') {
 			$resource_id = $post->post_name;
 		}
+		$resource_id = preg_replace('/\s+/', '_', $resource_id);
 
 		if($resource_name == '') {
 			$resource_name = $post->post_title;
@@ -280,13 +299,16 @@ function tinypass_check_content($content) {
 
 
 		$env = get_option( 'tinypass_env', 0);
-		$aid = get_option( 'tinypass_aid', '');
-		$secret_key = get_option( 'tinypass_secret_key', '');
 
-		if($env == 0)
+		if($env == 0) {
 			$env = 'http://sandbox.tinypass.com';
-		else
+			$aid = get_option( 'tinypass_aid_sand', '');
+			$secret_key = get_option( 'tinypass_secret_key_sand', '');
+		}else {
 			$env = 'https://api.tinypass.com';
+			$aid = get_option( 'tinypass_aid_prod', '');
+			$secret_key = get_option( 'tinypass_secret_key_prod', '');
+		}
 
 		$tp = new TinyPass($env, $aid, $secret_key);
 		$resource = $tp->initResource($resource_id, $resource_name);
@@ -312,26 +334,23 @@ function tinypass_check_content($content) {
 		}
 
 		//check access
-		if($tp->isAccessGranted($resource_id)){
+		if($tp->isAccessGranted($resource_id)) {
 			return $content;
 		}
 
-		if(is_single() == false) {
-			remove_filter('the_content', "tinypass_check_content", 0);
+		if(is_page() == false && is_single() == false) {
+			remove_filter('the_content', 'tinypass_check_content', 0);
 			$content = get_the_excerpt();
-			add_filter('the_content', "tinypass_check_content", 0);
+			add_filter('the_content', 'tinypass_check_content', 0);
 			return $content;
 		}
 
-		remove_filter('the_content', "tinypass_check_content", 0);
+		remove_filter('the_content', 'tinypass_check_content', 0);
 		add_filter('excerpt_more', 'tinypass_custom_excerpt_more', 10, 1 );
 		$content = get_the_excerpt();
-		add_filter('the_content', "tinypass_check_content", 0);
+		add_filter('the_content', 'tinypass_check_content', 0);
 
-
-
-
-		$tp->getWebWidget()->setCallBackFunction("tinypass_reloader");
+		$tp->getWebWidget()->setCallBackFunction('tinypass_reloader');
 		$code = $tp->getWebWidget()->getCode();
 
 		$content .= '
@@ -352,10 +371,8 @@ function tinypass_check_content($content) {
 					}
 			</style>
 			<div class="tinypass_button_holder">
-			<div class="tinypass_access_message">'. get_option("tinypass_access_message").'</div>
-				<span id="adsf" class="tinypass_button"></span>
+			<div class="tinypass_access_message">'. get_option('tinypass_access_message').'</div>
 				<span id="'.$resource_id.'"></span>
-			</div>
 			</div>' . $code;
 		return $content;
 	}else
@@ -365,22 +382,19 @@ function tinypass_check_content($content) {
 
 
 function tinypass_install() {
-	//add_option($name, $value, $deprecated, $autoload);
-
-	add_option('tinypass_aid', 'QdXYalSxyk', '', true);
-	add_option('tinypass_private_key', 'zXKpS9HhU9GdOn2jEH0kmzKW6jN4phrSbQ56ip9r', '', true);
+	add_option('tinypass_enabled', 'on', '', true);
+	add_option('tinypass_aid_sand', 'AIDAIDAIDS', '', true);
+	add_option('tinypass_secret_key_sand', 'secretKey sandbox', '', true);
+	add_option('tinypass_aid_prod', 'AIDAIDAIDP', '', true);
+	add_option('tinypass_secret_key_prod', 'secretKey prod', '', true);
 	add_option('tinypass_env', 0, '', true);
-	add_option('tinypass_access_message', __("To continue, please purchase using TinyPass"), '', true);
-
+	add_option('tinypass_access_message', __('To continue, please purchase using TinyPass'), '', true);
 }
 
 function tinypass_uninstall() {
 	global $wpdb;
 	$wpdb->query("delete from $wpdb->postmeta where meta_key = 'tinypass_meta'");
-	delete_option('tinypass_aid');
-	delete_option('tinypass_private_key');
-	delete_option('tinypass_env');
-	delete_option('tinypass_access_message');
+	$wpdb->query("delete from $wpdb->options where option_name like 'tinypass%'");
 }
 
 
