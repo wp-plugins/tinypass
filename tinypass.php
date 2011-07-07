@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 0.5
+ * @version 0.6
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass plugin for wordpress
 Author: TinyPass
-Version: 0.5
+Version: 0.6
 Author URI: http://www.tinypass.com
 */
 
@@ -383,10 +383,10 @@ function tinypass_check_content($content) {
 
 function tinypass_install() {
 	add_option('tinypass_enabled', 'on', '', true);
-	add_option('tinypass_aid_sand', 'AIDAIDAIDS', '', true);
-	add_option('tinypass_secret_key_sand', 'secretKey sandbox', '', true);
-	add_option('tinypass_aid_prod', 'AIDAIDAIDP', '', true);
-	add_option('tinypass_secret_key_prod', 'secretKey prod', '', true);
+	add_option('tinypass_aid_sand', 'QdXYalSxyk', '', true);
+	add_option('tinypass_secret_key_sand', 'zXKpS9HhU9GdOn2jEH0kmzKW6jN4phrSbQ56ip9r', '', true);
+	add_option('tinypass_aid_prod', 'GETKEY', '', true);
+	add_option('tinypass_secret_key_prod', 'Retreive your secret key from www.tinypass.com', '', true);
 	add_option('tinypass_env', 0, '', true);
 	add_option('tinypass_access_message', __('To continue, please purchase using TinyPass'), '', true);
 }

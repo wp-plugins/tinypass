@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, permium content, paid content, monetization, micro payment, access control
 Requires at least: 3.1.0
 Tested up to: 3.1.0
-Stable tag: 0.5 
+Stable tag: 0.6 
 
 Provide integration between wordpress and TinyPass service
 
@@ -30,6 +30,9 @@ Save the post and then attempt to 'view the post'
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+0.6
+Changed default sandbox aid/key
 
 0.5
 Allows custom denied message error

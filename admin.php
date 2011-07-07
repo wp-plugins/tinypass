@@ -99,7 +99,7 @@ function tinypass_conf() {
 				<th scope="row"><?php _e('Application ID (Sandbox)'); ?></th>
 				<td>
 					<input id="aid_sand" name="aid_sand" type="text" size="10" maxlength="10" value="<?php echo get_option('tinypass_aid_sand'); ?>"/>
-					<span class="description">The application ID that will corresponding to this website.  Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
+					<span class="description">The application ID that will corresponding to this website.  Retreived from your account on <a href="http://sandbox.tinypass.com/member/merch">sandbox.tinypass.com</a></span>
 				</td>
 			</tr>
 
@@ -107,7 +107,7 @@ function tinypass_conf() {
 				<th scope="row"><?php _e('Application Secret Key (Sandbox)'); ?></th>
 				<td>
 					<input id="secret_key_sand" name="secret_key_sand" type="text" size="40" maxlength="40" value="<?php echo get_option('tinypass_secret_key_sand'); ?>" style="" />
-					<span class="description">Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
+					<span class="description">Retreived from your account on <a href="http://sandbox.tinypass.com/member/merch">sandbox.tinypass.com</a></span>
 				</td>
 			</tr>
 
@@ -115,6 +115,7 @@ function tinypass_conf() {
 				<th scope="row"><?php _e('Application ID (Live)'); ?></th>
 				<td>
 					<input id="aid_prod" name="aid_prod" type="text" size="10" maxlength="10" value="<?php echo get_option('tinypass_aid_prod'); ?>"/>
+					<span class="description">The application ID that will corresponding to this website.  Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
 				</td>
 			</tr>
 
@@ -122,6 +123,7 @@ function tinypass_conf() {
 				<th scope="row"><?php _e('Application Secret Key (Live)'); ?></th>
 				<td>
 					<input id="secret_key_prod" name="secret_key_prod" type="text" size="40" maxlength="40" value="<?php echo get_option('tinypass_secret_key_prod'); ?>" style="" />
+					<span class="description">Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
 				</td>
 			</tr>
 
