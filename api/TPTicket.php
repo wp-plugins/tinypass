@@ -74,12 +74,31 @@ class TPTicket {
 		$price = null;
 
 		foreach($this->getPriceOptions() as $po) {
-			if (
-			($po->getStartDate() == null || $po->getStartDate() <= $this->getTimestamp())
-							&& ($po->getEndDate() == null || $po->getEndDate() >= $this->getTimestamp())
-							&& ($price == null || $po->getPrice() < $price)
-			)
-				$price = $po->getPrice();
+
+			$validPO = null;
+
+			if ($po->getStartDate() == null && $po->getEndDate() == null) {
+
+				$validPO = $po;
+
+			} else if ($po->getStartDate() != null && $po->getEndDate() != null) {
+
+				if ($po->getStartDate() <= $this->getTimestamp() && $po->getEndDate() >= $this->getTimestamp())
+					$validPO = $po;
+
+			} else if ($po->getStartDate() != null && $po->getStartDate() <= $this->getTimestamp() && $po->getEndDate() == null) {
+
+				$validPO = $po;
+
+			} else if ($po->getStartDate() == null && $po->getEndDate() != null && $po->getEndDate() >= $this->getTimestamp()) {
+
+				$validPO = $po;
+
+			}
+
+			if($validPO && ($price == null || $validPO->getPrice() < $price ))
+				$price = $validPO->getPrice();
+
 		}
 		return $price;
 	}

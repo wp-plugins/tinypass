@@ -88,6 +88,15 @@ class TinyPass {
 			return $this->isAccessGrantedForRID($resource);
 		}
 
+		if($resource instanceof TPTicket){
+			$ticket = $resource;
+
+			if($ticket->getMinPrice() == null)
+				return true;
+
+			$resource = $resource->getResource();
+		}
+
 		$rid = $resource->getRID();
 		if ($this->accessTokenList != null && $this->accessTokenList->isAccessGranted($rid)) {
 			return true;

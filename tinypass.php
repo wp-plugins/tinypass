@@ -12,32 +12,48 @@ Version: 0.6
 Author URI: http://www.tinypass.com
 */
 
+// [bartag foo="foo-value"]
+function tinypass_shortcode( $atts, $content = null) {
+	extract( shortcode_atts( array(
+					'price' => '1.99',
+					'period' => '30 days',
+					), $atts ) );
+	return "";
+}
+
+define("TINYPASS_INLINE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
+define("TINYPASS_INLINE_REPLACE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?).*/s');
+
+//add_shortcode( 'tinypass', 'tinypass_shortcode' );
+
+function tinypass_register_custom_database_tables() {
+	global $wpdb;
+	$wpdb->tinypass_ref = $wpdb->prefix . 'tinypass_ref';
+}
+add_action( 'init', 'tinypass_register_custom_database_tables' );
+
+//setup
+if ( is_admin() ) {
+	require_once dirname( __FILE__ ) . '/tinypass-install.php';
+	require_once dirname( __FILE__ ) . '/tinypass-admin.php';
+	require_once dirname( __FILE__ ) . '/tinypass-form.php';
+}
+
 register_activation_hook(__FILE__,'tinypass_install');
 register_deactivation_hook(__FILE__,'tinypass_uninstall');
 
-add_action('add_meta_boxes', 'tinypass_post_options_box');
+
 add_action('save_post', 'tinypass_save_postdata');
-add_filter('the_content', 'tinypass_check_content', 0);
-
-add_filter( 'the_content_more_link', 'my_more_link', 10, 2 );
-
-function tinypass_custom_excerpt_more( $more ) {
-	return '';
-}
-
-function my_more_link( $more_link, $more_link_text ) {
-	return str_replace( $more_link_text, 'XXX Continue reading &rarr;', $more_link );
-}
-
-if ( is_admin() )
-	require_once dirname( __FILE__ ) . '/admin.php';
+add_filter('the_content', 'tinypass_check_content', 10);
 
 function tinypass_save_postdata($post_id) {
+
 	// verify this came from the our screen and with proper authorization,
 	// because save_post can be triggered at other times
 
+	/*
 	if(isset($_POST['tinypass_noncename'])) {
-		if ( !wp_verify_nonce( $_POST['tinypass_noncename'], plugin_basename(__FILE__) ) )
+		if ( !wp_verify_nonce($_POST['tinypass_noncename'], 'tinypass_post_save') )
 			return $post_id;
 	}
 
@@ -45,6 +61,7 @@ function tinypass_save_postdata($post_id) {
 	// If it is our form has not been submitted, so we dont want to do anything
 	if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
 		return $post_id;
+	 */
 
 
 	/*
@@ -59,305 +76,208 @@ function tinypass_save_postdata($post_id) {
 	}
 	*/
 
-	// OK, we're authenticated: we need to find and save the data
-
-	delete_post_meta($post_id, 'tinypass_meta');
+	delete_post_meta($post_id, 'tinypass');
 
 	$data = array();
 
 	if(isset($_POST['tinypass']))
 		$data = $_POST['tinypass'];
 
-	if(isset($data['resource_id']) && $data['resource_id'] == '') {
-		$data['resource_id'] = '';
-	}
+	update_post_meta($post_id, 'tinypass', $data, true);
 
-	if(isset($data['resource_name']) && $data['resource_name'] == '') {
-		$data['resource_name'] = '';
-	}
-
-	update_post_meta($post_id, 'tinypass_meta', $data, true);
-
-	// Do something with $mydata
-	// probably using add_post_meta(), update_post_meta(), or
-	// a custom table (see Further Reading section below)
 	return $data;
 }
 
-function tinypass_post_options_box() {
-	add_meta_box(
-					'tinypass_post_options',
-					__( 'TinyPass Options'),
-					'tinypass_post_options_box_display',
-					'post'
-	);
-	add_meta_box(
-					'tinypass_post_options',
-					__( 'TinyPass Options'),
-					'tinypass_post_options_box_display',
-					'page'
-	);
+/**
+ * Wrap the TinyPass options in a more useful class
+ */
+function meta_to_object($meta) {
+	$options = new TinyPassOptions($meta);
+	return $options;
 }
 
-function tinypass_post_options_box_display($post) {
-	$meta = get_post_meta($post->ID, 'tinypass_meta', true);
+/**
+ * Load and init global tinypass settings
+ */
+function tinypass_load_settings() {
+	$settings = get_option('tinypass_settings', array());
 
-	wp_nonce_field( plugin_basename(__FILE__), 'tinypass_noncename' );
+	//default settings
+	if(count($settings) == 0)
+		return array('env'=>0, 'aid'=>'', 'secret_key'=>'XX', 'enabled'=>0);
 
-	$resource_id = '';
-	$resource_name = '';
-	$checked = '';
-	$hide = 'display:none';
+	$tinypass_enabled = isset($settings['enabled']) ? $settings['enabled'] : 0;
 
-	if(isset($meta['resource_id']))
-		$resource_id = $meta['resource_id'];
+	if($tinypass_enabled == 'off' || (is_numeric($tinypass_enabled) && $tinypass_enabled == 0))
+		$settings['enabled'] = 0;
+	else
+		$settings['enabled'] = 1;
 
-	if(isset($meta['resource_name']))
-		$resource_name = $meta['resource_name'];
 
-	if(isset($meta['enabled']) && $meta['enabled'] == 'on') {
-		$checked = 'checked=true';
-		$hide = '';
+	if($settings['env'] == 0) {
+		//$settings['url'] = 'http://sandbox.tinypass.com';
+		$settings['url'] = 'http://localhost:8080';
+		$settings['aid'] = $settings['aid_sand'];
+		$settings['secret_key'] = $settings['secret_key_sand'];
+	}else {
+		$settings['url'] = 'https://api.tinypass.com';
+		$settings['aid'] = $settings['aid_prod'];
+		$settings['secret_key'] = $settings['secret_key_prod'];
 	}
 
-	?>
+	return $settings;
 
-<table class="form-table">
-	<tr>
-		<td>
-				Enable TinyPass
-			<input type="checkbox" name="tinypass[enabled]" <?php echo $checked ?> onchange="tinypass_hidePostOptions(this)">
-		</td>
-	</tr>
-</table>
-<table class="form-table" id="tinypass_post_options_form" style="<?php echo $hide ?>" >
-	<tr>
-		<th>Resource ID</th>
-		<td>
-			<input type="text" size="50" maxlength="255" name="tinypass[resource_id]" value="<?php echo $resource_id ?>">
-			<div class="description">Optional - Leave empty to default to post title</div>
-		</td>
-	</tr>
-	<tr>
-		<th>Resource Name</th>
-		<td>
-			<input type="text" size="50" maxlength="255" name="tinypass[resource_name]" value="<?php echo $resource_name ?>">
-			<div class="description">Optional - Leave empty to default to post title</div>
-		</td>
-	</tr>
-	<tr>
-		<th>Price Options</th>
-		<td>
-				<?php echo __tinypass_price_option_display('opt1', $meta)  ?>
-			<hr>
-				<?php echo __tinypass_price_option_display('opt2', $meta)  ?>
-			<hr>
-				<?php echo __tinypass_price_option_display('opt3', $meta)  ?>
-		</td>
-	</tr>
-
-
-
-</table>
-
-	<?php
 }
 
-function __tinypass_price_option_display($opt, $values) {
-
-	$times = array('hour'=>'hour(s)', 'day'=>'day(s)', 'week'=>'week(s)', 'month'=>'month(s)');
-
-	$price = '';
-	$access_period = '';
-	$access_period_type = 'day';
-	$caption = '';
-	$enabled = 0;
-	$readonly = '';
-	$checked = '';
-	$start_time = '';
-	$end_time = '';
-
-	if(isset($values[$opt.'_price'])) {
-		$price = $values[$opt.'_price'];
-	}
-
-	if(isset($values[$opt.'_access_period'])) {
-		$access_period = $values[$opt.'_access_period'];
-	}
-
-	if(isset($values[$opt.'_access_period_type'])) {
-		$access_period_type = $values[$opt.'_access_period_type'];
-	}
-
-	if(isset($values[$opt.'_caption'])) {
-		$caption = $values[$opt.'_caption'];
-	}
-
-	if(isset($values[$opt.'_start_time'])) {
-		$start_time = $values[$opt.'_start_time'];
-	}
-
-	if(isset($values[$opt.'_end_time'])) {
-		$end_time = $values[$opt.'_end_time'];
-	}
-
-	if(isset($values[$opt.'_enabled'])) {
-		$enabled = 1;
-		$checked = 'checked=true';
-	}
-
-	if($opt == 'opt1') {
-		$enabled = 1;
-		$readonly = 'readonly';
-		$checked = 'checked=true';
-	}
-
-	?>
-<style>
-	.tinypass_price_options_form td{
-		padding:3px;
-	}
-</style>
-<table class="tinypass_price_options_form">
-	<tr>
-		<td></td>
-		<td>Price:</td>
-		<td>Access Period:</td>
-		<td>Custom Caption:</td>
-	</tr>
-	<tr>
-		<td>
-			Enabled
-			<input type="checkbox" name="tinypass[<?php echo $opt.'_enabled'?>]" value="<?php echo $enabled ?>" <?php echo $readonly ?> <?php echo $checked ?>   >
-		</td>
-		<td>
-			<input type="text" size="5" maxlength="5" name="tinypass[<?php echo $opt."_price"?>]" value="<?php echo $price ?>">
-		</td>
-		<td>
-			<input type="text" size="5" maxlength="5" name="tinypass[<?php echo $opt."_access_period"?>]" value="<?php echo $access_period ?>">
-			<select name="tinypass[<?php echo $opt."_access_period_type" ?>]">
-					<?php foreach($times as $key => $value): ?>
-						<?php if($key == $access_period_type) { ?>
-				<option value="<?php echo $key ?>" selected=true><?php echo $value ?>
-								<?php } else { ?>
-				<option value="<?php echo $key ?>"><?php echo $value ?>
-								<?php } ?>
-						<?php endforeach ?>
-			</select>
-		</td>
-		<td>
-			<input type="text" size="20" maxlength="20" name="tinypass[<?php echo $opt . "_caption"?>]" value="<?php echo $caption ?>">
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td colspan="2">
-			Start Date: <br><input type="text" class="tinypass-datetimepicker" name="tinypass[<?php echo $opt."_start_time"?>]" value="<?php echo $start_time?>">
-		</td>
-		<td>
-			End Date:&nbsp;&nbsp;<br> <input type="text" class="tinypass-datetimepicker" name="tinypass[<?php echo $opt."_end_time"?>]" value="<?php echo $end_time ?>" >
-		</td>
-	</tr>
-</table>
-	<?php
-}
-
-function __isset($data, $key) {
-	if(isset($data[$key]) && $data[$key] != '') {
-		return true;
-	}
-	return false;
-}
-
+/**
+ * Main function for displaying TinyPass button on restricted post/pages
+ */
 function tinypass_check_content($content) {
+
 	global $post;
 
+	$settings = tinypass_load_settings();
 
-	$tinypass_enabled = get_option('tinypass_enabled', 'off');
-	if($tinypass_enabled != 'on')
+	if($settings['enabled'] == false)
 		return $content;
 
-	$meta = get_post_meta($post->ID, 'tinypass_meta', true);
+	//pull tinypass options from post_meta
+	$meta = get_post_meta($post->ID, 'tinypass', true);
+	$postOptions = meta_to_object($meta);
 
+	//pull tinypass options from tag
+	$terms = get_the_terms($post->ID, 'post_tag');
+	$tags = tinypass_enabled_tags();
 
-	if(isset($meta['enabled']) && $meta['enabled'] == 'on') {
+	$tagOptions = meta_to_object(array());
 
-
-		$resource_id = $meta['resource_id'];
-		$resource_name = $meta['resource_name'];
-
-		if($resource_id == '') {
-			$resource_id = $post->post_name;
+	if($terms) {
+		foreach($terms as $term) {
+			if(array_key_exists($term->term_id, $tags)) {
+				$tagOptions = meta_to_object($tags[$term->term_id]['data']);
+			}
 		}
-		$resource_id = preg_replace('/\s+/', '_', $resource_id);
-
-		if($resource_name == '') {
-			$resource_name = $post->post_title;
-		}
-
-		include_once dirname( __FILE__ ) . '/api/TinyPass.php';
+	}
 
 
-		$env = get_option( 'tinypass_env', 0);
+	$m = array();
+	if(preg_match(TINYPASS_INLINE, $content, $m)) {
 
-		if($env == 0) {
-			$env = 'http://sandbox.tinypass.com';
-			$aid = get_option( 'tinypass_aid_sand', '');
-			$secret_key = get_option( 'tinypass_secret_key_sand', '');
-		}else {
-			$env = 'https://api.tinypass.com';
-			$aid = get_option( 'tinypass_aid_prod', '');
-			$secret_key = get_option( 'tinypass_secret_key_prod', '');
-		}
+		$tag = $m[2];
+		$attr = shortcode_parse_atts( $m[3] );
 
-		$tp = new TinyPass($env, $aid, $secret_key);
-		$resource = $tp->initResource($resource_id, $resource_name);
-		$ticket = new TPTicket($resource);
+		$inline = array();
 
-		for($i = 1; $i <= 3; $i++) {
-			$key = "opt" . $i;
-			if(isset($meta[$key."_enabled"]) && $meta[$key."_enabled"]) {
-				$po = new TPPriceOption(($meta[$key."_price"]));
+		$inline['en'] = 1;
+		$inline['resource_id'] = 'wp_post_' . $post->ID;
+		$inline['po_en1'] = 1;
 
-				if(__isset($meta, $key."_caption")) {
+		if(isset($attr['price']))
+			$inline['po_p1'] = $attr['price'];
 
-					$po->setCaption($meta[$key."_caption"]);
-
-				}else if(__isset($meta, $key."_access_period") && __isset($meta, $key."_access_period_type") ) {
-
-					$po->setAccessPeriod($meta[$key."_access_period"] . ' ' . $meta[$key."_access_period_type"]);
-				}
-
-				$ticket->addPriceOption($po);
-				$tp->getWebWidget()->addTicket($ticket);
+		if(isset($attr['access'])) {
+			$sp = preg_split('/\s+/', $attr['access']);
+			if(count($sp) == 2) {
+				$inline['po_ap1'] = $sp[0];
+				$inline['po_type1'] = $sp[1];
 			}
 		}
 
-		//check access
-		if($tp->isAccessGranted($resource_id)) {
+		if(isset($attr['name']) && $attr['name'])
+			$inline['resource_name'] = $attr['name'];
+		else
+			$inline['resource_name'] = $post->post_title;
+
+		if(isset($attr['start']))
+			$inline['po_st1'] = $attr['start'];
+
+		if(isset($attr['end']))
+			$inline['po_et1'] = $attr['end'];
+
+
+		if(isset($attr['caption']))
+			$inline['po_cap1'] = $attr['caption'];
+
+		$postOptions = meta_to_object($inline);
+
+	}
+
+
+	if($postOptions->isEnabled() || $tagOptions->isEnabled()) {
+		include_once dirname( __FILE__ ) . '/api/TinyPass.php';
+
+		if($postOptions->getResourceId() == '') {
+			$resource_id = preg_replace('/\s+/', '_', $resource_id);
+			$postOptions->setResourceId("wp_post_" . strval($post->ID) . "");
+		}
+
+		if($postOptions->getResourceName() == '') {
+			$postOptions->setResourceName($post->post_title);
+		}
+
+		$message = $settings['access_message'];
+
+		//init TP
+		$tp = new TinyPass($settings['url'], $settings['aid'], $settings['secret_key']);
+
+		$ticket = null;
+		$upsell = null;
+
+		if($postOptions->isEnabled()) {
+			$ticket = tinypass_create_ticket($tp, $postOptions);
+		}
+
+		if($tagOptions->isEnabled()) {
+			$upsell = tinypass_create_ticket($tp, $tagOptions);
+			if($ticket && $upsell) {
+				$ticket->setUpSellTicket($upsell);
+			} else if ($ticket == null && $upsell) {
+				$ticket = $upsell;
+			}
+		}
+
+		$resource_id = $ticket->getResource()->getRID();
+
+		//check single ticket
+		if($tp->isAccessGranted($ticket)) {
 			return $content;
 		}
+
+
+		//check upsell
+		if($upsell != null && $tp->isAccessGranted($upsell)) {
+			return $content;
+		}
+
+		$tp->getWebWidget()->addTicket($ticket);
 
 		if(is_page() == false && is_single() == false) {
-			remove_filter('the_content', 'tinypass_check_content', 0);
-			$content = get_the_excerpt();
-			add_filter('the_content', 'tinypass_check_content', 0);
+			if(has_excerpt()) {
+				$content = get_the_excerpt();
+			}else {
+				$content = tinypass_trim_excerpt($content);
+				$excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
+				$content .= $excerpt_more;
+			}
 			return $content;
 		}
 
-		remove_filter('the_content', 'tinypass_check_content', 0);
-		add_filter('excerpt_more', 'tinypass_custom_excerpt_more', 10, 1 );
-		$content = get_the_excerpt();
-		add_filter('the_content', 'tinypass_check_content', 0);
+		if(has_excerpt()) {
+			$content = get_the_excerpt();
+		}else {
+			$content = tinypass_trim_excerpt($content);
+		}
 
 		$tp->getWebWidget()->setCallBackFunction('tinypass_reloader');
 		$code = $tp->getWebWidget()->getCode();
 
+
 		$content .= '
 			<script>
-				function tinypass_reloader(){
-					if(status.state == "granted")
+				function tinypass_reloader(status){
+					if(status.state == "granted"){
 						window.location.reload();
+					}
 				}
 			</script>
 			<style type="text/css">
@@ -371,30 +291,172 @@ function tinypass_check_content($content) {
 					}
 			</style>
 			<div class="tinypass_button_holder">
-			<div class="tinypass_access_message">'. get_option('tinypass_access_message').'</div>
+			<div class="tinypass_access_message">'. $settings['access_message'].'</div>
 				<span id="'.$resource_id.'"></span>
 			</div>' . $code;
+
 		return $content;
 	}else
 		return $content;
 
 }
 
+function tinypass_create_ticket($tp, TinyPassOptions $options) {
+	if($options == null)
+		return null;
+	$resource = $tp->initResource($options->getResourceId(), $options->getResourceName());
+	$ticket = new TPTicket($resource);
 
-function tinypass_install() {
-	add_option('tinypass_enabled', 'on', '', true);
-	add_option('tinypass_aid_sand', 'QdXYalSxyk', '', true);
-	add_option('tinypass_secret_key_sand', 'zXKpS9HhU9GdOn2jEH0kmzKW6jN4phrSbQ56ip9r', '', true);
-	add_option('tinypass_aid_prod', 'GETKEY', '', true);
-	add_option('tinypass_secret_key_prod', 'Retreive your secret key from www.tinypass.com', '', true);
-	add_option('tinypass_env', 0, '', true);
-	add_option('tinypass_access_message', __('To continue, please purchase using TinyPass'), '', true);
+	$pos = array();
+
+	if($options->isEnabled()) {
+		for($i = 1; $i <= $options->getNumPrices(); $i++) {
+
+			$po = new TPPriceOption($options->getPrice($i));
+
+			if($options->getAccess($i) != '')
+				$po->setAccessPeriod($options->getAccess($i));
+
+			if($options->getCaption($i) != '')
+				$po->setCaption($options->getCaption($i));
+
+			if($options->getStartDateSec($i) != '')
+				$po->setStartDate($options->getStartDateSec($i));
+
+			if($options->getEndDateSec($i) != '')
+				$po->setEndDate($options->getEndDateSec($i));
+
+			$pos[] = $po;
+
+		}
+	}
+
+	foreach($pos as $po) {
+		$ticket->addPriceOption($po);
+	}
+
+	return $ticket;
+
+}
+class TinyPassOptions {
+
+	public function  __construct($data) {
+		$this->data = $data;
+
+		if($this->_isset('resource_name'))
+			$this->resource_name = $data['resource_name'];
+
+		if($this->_isset('resource_id'))
+			$this->resource_id = $data['resource_id'];
+
+		$count = 0;
+		for($i = 1; $i <= 3; $i++) {
+			if($this->_isset('po_en'.$i))
+				$count++;
+		}
+
+		$this->num_prices = $count;
+
+	}
+
+	public function isEnabled() {
+		return $this->_isset('en');
+	}
+
+	private function _isset($field) {
+		return isset($this->data[$field]) && ($this->data[$field] || $this->data[$field] == 'on');
+	}
+
+	public function getResourceName() {
+		return $this->resource_name;
+	}
+
+	public function setResourceName($s) {
+		$this->resource_name = $s;
+	}
+
+	public function getResourceId() {
+		return $this->resource_id;
+	}
+
+	public function setResourceId($s) {
+		$this->resource_id = $s;
+	}
+
+	public function getNumPrices() {
+		return $this->num_prices;
+	}
+
+	public function getPrice($i) {
+		return $this->data["po_p$i"];
+	}
+
+	public function getAccess($i) {
+		if($this->data["po_ap$i"] == '' ||  $this->data["po_type$i"] == '')
+			return '';
+		return $this->data["po_ap$i"] . " " . $this->data["po_type$i"];
+	}
+
+	public function getCaption($i) {
+		return $this->data["po_cap$i"];
+	}
+
+	public function getStartDateSec($i) {
+		return strtotime($this->data["po_st$i"]);
+	}
+
+	public function getEndDateSec($i) {
+		return strtotime($this->data["po_et$i"]);
+	}
+
+
 }
 
-function tinypass_uninstall() {
+function tinypass_trim_excerpt($text) {
+
+	$text = strip_shortcodes( $text );
+
+	$text = str_replace(']]>', ']]&gt;', $text);
+	$text = strip_tags($text);
+	$excerpt_length = apply_filters('excerpt_length', 55);
+
+	$text = preg_replace(TINYPASS_INLINE_REPLACE, '', $text);
+
+	//$excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
+	$words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
+	if ( count($words) > $excerpt_length ) {
+		array_pop($words);
+		$text = implode(' ', $words);
+		$text = $text . $excerpt_more;
+	} else {
+		$text = implode(' ', $words);
+	}
+	//return apply_filters('wp_trim_excerpt', $text, $raw_excerpt);
+	return $text;
+
+}
+
+function tinypass_enabled_tags() {
 	global $wpdb;
-	$wpdb->query("delete from $wpdb->postmeta where meta_key = 'tinypass_meta'");
-	$wpdb->query("delete from $wpdb->options where option_name like 'tinypass%'");
+
+	$results = wp_cache_get("tinypass_enabled_tags");
+
+
+	$terms = array();
+	if($results == false) {
+		$results = $wpdb->get_results("select * from $wpdb->tinypass_ref ", ARRAY_A);
+
+		foreach($results as $i => $row) {
+			$row['data'] = unserialize($row['data']);
+			$terms[$row['term_id']] = $row;
+		}
+
+		wp_cache_set("tinypass_enabled_tags", $results);
+	}
+
+	return $terms;
+
 }
 
 
+?>

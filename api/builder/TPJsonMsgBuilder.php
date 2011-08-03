@@ -18,7 +18,7 @@ class TPJsonMsgBuilder {
 		$map = array();
 		$map["rid"] = $ticket->getResource()->getRID();
 		$map["rnm"] =  $ticket->getResource()->getResourceName();
-		$map["t"] = $ticket->getTimestamp();
+		$map["t"] = $ticket->getTimestamp()*1000;
 		$map["tags"] = $ticket->getTags();
 
 		$pos = array();

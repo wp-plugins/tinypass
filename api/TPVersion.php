@@ -2,7 +2,7 @@
 
 class TPVersion {
 
-    public static $VERSION = "1.3";
+    public static $VERSION = "1.4";
 
     public static $CONTEXT = "/v1";
 
