@@ -33,7 +33,7 @@ class TPResource {
 	}
 
 	public function getRIDHash() {
-		return TPSecurityUtils::hashCode($this->rid);
+		return TPRIDHash::hashCode($this->rid);
 	}
 
 	public function setResourceName($rname) {

@@ -12,8 +12,8 @@ class TPPriceOption {
 	protected $endDate;
 	protected $caption;
 	protected $splitPay = array();
-	private static $SUPPORTED_PRICES = "$0.02-$0.05, $0.05-$0.95 with $0.05 increments and $0.99";
-	private static $EXPIRE_PARSER = "/(\d+)\s*(\w+)/";
+	private static $SUPPORTED_PRICES = '$0.02-$0.05, $0.05-$0.95 with $0.05 increments and $0.99';
+	private static $EXPIRE_PARSER = '/(\d+)\s*(\w+)/';
 
 	public function __construct($price = null, $acessPeriod = null, $startDate = null, $endDate = null) {
 		$this->setPrice($price);

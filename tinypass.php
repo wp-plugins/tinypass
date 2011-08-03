@@ -15,6 +15,8 @@ Author URI: http://www.tinypass.com
 define("TINYPASS_INLINE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
 define("TINYPASS_INLINE_REPLACE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?).*/s');
 
+$tinypass_instance = null;
+
 
 function tinypass_register_custom_database_tables() {
 	global $wpdb;
@@ -123,6 +125,7 @@ function tinypass_load_settings() {
 function tinypass_check_content($content) {
 
 	global $post;
+	global $tinypass_instance;
 
 	$settings = tinypass_load_settings();
 
@@ -156,7 +159,7 @@ function tinypass_check_content($content) {
 
 		$inline = array();
 
-		$inline['en'] = 1;
+		$inline['en'] = isset($settings['inline']) && $settings['inline'];
 		$inline['resource_id'] = 'wp_post_' . $post->ID;
 		$inline['po_en1'] = 1;
 
@@ -206,7 +209,10 @@ function tinypass_check_content($content) {
 		$message = $settings['access_message'];
 
 		//init TP
-		$tp = new TinyPass($settings['url'], $settings['aid'], $settings['secret_key']);
+		if($tinypass_instance == null)
+			$tinypass_instance = new TinyPass($settings['url'], $settings['aid'], $settings['secret_key']);
+
+		$tp = $tinypass_instance;
 
 		$ticket = null;
 		$upsell = null;

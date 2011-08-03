@@ -14,10 +14,13 @@ class TPVersion {
 			return TPVersion::$CONTEXT  .  TinyPass::$API_DATA;
 		}
 
+		public static function getAuthURL(){
+			return TPVersion::$CONTEXT  .  TinyPass::$API_AUTH;
+		}
+
 		public static function getVersion(){
 			return TPVersion::$VERSION;
 		}
 
 }
-
 ?>

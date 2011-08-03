@@ -1,0 +1,56 @@
+<script type="text/javascript">
+(function() {
+    var ep = "${endpoint}";
+    var pr = "${prepare_link}";
+    var dt = "${data_link}";
+    var aid = "${aid}";
+    var data = "${data}";
+    var listener = "${listener}";
+    var v = "${version}";
+    //var l = "${lang}";
+    //var os = "${os}";
+
+    var bld = function(getcall) {
+        return ep + pr + '?aid=' +aid + (!getcall ? '&guid=${guid}' : data) + '&cb=' + listener + '&v=' + v + '&curl=' + encodeURIComponent(document.location);
+    }
+    var olf = function() {
+        var t=document.getElementById('state${guid}');
+        if(t!=null && t.value!='ok') return;
+        var dp = document.createElement('script');
+        dp.type = 'text/javascript'; dp.async = true;
+        dp.src = bld(t==null);
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(dp, s);
+    }
+
+    var bv = (navigator.appVersion.indexOf("MSIE") != -1) ? parseFloat(navigator.appVersion.split("MSIE")[1]) : 999;
+
+    if(bv<=7 && bld(true).length>=2048 || bld(true).length>=8096) {
+        var tinypassform = document.createElement('div');
+        tinypassform.style.position = 'absolute';
+        tinypassform.style.visibility = 'hidden';
+        tinypassform.style.top = '-100px';
+        tinypassform.style.left = '-100px';
+        tinypassform.style.width = '0';
+        tinypassform.style.height = '0';
+        tinypassform.innerHTML = "<iframe id=\"TinyPass${guid}\" name=\"TinyPass${guid}\" style=\"width:0;height:0;border:0\"></iframe>" +
+                                 "<form id=\"TinyPassForm${guid}\" action=\"" + ep + dt + "\" target=\"TinyPass${guid}\" method=\"post\">" +
+                                 "<textarea name=\"data\">" + data + "</textarea>" +
+                                 "<input type=\"hidden\" name=\"guid\" value=\"${guid}\">" +
+                                 "<input type=\"hidden\" id=\"state${guid}\" value=\"${guid}\">" +
+                                 "</form>";
+
+        var bodyel = document.getElementsByTagName('body')[0];
+        if (bodyel.childNodes.length > 0) {
+            bodyel.insertBefore(tinypassform, bodyel.childNodes[0]);
+        } else {
+            bodyel.appendChild(tinypassform);
+        }
+        tinypassform.childNodes[0].onload = olf;
+        document.getElementById('TinyPassForm${guid}').submit();
+        document.getElementById('state${guid}').value = 'ok';
+    } else {
+        olf();
+    }
+})();
+</script>

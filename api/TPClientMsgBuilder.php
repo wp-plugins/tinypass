@@ -50,6 +50,10 @@ class TPClientMsgBuilder {
 		return $this->builder->buildTickets($resources);
 	}
 
+	public function buildTicket($ticket) {
+		return $this->builder->buildTicket($ticket);
+	}
+
 	public function buildAccessTokenList($tokentList) {
 		return $this->builder->buildAccessTokenList($tokentList->getAccessTokenList());
 	}

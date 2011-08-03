@@ -23,12 +23,21 @@ class TPWebWidget {
 		return $this;
 	}
 
+	public function getTicketLink($ticket, $onclick = true) {
+		$bld = "";
+		$bld.=($this->tp->getApiEndpoint()).(TPVersion::getAuthURL()).("?aid=").($this->tp->getAID());
+		$bld.=("&r=").($this->tp->getBuilder()->buildTicket($ticket));
+		$bld.=("&display=page");
+		if($onclick){
+			$bld = ' href="#" onclick="window.open(\'' . $bld . '\', \'popup\', \'scrollbars=1,status=0,toolbar=0,width=650,height=420,resizable=1,location=1\');return false;" ';
+		}
+		return $bld;
+	}
 
 	public function getCode() {
 		if (count($this->tickets) == 0) {
 			return "";
 		}
-
 
 		if ($this->tp->getAID() == null) throw new TinyPassException("Please provide an aid");
 
@@ -47,68 +56,24 @@ class TPWebWidget {
 		$data = "";
 
 		if (count($deniedTickets) > 0) {
-			$data.= ("&r=").($this->tp->getBuilder()->buildTickets($deniedTickets));
+			$data.=("&r=").($this->tp->getBuilder()->buildTickets($deniedTickets));
 			if($this->tp->getAccessTokenList() != null) $data.=("&c=").($this->tp->getAccessTokenList()->getRawToken());
+
+			$template = file_get_contents(dirname(__FILE__) . '/widget.html');
+			$template = preg_replace('/\${guid}/', TPSecurityUtils::genRandomString(), $template);
+			$template = preg_replace('/\${endpoint}/', $this->tp->getApiEndpoint(), $template);
+			$template = preg_replace('/\${prepare_link}/', TPVersion::getPrepareURL(), $template);
+			$template = preg_replace('/\${data_link}/', TPVersion::getDataURL(), $template);
+			$template = preg_replace('/\${aid}/', $this->tp->getAID(), $template);
+			$template = preg_replace('/\${data}/', $data, $template);
+			$template = preg_replace('/\${listener}/', urlencode($this->callback), $template);
+			$template = preg_replace('/\${version}/', TPVersion::getVersion(), $template);
+			//$template = preg_replace('/\${lang}/', urlencode("php-".phpversion()), $template);
+			//$template = preg_replace('/\${os}/', urlencode(php_uname('s') . php_uname('r')), $template);
+			return $template;
 		}
 
-		if(strlen($data) > 1700) {
-			//$guid = substr(mt_rand().time(), 0, 10);
-			$guid = TPSecurityUtils::genRandomString();
-			$jsonp = $this->prepareJSONP("&guid=" . $guid);
-			$code.=(
-							"var tinypassform = document.createElement('div'); " .
-											"tinypassform.style.position = 'absolute'; " .
-											"tinypassform.style.visibility = 'hidden'; " .
-											"tinypassform.style.top = '-100px'; " .
-											"tinypassform.style.left = '-100px'; " .
-											"tinypassform.style.width = '0'; " .
-											"tinypassform.style.height = '0'; " .
-											"tinypassform.innerHTML = \"<iframe onload=\\\"var t=document.getElementById('state").($guid).("'); if(t==null || t.value!='ok') return; ").($jsonp).("\\\" id=\\\"TinyPass").($guid).("\\\" name=\\\"TinyPass").($guid).("\\\" style=\\\"width:0;height:0;border:0\\\"></iframe>" .
-											"<form id=\\\"TinyPassForm").($guid).("\\\" action=\\\"").($this->tp->getApiEndpoint()).(TPVersion::getDataURL())
-							.("\\\" target=\\\"TinyPass").($guid).("\\\" method=\\\"post\\\"><textarea name=\\\"data\\\">").($data)
-							.(
-							"</textarea>" .
-											"<input type=\\\"hidden\\\" name=\\\"guid\\\" value=\\\"").($guid).("\\\">" .
-											"<input type=\\\"hidden\\\" id=\\\"state").($guid).("\\\" value=\\\"").($guid).("\\\">" .
-											"</form>\"; " .
-											"var bodyel = document.getElementsByTagName('body')[0]; " .
-											"if(bodyel.childNodes.length>0) {" .
-											"bodyel.insertBefore(tinypassform,bodyel.childNodes[0]); " .
-											"} else {" .
-											"bodyel.appendChild(tinypassform); " .
-											"} " .
-											"document.getElementById('TinyPassForm").($guid).("').submit(); document.getElementById('state").($guid).("').value='ok';"
-			);
-
-		} else {
-			$code.=($this->prepareJSONP($data));
-		}
-
-		if ($this->tp->getTrialAccessTokenList() != null && !$this->tp->getTrialAccessTokenList()->isEmpty()) {
-			$code .= ("document.cookie='") . (TinyPass::getAppPrefix($this->tp->getAID())) . ("_TRIAL=' + '") . ($this->tp->getBuilder()->buildAccessTokenList($this->tp->getTrialAccessTokenList())) . ("' + ';expires=' + new Date(new Date().getTime() + 1000*60*60*24*90).toGMTString(); ");
-		}
-
-		return "<script type=\"text/javascript\">(function() { " . $code . " })(); </script>";
+		return "";
 	}
-
-	private function prepareJSONP($reqString) {
-		$code = "";
-		$code.=("var dp = document.createElement('script'); dp.type = 'text/javascript'; dp.async = true;");
-		$code.=("dp.src = '");
-
-		$code.=($this->tp->getApiEndpoint()).(TPVersion::getPrepareURL()).("?aid=").($this->tp->getAID());
-
-		$code.=($reqString);
-
-		$code.=("&cb=").($this->callback);
-
-		$code.= "&v=".TPVersion::$VERSION;
-		$code.= "&l=" . urlencode(phpversion());
-		$code.=("';");
-		$code.=("var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(dp, s);");
-
-		return $code;
-	}
-
 }
 ?>

@@ -9,6 +9,7 @@ class TinyPass {
 
 	public static $API_PREPARE = "/jsapi/prepare.js";
 	public static $API_DATA = "/jsapi/data";
+	public static $API_AUTH = "/jsapi/auth.js";
 
 	protected $accessTokenList;
 	private $ww;
