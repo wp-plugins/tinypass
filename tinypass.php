@@ -12,19 +12,9 @@ Version: 0.6
 Author URI: http://www.tinypass.com
 */
 
-// [bartag foo="foo-value"]
-function tinypass_shortcode( $atts, $content = null) {
-	extract( shortcode_atts( array(
-					'price' => '1.99',
-					'period' => '30 days',
-					), $atts ) );
-	return "";
-}
-
 define("TINYPASS_INLINE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
 define("TINYPASS_INLINE_REPLACE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?).*/s');
 
-//add_shortcode( 'tinypass', 'tinypass_shortcode' );
 
 function tinypass_register_custom_database_tables() {
 	global $wpdb;
@@ -41,7 +31,6 @@ if ( is_admin() ) {
 
 register_activation_hook(__FILE__,'tinypass_install');
 register_deactivation_hook(__FILE__,'tinypass_uninstall');
-
 
 add_action('save_post', 'tinypass_save_postdata');
 add_filter('the_content', 'tinypass_check_content', 10);
@@ -115,8 +104,7 @@ function tinypass_load_settings() {
 
 
 	if($settings['env'] == 0) {
-		//$settings['url'] = 'http://sandbox.tinypass.com';
-		$settings['url'] = 'http://localhost:8080';
+		$settings['url'] = 'http://sandbox.tinypass.com';
 		$settings['aid'] = $settings['aid_sand'];
 		$settings['secret_key'] = $settings['secret_key_sand'];
 	}else {
@@ -417,6 +405,7 @@ function tinypass_trim_excerpt($text) {
 	$text = strip_shortcodes( $text );
 
 	$text = str_replace(']]>', ']]&gt;', $text);
+	$text = preg_replace('/<!--more-->.*/s', '', $text);
 	$text = strip_tags($text);
 	$excerpt_length = apply_filters('excerpt_length', 55);
 

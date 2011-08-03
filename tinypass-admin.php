@@ -1,8 +1,5 @@
 <?php
 
-//add_action( 'admin_menu', 'tinypass_config_page' );
-//add_filter('plugin_action_links', 'tinypass_plugin_links', 10, 2 );
-
 add_action('delete_term', 'tinypass_term_deleted');
 add_action("admin_menu", 'tinypass_add_admin_pages');
 
