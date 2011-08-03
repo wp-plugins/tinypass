@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 0.7
+ * @version 0.8
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass plugin for wordpress
 Author: TinyPass
-Version: 0.7
+Version: 0.8
 Author URI: http://www.tinypass.com
 */
 

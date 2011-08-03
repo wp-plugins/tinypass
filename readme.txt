@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, permium content, paid content, monetization, micro payment, access control
 Requires at least: 3.1.0
 Tested up to: 3.1.0
-Stable tag: 0.7
+Stable tag: 0.8
 
 Provide integration between wordpress and TinyPass service
 
@@ -76,8 +76,8 @@ Global Settings
 
 == Changelog ==
 
-0.7
-TinyPass enabled tags, pages/posts, and inline as well.
+0.8
+TinyPass enabled tags, pages/posts, and inline.  Better configuration options and friendly TinyPass config popup
 
 0.6
 Changed default sandbox aid/key
