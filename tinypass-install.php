@@ -4,8 +4,8 @@ function tinypass_install() {
 
 	$tinypass_settings = array(
 					'enabled'=> 'on',
-					'aid_sand'=> 'QdXYalSxyk', '', true,
-					'secret_key_sand' => 'zXKpS9HhU9GdOn2jEH0kmzKW6jN4phrSbQ56ip9r',
+					'aid_sand'=> 'W7JZEZFu2h', '', true,
+					'secret_key_sand' => 'jeZC9ykDfvW6rXR8ZuO3EOkg9HaKFr90ERgEb3RW',
 					'aid_prod' => 'GETKEY',
 					'secret_key_prod' => 'Retreive your secret key from www.tinypass.com',
 					'env' => 0,
