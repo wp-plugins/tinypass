@@ -175,7 +175,7 @@ function tinypass_admin_settings() {
 						<tr valign="top">
 							<th scope="row"><?php _e('Denied access message'); ?></th>
 							<td>
-								<textarea cols="80" rows="12" name="tinypass[access_message]" ><?php echo $options['access_message']?></textarea>
+								<textarea cols="80" rows="12" name="tinypass[access_message]" ><?php echo stripslashes($options['access_message'])?></textarea>
 								<br>
 								<span class="description">This message will be displayed when access is denied to a resource</span>
 							</td>
