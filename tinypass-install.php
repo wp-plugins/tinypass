@@ -1,5 +1,5 @@
 <?php
-function tinypass_install() {
+function tinypass_activate() {
 	global $wpdb;
 
 	$tinypass_settings = array(
@@ -13,7 +13,7 @@ function tinypass_install() {
 					'access_message' => __('To continue, please purchase using TinyPass')
 	);
 	add_option("tinypass_settings", $tinypass_settings, 0, true);
-	
+
 	$table_name = $wpdb->prefix . 'tinypass_ref';
 
 	$sql = "CREATE TABLE $table_name (
@@ -25,6 +25,26 @@ function tinypass_install() {
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($sql);
+
+	$error = '';
+	if(!extension_loaded('mbstring'))
+		$error .= "&nbsp;&nbsp;&nbsp;<a href=\"http://php.net/manual/en/ref.mbstring.php\">mbstring php module</a> is required for Tinypass<br>";
+	if(!extension_loaded('mcrypt'))
+		$error .= "&nbsp;&nbsp;&nbsp;<a href=\"http://php.net/manual/en/book.mcrypt.php\">mcrypt php module</a> is required for Tinypass<br>";
+
+	if (version_compare(PHP_VERSION, '5.2.0') < 0) {
+		$error .= "&nbsp;&nbsp;&nbsp;Requires PHP 5.2+";
+	}
+	
+	if($error)
+		die('TinyPass could not be enabled<br>' . $error);
+
+}
+
+function tinypass_deactivate() {
+	$tinypass_settings = get_option("tinypass_settings");
+	$tinypass_settings['enabled'] == 'off';
+	update_option("tinypass_settings", $tinypass_settings);
 }
 
 function tinypass_uninstall() {

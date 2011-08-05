@@ -31,8 +31,9 @@ if ( is_admin() ) {
 	require_once dirname( __FILE__ ) . '/tinypass-form.php';
 }
 
-register_activation_hook(__FILE__,'tinypass_install');
-register_deactivation_hook(__FILE__,'tinypass_uninstall');
+register_activation_hook(__FILE__,'tinypass_activate');
+register_deactivation_hook(__FILE__,'tinypass_deactivate');
+register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 add_action('save_post', 'tinypass_save_postdata');
 add_filter('the_content', 'tinypass_check_content', 10);
@@ -189,7 +190,15 @@ function tinypass_check_content($content) {
 		if(isset($attr['caption']))
 			$inline['po_cap1'] = $attr['caption'];
 
-		$postOptions = meta_to_object($inline);
+		if(isset($attr['tag']) && $attr['tag'] != '') {
+			$term = get_term_by('name', $attr['tag'], 'post_tag');
+			if(array_key_exists($term->term_id, $tags)) {
+				$tagOptions = meta_to_object($tags[$term->term_id]['data']);
+			}
+		}
+		else {
+			$postOptions = meta_to_object($inline);
+		}
 
 	}
 
