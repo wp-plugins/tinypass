@@ -164,10 +164,17 @@ function tinypass_admin_settings() {
 								<br>
 								<span class="description">Allow for the use of inline tinypass tags with the post or page content.  When disabled
 								content will not be blocked even though the tag is present.</span>
+
+								<p class="description">
+									Only one inline tag is allowed.  If there is more than one, the first tag will be processed
+								</p>
 								<p class="description">
 									<strong>Example:</strong>
 											<br> &lt;tinypass price="1.99" access="3 days"/&gt;
 											<br> &lt;tinypass price="1.99" access="3 days" caption="For Download"/&gt;
+											<br>
+											<br> For tags: (must be defined in TinyPass TagOptions)
+											<br> &lt;tinypass tag="tagName"/&gt;
 								</p>
 
 							</td>
