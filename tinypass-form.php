@@ -42,6 +42,17 @@ function ajax_tp_showEditPopup() {
  */
 function ajax_tp_saveEditPopup() {
 	if(!current_user_can('edit_posts')) die();
+
+	$fields = array('po_ap', 'po_cap', 'po_en', 'po_et', 'po_p', 'po_st', 'po_type');
+	foreach($fields as $f){
+		if(isset($_POST['tinypass']['po_en2']) == false || $_POST['tinypass']['po_en2'] == 0){
+			unset($_POST['tinypass'][$f . '2']);
+		}
+		if(isset($_POST['tinypass']['po_en3']) == false || $_POST['tinypass']['po_en3'] == 0){
+			unset($_POST['tinypass'][$f . '3']);
+		}
+	}
+
 	$values = $_POST['tinypass'];
 	$tp_type = $values['tp_type'];
 
@@ -58,7 +69,6 @@ function ajax_tp_saveEditPopup() {
 		tinypass_save_tag_data($values);
 		tinypass_admin_tags_body();
 	}else {
-
 		if(isset($values['en']) == false)
 			$_POST['tinypass']['en'] = 0;
 		tinypass_save_postdata($_POST['post_ID']);
@@ -255,6 +265,30 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 		$checked = "checked=true";
 
 	?>
+<style>
+	#tinypass_post_options_form h4{
+		margin-bottom:0px;
+		padding-bottom:0px;
+	}
+	.tinypass_price_options_form {
+		background-color:#eee;
+		border-bottom:1px solid black;
+		width:100%;
+	}
+	.tinypass_price_options_form td{
+		padding:3px;
+	}
+	.options {
+		width:100%;
+	}
+	.options, .options td {
+		margin:0px;
+		padding:0px;
+	}
+	.add_option_link {
+		text-decoration: none;
+	}
+</style>
 
 <div id="tinypass_post_options_form">
 	<div id="tp-error" style="text-align:center;color:red;font-size:10pt"></div>
@@ -281,7 +315,7 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 					<strong>Enabled?</strong>: <input type="checkbox" autocomplete=off name="tinypass[en]" value="1" <?php echo $checked?>>
 				</div>
 						<?php } else { ?>
-								<input type="hidden" name="tinypass[en]" value="1">
+				<input type="hidden" name="tinypass[en]" value="1">
 						<?php } ?>
 				<strong><?php echo $resource_name_label ?></strong> - this will be displayed the ticket
 				<br>
@@ -291,17 +325,26 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 		</tr>
 	</table>
 	<hr>
-	<table class="form-table" id="" style="" >
+	<table class="form-table" id="" style="margin-top:0px;padding-top:0px;" >
 		<tr>
 			<td>
-				<strong>Pricing Options</strong><br>
+				<strong>Pricing Options 
+					<a class="add_option_link" href="#" onclick="tinypass_addPriceOption();return false;">[+]</a>
+					<a class="add_option_link" href="#" onclick="tinypass_removePriceOption();return false;">[-]</a>
+				</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(between 1 and 3)<br>
 					<?php echo __tinypass_price_option_display('1', $meta)  ?>
+				<!--				<hr> -->
+					<?php echo __tinypass_price_option_display('2', $meta)  ?>
+					<?php echo __tinypass_price_option_display('3', $meta)  ?>
 				<!--
-				<hr>
-					<?php //echo __tinypass_price_option_display('2', $meta)  ?>
 				<hr>
 					<?php //echo __tinypass_price_option_display('3', $meta)  ?>
 				-->
+				<br>
+				<center>
+					<button class="button" type="button" onclick="tp_saveTinyPassPopup();">Save</button>
+					<button class="button" type="button" onclick="tp_closeTinyPassPopup();">Cancel</button>
+				</center>
 			</td>
 		</tr>
 	</table>
@@ -350,72 +393,67 @@ function __tinypass_price_option_display($opt, $values) {
 
 	if(isset($values["po_en$opt"])) {
 		$enabled = 1;
-		$checked = 'checked=true';
 	}
 
-	if($opt == '1') {
-		$enabled = 1;
-		$readonly = 'readonly';
-		$checked = 'checked=true';
+	$enab = '';
+	$checked = 'checked=false';
+	$readonly = '';
+	$name = "tinypass[po_en$opt]";
+	$display = "display:none";
+	if($opt == '1' || $enabled) {
+		$display = "";
 	}
 
 	?>
-<style>
-	#tinypass_post_options_form h4{
-		margin-bottom:0px;
-		padding-bottom:0px;
-	}
-	.tinypass_price_options_form td{
-		padding:3px;
-	}
-</style>
-<table class="tinypass_price_options_form">
+<table class="options">
 	<tr>
-		<td></td>
-		<td>Price:</td>
-		<td>Access Period:<span>(optional)</span></td>
-		<td>Caption:<span>(optional)</span></td>
+		<td>
+			<table class="tinypass_price_options_form option_form<?php echo $opt ?>" style="<?php echo $display?>">
+				<tr>
+					<td></td>
+					<td>Price:</td>
+					<td>Access Period:<span>(optional)</span></td>
+					<td>Caption:<span>(optional)</span></td>
+				</tr>
+				<tr>
+					<td>
+						<input type="hidden" name="tinypass[<?php echo "po_en$opt"?>]" value="<?php echo $enabled ?>">
+					</td>
+					<td>
+						<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_p$opt"?>]" value="<?php echo $price ?>">
+					</td>
+					<td>
+						<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_ap$opt"?>]" value="<?php echo $access_period ?>">
+						<select name="tinypass[<?php echo "po_type$opt" ?>]">
+								<?php foreach($times as $key => $value): ?>
+									<?php if($key == $access_period_type) { ?>
+							<option value="<?php echo $key ?>" selected=true><?php echo $value ?>
+											<?php } else { ?>
+							<option value="<?php echo $key ?>"><?php echo $value ?>
+											<?php } ?>
+									<?php endforeach ?>
+						</select>
+					</td>
+					<td>
+						<input type="text" size="20" maxlength="20" name="tinypass[<?php echo "po_cap$opt"?>]" value="<?php echo $caption ?>">
+					</td>
+				</tr>
+				<!--
+				<tr>
+					<td colspan=2><strong>Dates Active</strong></td>
 	</tr>
-	<tr>
-		<td>
-			<!--Enabled-->
-			<input type="hidden" name="tinypass[<?php echo "po_en$opt"?>]" value="1" <?php echo $readonly ?> <?php echo $checked ?>   >
-		</td>
-		<td>
-			<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_p$opt"?>]" value="<?php echo $price ?>">
-		</td>
-		<td>
-			<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_ap$opt"?>]" value="<?php echo $access_period ?>">
-			<select name="tinypass[<?php echo "po_type$opt" ?>]">
-					<?php foreach($times as $key => $value): ?>
-						<?php if($key == $access_period_type) { ?>
-				<option value="<?php echo $key ?>" selected=true><?php echo $value ?>
-								<?php } else { ?>
-				<option value="<?php echo $key ?>"><?php echo $value ?>
-								<?php } ?>
-						<?php endforeach ?>
-			</select>
-		</td>
-		<td>
-			<input type="text" size="20" maxlength="20" name="tinypass[<?php echo "po_cap$opt"?>]" value="<?php echo $caption ?>">
-		</td>
-	</tr>
-	<tr>
-		<td colspan=2><strong>Dates Active</strong></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td colspan="2">
+	 -->
+				<tr>
+					<td></td>
+					<td colspan="2">
 			Start Date:<span>(optional)</span><br><input type="text" maxlength="16" class="tinypass-datetimepicker" name="tinypass[<?php echo "po_st$opt"?>]" value="<?php echo $start_time?>">
-		</td>
-		<td>
+					</td>
+					<td>
 			End Date: <span>(optional)</span>&nbsp;&nbsp;<br> <input type="text" maxlength="16" class="tinypass-datetimepicker" name="tinypass[<?php echo "po_et$opt"?>]" value="<?php echo $end_time ?>" >
+					</td>
+				</tr>
+			</table>
 		</td>
 	</tr>
 </table>
-<hr>
-<center>
-	<button class="button" type="button" onclick="tp_saveTinyPassPopup();">Save</button>
-	<button class="button" type="button" onclick="tp_closeTinyPassPopup();">Cancel</button>
-</center>
 	<?php }

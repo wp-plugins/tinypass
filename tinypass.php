@@ -15,6 +15,8 @@ Author URI: http://www.tinypass.com
 define("TINYPASS_INLINE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
 define("TINYPASS_INLINE_REPLACE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?).*/s');
 
+define("TINYPASS_INLINE_BUTTON", '/(.?)<(tinypass_button)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
+
 $tinypass_instance = null;
 
 
@@ -35,7 +37,7 @@ register_activation_hook(__FILE__,'tinypass_activate');
 register_deactivation_hook(__FILE__,'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
-add_action('save_post', 'tinypass_save_postdata');
+//add_action('save_post', 'tinypass_save_postdata');
 add_filter('the_content', 'tinypass_check_content', 10);
 
 function tinypass_save_postdata($post_id) {
@@ -269,6 +271,11 @@ function tinypass_check_content($content) {
 			$content = get_the_excerpt();
 		}else {
 			$content = tinypass_trim_excerpt($content);
+
+//			$content = wp_trim_excerpt($content);
+//			remove_all_filters("the_exce
+//			remove_all_filters("get_the_excerpt");
+//			print_r($post);
 		}
 
 		$tp->getWebWidget()->setCallBackFunction('tinypass_reloader');
@@ -292,11 +299,19 @@ function tinypass_check_content($content) {
 						font-size: 1.1em;
 						margin-bottom: 10px;
 					}
-			</style>
-			<div class="tinypass_button_holder">
-			<div class="tinypass_access_message">'. stripslashes($settings['access_message']) .'</div>
-				<span id="'.$resource_id.'"></span>
-			</div>' . $code;
+			</style> ';
+
+		if(preg_match(TINYPASS_INLINE_BUTTON, $content)) {
+			$content = preg_replace(TINYPASS_INLINE_BUTTON, '<span id="'.$resource_id.'"></span>', $content);
+		}else {
+
+			$content .= '<div class="tinypass_button_holder">
+								  <div class="tinypass_access_message">'. stripslashes($settings['access_message']) .'</div>
+										<span id="'.$resource_id.'"></span>
+									</div>';
+		}
+
+		$content .= $code;
 
 		return $content;
 	}else
@@ -417,12 +432,11 @@ class TinyPassOptions {
 
 function tinypass_trim_excerpt($text) {
 
-	$text = strip_shortcodes( $text );
-
-	$text = str_replace(']]>', ']]&gt;', $text);
+//	$text = strip_shortcodes( $text );
+//	$text = str_replace(']]>', ']]&gt;', $text);
 	$text = preg_replace('/<!--more-->.*/s', '', $text);
-	$text = strip_tags($text);
-	$excerpt_length = apply_filters('excerpt_length', 55);
+//	$text = strip_tags($text);
+	$excerpt_length = apply_filters('excerpt_length', 100);
 
 	$text = preg_replace(TINYPASS_INLINE_REPLACE, '', $text);
 

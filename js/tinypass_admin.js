@@ -1,8 +1,18 @@
-function tinypass_hidePostOptions(elem){
-	if(jQuery(elem).attr("checked")){
-		jQuery("#tinypass_post_options_form").show();
-	}else{
-		jQuery("#tinypass_post_options_form").hide();
+function tinypass_addPriceOption(){
+	var count = jQuery(".tinypass_price_options_form:visible").size();
+	if(count <= 3){
+		var opt = count+1;
+		jQuery(".option_form" + opt).show('fast');
+		jQuery(".option_form" + opt).find("input:hidden").val("1");
+	}
+}
+
+function tinypass_removePriceOption(){
+	var count = jQuery(".tinypass_price_options_form:visible").size();
+	if(count > 1){
+		var opt = count;
+		jQuery(".option_form" + opt).hide('fast');
+		jQuery(".option_form" + opt).find("input:hidden").val("0");
 	}
 }
 
@@ -15,7 +25,6 @@ function tp_showTinyPassPopup(type, termId){
 		data += '&action=tp_showEditPopup&tp_type=' + type;
 	}
 
-	// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 	jQuery.post(ajaxurl, data, function(response) {
 		jQuery("#tp_dialog").html(response);
 		jQuery("#tp_dialog").dialog({
