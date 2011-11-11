@@ -225,37 +225,28 @@ function tinypass_check_content($content) {
 
 		$tp = $tinypass_instance;
 
-		$ticket = null;
-		$upsell = null;
+		$offer1 = null;
+		$offer2 = null;
 
 		if($postOptions->isEnabled()) {
-			$ticket = tinypass_create_ticket($tp, $postOptions);
+			$offer1 = tinypass_create_offer($tp, $postOptions);
 		}
 
 		if($tagOptions->isEnabled()) {
-			$upsell = tinypass_create_ticket($tp, $tagOptions);
-			if($ticket && $upsell) {
-				$ticket->setUpSellTicket($upsell);
-			} else if ($ticket == null && $upsell) {
-				$ticket = $upsell;
-			}
+			$offer2 = tinypass_create_offer($tp, $tagOptions);
 		}
 
-		$resource_id = $ticket->getResource()->getRID();
-
-		//check single ticket
-		if($tp->isAccessGranted($ticket)) {
+		//check single offer1
+		if($tp->isAccessGranted($offer1)) {
 			return $content;
 		}
 
-
-		//check upsell
-		if($upsell != null && $tp->isAccessGranted($upsell)) {
+		//check offer2
+		if($offer2 != null && $tp->isAccessGranted($offer2)) {
 			return $content;
 		}
 
-		$tp->getWebWidget()->addTicket($ticket);
-
+		//They don't have access
 		if(is_page() == false && is_single() == false) {
 			if(has_excerpt()) {
 				$content = get_the_excerpt();
@@ -275,21 +266,21 @@ function tinypass_check_content($content) {
 //			$content = wp_trim_excerpt($content);
 //			remove_all_filters("the_exce
 //			remove_all_filters("get_the_excerpt");
-//			print_r($post);
 		}
 
-		$tp->getWebWidget()->setCallBackFunction('tinypass_reloader');
-		$code = $tp->getWebWidget()->getCode();
+		$ticket = new TPTicket($offer1, null);
+
+		if($offer2)
+			$ticket->addSecondaryOffer($offer2);
+
+		$buttonHTML = $ticket->createButton();
+
+		$tp->getWebRequest()->addTicket($ticket);
+
+		$code = $tp->getWebRequest()->getRequestScript();
 
 
 		$content .= '
-			<script>
-				function tinypass_reloader(status){
-					if(status.state == "granted"){
-						window.location.reload();
-					}
-				}
-			</script>
 			<style type="text/css">
 				.tinypass_button_holder {
 					margin-top:20px;
@@ -302,12 +293,12 @@ function tinypass_check_content($content) {
 			</style> ';
 
 		if(preg_match(TINYPASS_INLINE_BUTTON, $content)) {
-			$content = preg_replace(TINYPASS_INLINE_BUTTON, '<span id="'.$resource_id.'"></span>', $content);
+			$content = preg_replace(TINYPASS_INLINE_BUTTON, $buttonHTML, $content);
 		}else {
 
 			$content .= '<div class="tinypass_button_holder">
 								  <div class="tinypass_access_message">'. stripslashes($settings['access_message']) .'</div>
-										<span id="'.$resource_id.'"></span>
+										' . $buttonHTML . '
 									</div>';
 		}
 
@@ -319,11 +310,10 @@ function tinypass_check_content($content) {
 
 }
 
-function tinypass_create_ticket($tp, TinyPassOptions $options) {
+function tinypass_create_offer($tp, TinyPassOptions $options) {
 	if($options == null)
 		return null;
-	$resource = $tp->initResource($options->getResourceId(), $options->getResourceName());
-	$ticket = new TPTicket($resource);
+	$resource = new TPResource($options->getResourceId(), $options->getResourceName());
 
 	$pos = array();
 
@@ -349,11 +339,9 @@ function tinypass_create_ticket($tp, TinyPassOptions $options) {
 		}
 	}
 
-	foreach($pos as $po) {
-		$ticket->addPriceOption($po);
-	}
+	$offer = new TPOffer($resource, $pos);
 
-	return $ticket;
+	return $offer;
 
 }
 class TinyPassOptions {
