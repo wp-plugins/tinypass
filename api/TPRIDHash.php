@@ -26,6 +26,13 @@ class TPRIDHash {
 		return $this->hash;
 	}
 
+	public function __toString(){
+		return $this->hash;
+	}
+	public function toString(){
+		return $this->hash;
+	}
+
 	private static function addNum($a, $b) {
 		$dif = 2147483647 - $b;
 		if($dif>$a){ return $a+$b;}

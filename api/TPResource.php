@@ -1,22 +1,15 @@
 <?php
 
-require_once 'TPSecurityUtils.php';
-require_once 'TinyPassException.php';
-
 class TPResource {
 
 	protected $rid;
 	protected $rname;
+	protected $url;
 
-	private $isTrial = false;
-
-	protected $trialPeriod = 0;
-	protected $trialMaxAttempts = -1;
-	protected $trialLockoutPeriod = 0;
-
-	function __construct($rid = null, $rname = null) {
+	function __construct($rid = null, $rname = null, $url = null) {
 		$this->rid = $rid;
 		$this->rname = $rname;
+		$this->url = $url;
 	}
 
 	public function getRID() {
@@ -28,47 +21,26 @@ class TPResource {
 		return $this;
 	}
 
-	public function getResourceName() {
+	public function getRIDHash() {
+		return new TPRIDHash($this->rid);
+	}
+
+	public function getName() {
 		return $this->rname;
 	}
 
-	public function getRIDHash() {
-		return TPRIDHash::hashCode($this->rid);
-	}
-
-	public function setResourceName($rname) {
+	public function setName($rname) {
 		$this->rname = $rname;
 		return $this;
 	}
-
-	public function isTrial() {
-		return $this->isTrial;
+	public function getURl() {
+		return $this->url;
 	}
 
-	public function getTrialPeriod() {
-		return $this->trialPeriod;
-	}
-
-	public function setTrialPeriodByTime($trialPeriod, $lockoutPeriod) {
-		$this->isTrial = true;
-		$this->trialPeriod = $trialPeriod;
-		$this->trialLockoutPeriod = $lockoutPeriod;
+	public function setURL($url) {
+		$this->url = $url;
 		return $this;
 	}
 
-	public function setTrialPeriodByAttempts($trialAccessAttempts, $lockoutPeriod) {
-		$this->isTrial = true;
-		$this->trialMaxAttempts = $trialAccessAttempts;
-		$this->trialLockoutPeriod = $lockoutPeriod;
-		return $this;
-	}
-
-	public function getTrialMaxAttempts() {
-		return $this->trialMaxAttempts;
-	}
-
-	public function getTrialLockoutPeriod() {
-		return $this->trialLockoutPeriod;
-	}
 
 }

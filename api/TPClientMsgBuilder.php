@@ -1,7 +1,5 @@
 <?php
 
-require_once 'TPMockSecureMsgHelper.php';
-require_once dirname(__FILE__) . '/builder/TPBuilderFactory.php';
 
 class TPClientMsgBuilder {
 
@@ -10,7 +8,22 @@ class TPClientMsgBuilder {
 
 	function __construct($privateKey) {
 		$this->privateKey = $privateKey;
-		$this->builder = new TPBuilderFactory($privateKey);
+		$this->builder = new TPClientBuilder($privateKey);
+	}
+	public function parseLocalTokenList($aid, array $cookies) {
+		return $this->parseToken($aid, $cookies, TinyPass::$LOCAL_COOKIE_SUFFIX);
+	}
+
+	public function parseAccessTokenList($aid, array $cookies) {
+		return $this->parseToken($aid, $cookies, TinyPass::$COOKIE_SUFFIX);
+	}
+
+	public function buildTicketRequest($requests) {
+		return $this->builder->buildTicketRequest($requests);
+	}
+
+	public function buildAccessTokenList($tokentList) {
+		return $this->builder->buildAccessTokenList($tokentList);
 	}
 
 	public function parseToken($aid, array $cookies, $cookieName) {
@@ -25,10 +38,13 @@ class TPClientMsgBuilder {
 			}
 		}
 
-//        $token = urldecode($token);
+		if($token == null)
+			return new TPAccessTokenList($aid, null);
+
+		$token = urldecode($token);
 
 		if (($token != null) && (count($token) > 0)) {
-			$parser = new TPParserFactory($this->privateKey, $token);
+			$parser = new TPClientParser($this->privateKey);
 			$accessTokenList = $parser->parseAccessTokenList($token);
 			$accessTokenList->setRawToken($token);
 			return $accessTokenList;
@@ -38,25 +54,7 @@ class TPClientMsgBuilder {
 	}
 
 
-	public function parseTrailTokenList($aid, array $cookies) {
-		return new TPTrialAccessTokenList($this->parseToken($aid, $cookies, TinyPass::$TRIAL_COOKIE_SUFFIX));
-	}
 
-	public function parseAccessTokenList($aid, array $cookies) {
-		return $this->parseToken($aid, $cookies, TinyPass::$COOKIE_SUFFIX);
-	}
-
-	public function buildTickets($resources) {
-		return $this->builder->buildTickets($resources);
-	}
-
-	public function buildTicket($ticket) {
-		return $this->builder->buildTicket($ticket);
-	}
-
-	public function buildAccessTokenList($tokentList) {
-		return $this->builder->buildAccessTokenList($tokentList->getAccessTokenList());
-	}
 
 }
 ?>

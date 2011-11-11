@@ -8,18 +8,21 @@ class TPPriceOption {
 	protected $price;
 	protected $accessPeriod;
 	protected $initAccessPeriod;
-	protected $startDate;
-	protected $endDate;
+	protected $startDateInSecs;
+	protected $endDateInSecs;
 	protected $caption;
+
 	protected $splitPay = array();
-	private static $SUPPORTED_PRICES = '$0.02-$0.05, $0.05-$0.95 with $0.05 increments and $0.99';
+
 	private static $EXPIRE_PARSER = '/(\d+)\s*(\w+)/';
 
-	public function __construct($price = null, $acessPeriod = null, $startDate = null, $endDate = null) {
+	public function __construct($price = null, $acessPeriod = null, $startDateInSecs = null, $endDateInSecs = null) {
 		$this->setPrice($price);
 		$this->accessPeriod = $acessPeriod;
-		$this->startDate = $startDate;
-		$this->endDate = $endDate;
+		if($startDateInSecs)
+			$this->startDateInSecs = TPToken::convertToEpochSeconds($startDateInSecs);
+		if($endDateInSecs)
+			$this->endDateInSecs = TPToken::convertToEpochSeconds($endDateInSecs);
 	}
 
 	public function getPrice() {
@@ -48,7 +51,7 @@ class TPPriceOption {
 	}
 
 	public static function parseLoosePeriod($period) {
-		if (preg_match("/^\d+$/", $period)) {
+		if (preg_match("/^-?\d+$/", $period)) {
 			return (int)$period;
 		}
 		$matches = array();
@@ -59,14 +62,20 @@ class TPPriceOption {
 				case 's':
 					return $num * 1000;
 				case 'm':
-					if($str[1] == 'i')
+
+					if (strlen($str) > 1 && $str[1] == 'i')
 						return $num * 60 * 1000;
-					else if($str[1] == 'o')
-						return $num * 30 * 7 * 24 * 60 * 60 * 1000;
+					else if (strlen($str) > 1 && $str[1] == 's')
+						return $num * 60;
+					else if (strlen($str) == 1 || $str[1] == 'o')
+						return $num * 30 * 24 * 60 * 60 * 1000;
+
 				case 'h':
 					return $num * 60 * 60 * 1000;
 				case 'd':
 					return $num * 24 * 60 * 60 * 1000;
+			 case 'w':
+					return $num * 7 * 24 * 60 * 60 * 1000;
 			}
 		}
 
@@ -78,21 +87,21 @@ class TPPriceOption {
 		return $this;
 	}
 
-	public function getStartDate() {
-		return $this->startDate;
+	public function getStartDateInSecs() {
+		return $this->startDateInSecs;
 	}
 
-	public function setStartDate($startDate) {
-		$this->startDate = $startDate;
+	public function setStartDateInSecs($startDateInSecs) {
+		$this->startDateInSecs = $startDateInSecs;
 		return $this;
 	}
 
-	public function getEndDate() {
-		return $this->endDate;
+	public function getEndDateInSecs() {
+		return $this->endDateInSecs;
 	}
 
-	public function setEndDate($endDate) {
-		$this->endDate = $endDate;
+	public function setEndDateInSecs($endDate) {
+		$this->endDateInSecs = $endDate;
 		return $this;
 	}
 
@@ -120,39 +129,37 @@ class TPPriceOption {
 		return $this;
 	}
 
-	public function validate() {
-		/*
-		if ($this->price == null) throw new TinyPassException("Price is not defined");
-		if ($this->price.compareTo(NumberUtils.POINT_02) < 0)
-			throw new TinyPassException("Price should be a value between $0.2 and $0.99");
-		if ($this->price.compareTo(NumberUtils.POINT_99) > 0) {
-			throw new TinyPassException("Price should be a value between $0.2 and $0.99");
-		}
-		if ($this->price > 2) {
-			throw new TinyPassException("Supported price values are " + TPPriceOption::$SUPPORTED_PRICES);
-		}
-		if ((this.price.compareTo(NumberUtils.POINT_05) > 0) && (this.price.compareTo(NumberUtils.POINT_99) > 0) && (this.price.divide(NumberUtils.POINT_05).scale() > 0)) {
-			throw new TinyPassException("Supported price values are " + TPPriceOption::$SUPPORTED_PRICES);
-		}
-
-		if ((getAccessPeriodInMsecs() == null) && (this.accessPeriod != null)) {
-			throw new TinyPassException("Expiration value couldn't be parsed: " + this.accessPeriod);
-		}
-
-		$total = 0;
-		foreach($this->splitPay as $email => $amount) {
-			if ($amount == null)
-				throw new TinyPassException("Split price is not defined for " + $email);
-			if ($amount <= 0)
-				throw new TinyPassException("Split price is a negative or zero value " + $email);
-			if ($amount >= 0)
-				throw new TinyPassException("Split price should be a value between 0 and 0.99 or 0% and 99% " + $email);
-			$total = $total + $amount;
-		}
-
-		if ($total > 1)
-			throw new TinyPassException("The total amount of split pays exceeds 100%");
-		 */
+	public function isActive($timestampSecs) {
+		$timestampSecs = TPToken::convertToEpochSeconds($timestampSecs);
+		if ($this->getStartDateInSecs() != null && $this->getStartDateInSecs() > $timestampSecs) return false;
+		if ($this->getEndDateInSecs() != null && $this->getEndDateInSecs() < $timestampSecs) return false;
+		return true;
 	}
+
+
+	public function __toString() {
+		$sb = "";
+		sb.("Price:").($this->getPrice());
+		sb.("\tPeriod:").($this->getAccessPeriod());
+
+		if ($this->getStartDateInSecs() != null) {
+			sb.("\tStart:").($this->getStartDateInSecs()).(":").( date('D, d M Y H:i:s' , $this->getStartDateInSecs()));
+		}
+
+		if ($this->getEndDateInSecs() != null) {
+			sb.("\tEnd:").($this->getEndDateInSecs()).(":").(date('D, d M Y H:i:s', $this->getEndDateInSecs()));
+		}
+
+		if ($this->getCaption() != null) {
+			sb.("\tCaption:").($this->getCaption());
+		}
+
+		if ($this->splitPay != null) {
+			foreach ($this->splitPay as $key => $value)
+				sb.("\tSplit:").($key).(":").($value);
+		}
+		return $sb;
+	}
+
 }
 ?>
