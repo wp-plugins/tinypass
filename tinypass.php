@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.3
+ * @version 1.4
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass plugin for wordpress
 Author: TinyPass
-Version: 1.3
+Version: 1.4
 Author URI: http://www.tinypass.com
 */
 
@@ -271,7 +271,7 @@ function tinypass_check_content($content) {
 		$ticket = new TPTicket($offer1, null);
 
 		if($offer2)
-			$ticket->addSecondaryOffer($offer2);
+			$ticket->setSecondaryOffer($offer2);
 
 		$buttonHTML = $ticket->createButton();
 
