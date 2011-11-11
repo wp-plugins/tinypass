@@ -144,7 +144,7 @@ function tinypass_popup_form($meta, $postID = null, $type = null) {
 
 function tinypass_options_overview($values, $post = null) {
 
-	if(count($values) == 0)
+	if($values == "" || count($values) == 0)
 		return "";
 
 	$output = "";
