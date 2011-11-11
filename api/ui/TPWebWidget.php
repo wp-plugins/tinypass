@@ -3,15 +3,15 @@
 class TPWebWidget {
 
 	private $tp;
-	private $gen;
+	private $wr;
 	private $tickets = array();
 
-	function __construct(TinyPass $tp, TPRequestGenerator $gen) {
+	function __construct(TinyPass $tp, TPWebRequest $wr) {
 		$this->tp = $tp;
-		$this->gen = $gen;
+		$this->wr= $wr;
 	}
 
-	public function addTicket(TPRequest $ticket) {
+	public function addTicket(TPTicket $ticket) {
 		$this->tickets[] = $ticket;
 		if ($this->tp->isClientIPValid())
 			$ticket->setClientIP($this->tp->getClientIP());
@@ -45,7 +45,7 @@ class TPWebWidget {
 			$template = preg_replace('/\${data_link}/', TPVersion::getDataURL(), $template);
 			$template = preg_replace('/\${aid}/', $this->tp->getAID(), $template);
 			$template = preg_replace('/\${data}/', $data, $template);
-			$template = preg_replace('/\${listener}/', ($this->gen->getCallback() ? urlencode($this->gen->getCallback()) : ""), $template);
+			$template = preg_replace('/\${listener}/', ($this->wr->getCallback() ? urlencode($this->wr->getCallback()) : ""), $template);
 			$template = preg_replace('/\${version}/', TPVersion::getVersion(), $template);
 
 		}

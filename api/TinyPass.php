@@ -8,9 +8,9 @@ require_once "TPOffer.php";
 require_once "TinyPassException.php";
 require_once "TPVersion.php";
 require_once "TPPriceOption.php";
-require_once "ui/TPRequest.php";
+require_once "ui/TPTicket.php";
 require_once "ui/TPWebWidget.php";
-require_once "ui/TPRequestGenerator.php";
+require_once "ui/TPWebRequest.php";
 require_once "TPClientMsgBuilder.php";
 require_once "builder/TPClientBuilder.php";
 require_once "builder/TPClientParser.php";
@@ -43,7 +43,7 @@ class TinyPass {
 	private $clientIP;
 	private $lastState;
 
-	private $generator;
+	private $webRequest;
 
 	static $LOCAL_COOKIE_SUFFIX = "_TR";
 	static $COOKIE_SUFFIX = "_TOKEN";
@@ -232,10 +232,10 @@ class TinyPass {
 		return $this->accessTokenList;
 	}
 
-	public function getRequestGenerator() {
-		if(!isset($this->generator))
-			$this->generator = new TPRequestGenerator($this);
-		return $this->generator;
+	public function getWebRequest() {
+		if(!isset($this->webRequest))
+			$this->webRequest = new TPWebRequest($this);
+		return $this->webRequest;
 	}
 
 	public function setClientIP($s) {

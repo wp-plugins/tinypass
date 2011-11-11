@@ -43,7 +43,7 @@ class TPClientBuilder {
 
 	public function buildTicketRequest($tickets) {
 
-		if($tickets instanceof TPRequest) {
+		if($tickets instanceof TPTicket) {
 			$tickets = array($tickets);
 		}
 

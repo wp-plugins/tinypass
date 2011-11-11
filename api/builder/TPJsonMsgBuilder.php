@@ -12,7 +12,7 @@ class TPJsonMsgBuilder {
 		return json_encode($list);
 	}
 
-	public function buildTicket(TPRequest $ticket) {
+	public function buildTicket(TPTicket $ticket) {
 
 		$ticketMap = array();
 

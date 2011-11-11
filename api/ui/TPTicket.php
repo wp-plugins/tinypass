@@ -1,6 +1,6 @@
 <?php
 
-class TPRequest {
+class TPTicket {
 
 
 	private $primaryOffer;
@@ -87,6 +87,56 @@ class TPRequest {
 	public function setVersion($version) {
 		$this->version = $version;
 	}
+
+	public function createLink($linkText, $options = null) {
+		if (!isset($optoins)) {
+			$options = array();
+		}
+		$options["ANCHOR"] = $linkText;
+		return $this->createButtonHTML($options);
+	}
+
+	public function createButton(array $options = null) {
+		return $this->createButtonHTML($options);
+	}
+
+	public function createCustom($html, array $options) {
+		if (!isset($options)) {
+			$options = array();
+		}
+		$options["CUSTOM"] = $html;
+		return $this->createButtonHTML($options);
+	}
+
+	private function createButtonHTML($options = array()) {
+
+		$sb = "";
+
+		$sb.=("<tp:ticket ");
+
+		$sb.=("rid=\"").($this->getPrimaryOffer()->getResource()->getRID()).("\"");
+
+		$sb.=(">");
+
+
+		$sb.=("<tp:button ");
+
+
+		if (isset($options["CUSTOM"])) {
+			$sb.=(" custom=\"").preg_replace("[\"]", "&quot;", $options["CUSTOM"]).("\"");
+		} else if (isset($options["ANCHOR"])) {
+			$sb.=(" link=\"").preg_replace("[\"]", "&quot;", $options["ANCHOR"]).append("\"");
+		}
+
+		$sb.=(">");
+		$sb.=("</tp:button>");
+
+
+		$sb.=("</tp:ticket>");
+
+		return $sb;
+	}
+
 
 }
 
