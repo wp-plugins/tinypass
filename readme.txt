@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, permium content, paid content, monetization, micro payment, access control
 Requires at least: 3.1.0
 Tested up to: 3.1.0
-Stable tag: 1.2
+Stable tag: 1.3
 
 Provide integration between wordpress and TinyPass service
 
@@ -75,6 +75,8 @@ Global Settings
 == Frequently Asked Questions ==
 
 == Changelog ==
+1.3
+Migrated to API 1.6 version.  See developer.tinypass.com docs.  Should not cause problems for module user
 
 1.0
 access template was being escaped
