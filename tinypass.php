@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.4.1
+ * @version 1.4.2
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass plugin for wordpress
 Author: TinyPass
-Version: 1.4.1
+Version: 1.4.2
 Author URI: http://www.tinypass.com
 */
 
@@ -261,11 +261,14 @@ function tinypass_check_content($content) {
 		if(has_excerpt()) {
 			$content = get_the_excerpt();
 		}else {
-			$content = tinypass_trim_excerpt($content);
+			$c = get_extended($post->post_content);
 
-//			$content = wp_trim_excerpt($content);
-//			remove_all_filters("the_exce
-//			remove_all_filters("get_the_excerpt");
+			if($c['extended'] == ''){
+				//means there was no <!--more--> defined
+				$content = tinypass_trim_excerpt($content);
+			} else {
+				$content = tinypass_trim_excerpt($c['main']);
+			}
 		}
 
 		$ticket = new TPTicket($offer1, null);
@@ -420,8 +423,8 @@ class TinyPassOptions {
 
 function tinypass_trim_excerpt($text) {
 
-//	$text = strip_shortcodes( $text );
-//	$text = str_replace(']]>', ']]&gt;', $text);
+	$text = strip_shortcodes( $text );
+	$text = str_replace(']]>', ']]&gt;', $text);
 	$text = preg_replace('/<!--more-->.*/s', '', $text);
 //	$text = strip_tags($text);
 	$excerpt_length = apply_filters('excerpt_length', 100);

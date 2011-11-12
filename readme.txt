@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, permium content, paid content, monetization, micro payment, access control
 Requires at least: 3.1.0
 Tested up to: 3.1.0
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 
 Provide integration between wordpress and TinyPass service
 
@@ -30,44 +30,50 @@ Save the post and then attempt to 'view the post'
 How TinyPass can be enabled
 
 1)Basic Case - TinyPass enabled per page or post
-	This scenario is the most basic usage of TinyPass.  A single page/post will be protected behind TinyPass.
-	When creating a page/post, simple click the "Modify Options" under the TinyPass Options box to configure pricing behavior.
-	The most basic configuration requires only specifying a price.  TinyPass can be enabled/disabled by clicking the 'Enable' checkbox.
 
-	Page/post content will be truncated when access is denied.  First it will check for a valid excerpt, if no excerpt is specified
-	then it truncate the content based on wordpress excerpt length.  Lastly, you can restrict content by using the <!--more--> wordpress
-	tag.  TinyPass will hide everything after the <!--more--> when active.
+This scenario is the most basic usage of TinyPass.  A single page/post will be protected behind TinyPass.
+When creating a page/post, simple click the "Modify Options" under the TinyPass Options box to configure pricing behavior.
+The most basic configuration requires only specifying a price.  TinyPass can be enabled/disabled by clicking the 'Enable' checkbox.
+
+Page/post content will be truncated when access is denied.  First it will check for a valid excerpt, if no excerpt is specified
+then it truncate the content based on wordpress excerpt length.  Lastly, you can restrict content by using the <!--more--> wordpress
+tag.  TinyPass will hide everything after the <!--more--> when active.
 
 2)Inline Case
-	This is essentially similar to the first case except that the TinyPass configuration defined 'inline' in the content body.
-	The format for inline TinyPass is:
-			<tinypass price="1.99" access="1 day" caption="custom caption" name="custom name"/>
-	The attributes are:
-			price = price of access - required
-			access = e.g. "1 day", "2 weeks", "1 month", "4 hours" - optional
-			caption = custom text on price option - optional
-			name = title of the article - optional and will default to post title
 
-	Additionally, all the content AFTER the tinypass tag will be hidden so placement of the inline tinypass element is critical.
+This is essentially similar to the first case except that the TinyPass configuration defined 'inline' in the content body.
+The format for inline TinyPass is:
+	<tinypass price="1.99" access="1 day" caption="custom caption" name="custom name"/>
+The attributes are:
+	price = price of access - required
+	access = e.g. "1 day", "2 weeks", "1 month", "4 hours" - optional
+	caption = custom text on price option - optional
+	name = title of the article - optional and will default to post title
+
+Additionally, all the content AFTER the tinypass tag will be hidden so placement of the inline tinypass element is critical.
 
 3)Tags
-	TinyPass can now be enabled on wordpress tags.  This means that sections or groups of articles can be accessible via one access ticket or purchase.
-	This tags are first level wordpress tags and our configured under the TinyPass plugin sections.  There tags can be created and TinyPass options specified.
+
+TinyPass can now be enabled on wordpress tags.  This means that sections or groups of articles can be accessible via one access ticket or purchase.
+This tags are first level wordpress tags and our configured under the TinyPass plugin sections.  There tags can be created and TinyPass options specified.
 	
 	
 4) Post + Tag
-	If a post has been configured for TinyPass and that same post has a TinyPass enabled tag, then an UpSell ticket will be created automatically.
-	In this case, the user will be presented with an option to buy the single article access OR to purchase access to all the articles in this tag(section)
+
+If a post has been configured for TinyPass and that same post has a TinyPass enabled tag, then an UpSell ticket will be created automatically.
+In this case, the user will be presented with an option to buy the single article access OR to purchase access to all the articles in this tag(section)
 		
 
 Inline vs Post Enabled
-	In the case where a post has TinyPass definied inline as well as through the basic admin console, the 'inline' configuration will have precedence and the
-	basic configuration will be ignored.
+
+In the case where a post has TinyPass definied inline as well as through the basic admin console, the 'inline' configuration will have precedence and the
+basic configuration will be ignored.
 
 
 Global Settings
-	Under the TinyPass Plugin configuration page, TinyPass can be disabled without needing to uninstall.  You can use this option to temoparaily turn off TinyPass
-	and access will be granted to all content
+
+Under the TinyPass Plugin configuration page, TinyPass can be disabled without needing to uninstall.  You can use this option to temoparaily turn off TinyPass
+and access will be granted to all content
 			
 
 
