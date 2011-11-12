@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.4.2
+ * @version 1.4.3
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass plugin for wordpress
 Author: TinyPass
-Version: 1.4.2
+Version: 1.4.3
 Author URI: http://www.tinypass.com
 */
 
@@ -266,8 +266,11 @@ function tinypass_check_content($content) {
 			if($c['extended'] == ''){
 				//means there was no <!--more--> defined
 				$content = tinypass_trim_excerpt($content);
+
 			} else {
-				$content = tinypass_trim_excerpt($c['main']);
+				remove_filter("the_content", tinypass_check_content);
+				$content = apply_filters('the_content', $c['main']);
+				add_filter('the_content', 'tinypass_check_content', 10);
 			}
 		}
 
