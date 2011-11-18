@@ -83,7 +83,7 @@ class TPDiscountPolicy extends TPPolicy {
 		$d->set(TPPolicy::POLICY_TYPE, TPPolicy::DISCOUNT_PREVIOUS_PURCHASE);
 		$d->set("rids", $rids);
 		$d->set("discount", $discount);
-		return d;
+		return $d;
 
 	}
 }
