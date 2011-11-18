@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.4.3
+ * @version 1.4.4
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass plugin for wordpress
 Author: TinyPass
-Version: 1.4.3
+Version: 1.4.4
 Author URI: http://www.tinypass.com
 */
 
@@ -18,6 +18,7 @@ define("TINYPASS_INLINE_REPLACE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\
 define("TINYPASS_INLINE_BUTTON", '/(.?)<(tinypass_button)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
 
 $tinypass_instance = null;
+$tinypass_ticket = null;
 
 
 function tinypass_register_custom_database_tables() {
@@ -38,7 +39,8 @@ register_deactivation_hook(__FILE__,'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 //add_action('save_post', 'tinypass_save_postdata');
-add_filter('the_content', 'tinypass_check_content', 10);
+add_filter('the_content', 'tinypass_intercept_content', 5);
+add_filter('the_content', 'tinypass_append_ticket', 200);
 
 function tinypass_save_postdata($post_id) {
 
@@ -125,11 +127,13 @@ function tinypass_load_settings() {
 /**
  * Main function for displaying TinyPass button on restricted post/pages
  */
-function tinypass_check_content($content) {
+function tinypass_intercept_content($content) {
 
+	global $tinypass_ticket;
 	global $post;
 	global $tinypass_instance;
 
+	$tinypass_ticket = null;
 	$settings = tinypass_load_settings();
 
 	if($settings['enabled'] == false)
@@ -236,6 +240,14 @@ function tinypass_check_content($content) {
 			$offer2 = tinypass_create_offer($tp, $tagOptions);
 		}
 
+		if($offer1 == null && $offer2 == null)
+			return $content;
+
+		if($offer1 == null && $offer2 != null) {
+			$offer1 = $offer2;
+			$offer2 = null;
+		}
+
 		//check single offer1
 		if($tp->isAccessGranted($offer1)) {
 			return $content;
@@ -248,13 +260,6 @@ function tinypass_check_content($content) {
 
 		//They don't have access
 		if(is_page() == false && is_single() == false) {
-			if(has_excerpt()) {
-				$content = get_the_excerpt();
-			}else {
-				$content = tinypass_trim_excerpt($content);
-				$excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
-				$content .= $excerpt_more;
-			}
 			return $content;
 		}
 
@@ -263,14 +268,12 @@ function tinypass_check_content($content) {
 		}else {
 			$c = get_extended($post->post_content);
 
-			if($c['extended'] == ''){
+			if($c['extended'] == '') {
 				//means there was no <!--more--> defined
 				$content = tinypass_trim_excerpt($content);
 
 			} else {
-				remove_filter("the_content", tinypass_check_content);
-				$content = apply_filters('the_content', $c['main']);
-				add_filter('the_content', 'tinypass_check_content', 10);
+				$content = tinypass_trim_excerpt($c['main']);
 			}
 		}
 
@@ -279,14 +282,34 @@ function tinypass_check_content($content) {
 		if($offer2)
 			$ticket->setSecondaryOffer($offer2);
 
-		$buttonHTML = $ticket->createButton();
+		$tinypass_ticket = $ticket;
 
-		$tp->getWebRequest()->addTicket($ticket);
+		return $content .= " [TP_HOOK]";
+	}
 
-		$code = $tp->getWebRequest()->getRequestScript();
+	return $content;
+}
+
+function tinypass_append_ticket($content) {
+
+	global $tinypass_ticket;
+	global $tinypass_instance;
+	$ticket = $tinypass_ticket;
+	$tp = $tinypass_instance;
+
+	$settings = tinypass_load_settings();
+
+	if(!$tinypass_ticket)
+		return $content;
+
+	$buttonHTML = $ticket->createButton();
+
+	$tp->getWebRequest()->addTicket($ticket);
+
+	$code = $tp->getWebRequest()->getRequestScript();
 
 
-		$content .= '
+	$code .= '
 			<style type="text/css">
 				.tinypass_button_holder {
 					margin-top:20px;
@@ -298,22 +321,22 @@ function tinypass_check_content($content) {
 					}
 			</style> ';
 
-		if(preg_match(TINYPASS_INLINE_BUTTON, $content)) {
-			$content = preg_replace(TINYPASS_INLINE_BUTTON, $buttonHTML, $content);
-		}else {
+	$defaultButton .= '<div class="tinypass_button_holder"> <div class="tinypass_access_message">'
+					. stripslashes($settings['access_message']) .'</div> '
+					. $buttonHTML
+					. ' </div>';
 
-			$content .= '<div class="tinypass_button_holder">
-								  <div class="tinypass_access_message">'. stripslashes($settings['access_message']) .'</div>
-										' . $buttonHTML . '
-									</div>';
-		}
+	if(preg_match(TINYPASS_INLINE_BUTTON, $content)) {
+		$content = preg_replace(TINYPASS_INLINE_BUTTON, $buttonHTML, $content);
+	} else if(preg_match('/\[TP_HOOK\]/', $content)) {
+		$content = preg_replace('/\[TP_HOOK\]/', $defaultButton, $content);
+	}else {
+		$content .= $defaultButton;
+	}
 
-		$content .= $code;
+	$content .= $code;
 
-		return $content;
-	}else
-		return $content;
-
+	return $content;
 }
 
 function tinypass_create_offer($tp, TinyPassOptions $options) {
@@ -426,24 +449,17 @@ class TinyPassOptions {
 
 function tinypass_trim_excerpt($text) {
 
-	$text = strip_shortcodes( $text );
-	$text = str_replace(']]>', ']]&gt;', $text);
-	$text = preg_replace('/<!--more-->.*/s', '', $text);
-//	$text = strip_tags($text);
 	$excerpt_length = apply_filters('excerpt_length', 100);
 
 	$text = preg_replace(TINYPASS_INLINE_REPLACE, '', $text);
 
-	//$excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
 	$words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
 	if ( count($words) > $excerpt_length ) {
 		array_pop($words);
 		$text = implode(' ', $words);
-		$text = $text . $excerpt_more;
 	} else {
 		$text = implode(' ', $words);
 	}
-	//return apply_filters('wp_trim_excerpt', $text, $raw_excerpt);
 	return $text;
 
 }
