@@ -317,7 +317,7 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 						<?php } else { ?>
 				<input type="hidden" name="tinypass[en]" value="1">
 						<?php } ?>
-				<strong><?php echo $resource_name_label ?></strong> - this will be displayed the ticket
+				<strong><?php echo $resource_name_label ?></strong> - this value will be displayed in the TinyPass Popup
 				<br>
 				<input type="text" size="35" maxlength="255" name="tinypass[resource_name]" value="<?php echo $resource_name ?>">
 				<div class="description"><?php echo $resource_name_label_desc?></div>

@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.4.4
+ * @version 1.4.5
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass plugin for wordpress
 Author: TinyPass
-Version: 1.4.4
+Version: 1.4.5
 Author URI: http://www.tinypass.com
 */
 
@@ -273,7 +273,7 @@ function tinypass_intercept_content($content) {
 				$content = tinypass_trim_excerpt($content);
 
 			} else {
-				$content = tinypass_trim_excerpt($c['main']);
+				$content = ($c['main']);
 			}
 		}
 

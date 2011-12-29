@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, permium content, paid content, monetization, micro payment, access control
 Requires at least: 3.1.0
 Tested up to: 3.1.0
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 
 Provide integration between wordpress and TinyPass service
 
@@ -84,6 +84,9 @@ and access will be granted to all content
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+1.4.5
+More break was not being honored
 
 1.4.4
 Bug Fix for TP embed on post
