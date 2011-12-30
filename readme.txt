@@ -1,92 +1,73 @@
 === TinyPass ===
 Contributors: wordpress@tinypass.com
-Tags: tinypass, permium content, paid content, monetization, micro payment, access control
+Tags: tinypass, premium content, paywall, paid content, monetization, micropayments, access control
 Requires at least: 3.1.0
-Tested up to: 3.1.0
-Stable tag: 1.4.5
+Tested up to: 3.3.0
+Stable tag: 1.4.4
 
-Provide integration between wordpress and TinyPass service
+TinyPass is the best way to charge for access to content on your WordPress site. 
 
 == Description ==
 
-TinyPass is a simple service that allows any web publisher to easily accept quick and secure payments for access to any type of content.
+TinyPass is a simple, powerful service that allows any online publisher to easily accept quick and secure payments for access to any type of content. TinyPass can process payments as small as 10 cents, and doesn't require changing your site's existing structure or layout. 
 
-The TinyPass platform can process payments as small as two-cents, and doesn't require changing your site's existing structure and layout.
+You can use TinyPass to charge for access to a single post, a section of content, and you can even offer discounts to visitors who choose to buy access to all of your premium content. 
 
-See http://www.tinypass.com/
+For more on TinyPass, visit http://www.tinypass.com/
+
+For a complete set of instructions for working with the TinyPass plugin for WordPress, please visit www.developer.tinypass.com/main/wordpress
 
 == Installation ==
 
-PHP requirements: PHP 5.2+, mbstring, mcrypt
+1. In your WordPress dashboard, go to Plugins->Add New and either upload TinyPass (if you've downloaded the plugin already), or search for the TinyPass plugin and simply click "install". 
 
-1. Upload TinyPass for WordPress to your wp-content/plugins directory.
-2. Activate it in "Plugins" menu in WordPress.
-3. Go to Plugins->TinyPass Configuration and enter your aid, secret_key, and environment.  This values can be retrieved from your
-www.tinypass.com 'merchant' account.  For testing purposes, a default values have been provided.
-4. To enabled tinypass, create a new post and enabled TinyPass checkbox.  Choose the price and the access period.  
-Save the post and then attempt to 'view the post'
+2. If you haven't already, go to www.TinyPass.com, create a free publisher account, and follow the simple instructions to register an application for your WordPress site. 
 
+3. In your WordPress dashboard, go to TinyPass->Settings and enter your AID, secret key, and environment. These values can be found in the "Applications" section of your publisher account at www.TinyPass.com. (For testing purposes, default values have been provided. Make sure to switch from "Sandbox" to "Production" in TinyPass->Settings when you're ready to start accepting payments.) 
 
-How TinyPass can be used
+4. In TinyPass->Settings, clicking "TinyPass Enabled" will turn TinyPass on or off for your entire site. This is just an easy way to manage TinyPass at the global level. If "TinyPass Enabled" is NOT checked, any content you've protected with TinyPass will become free to access.  
 
-== Basic Usage - TinyPass enabled per page or post ==
-
-This scenario is the most basic usage of TinyPass.  A single page/post will be protected behind TinyPass.
-When creating a page/post, simple click the "Modify Options" under the TinyPass Options box to configure pricing behavior.
-The most basic configuration requires only specifying a price.  TinyPass can be enabled/disabled by clicking the 'Enable' checkbox.
-
-Page/post content will be truncated when access is denied.  First it will check for a valid excerpt, if no excerpt is specified
-then it truncate the content based on wordpress excerpt length.  Lastly, you can restrict content by using the <!--more--> wordpress
-tag.  TinyPass will hide everything after the <!--more--> when active.
-
-== Inline Post ==
-
-This is essentially similar to the first case except that the TinyPass configuration defined 'inline' in the content body.
-The format for inline TinyPass is:
-
-* &lt;tinypass price="1.99" access="1 day" caption="custom caption" name="custom name"/&gt;
-
-The attributes are:
-
-*	price = price of access - required
-*	access = e.g. "1 day", "2 weeks", "1 month", "4 hours" - optional
-*	caption = custom text on price option - optional
-*	name = title of the article - optional and will default to post title
-
-Additionally, all the content AFTER the tinypass tag will be hidden so placement of the inline tinypass element is critical.
-
-== Tags ==
-
-TinyPass can now be enabled on wordpress tags.  This means that sections or groups of articles can be accessible via one access ticket or purchase.
-This tags are first level wordpress tags and our configured under the TinyPass plugin sections.  There tags can be created and TinyPass options specified.
-	
-	
-== Post + Tag ==
-
-If a post has been configured for TinyPass and that same post has a TinyPass enabled tag, then an UpSell ticket will be created automatically.
-In this case, the user will be presented with an option to buy the single article access OR to purchase access to all the articles in this tag(section)
-		
-
-Inline vs Post Enabled
-
-In the case where a post has TinyPass definied inline as well as through the basic admin console, the 'inline' configuration will have precedence and the
-basic configuration will be ignored.
-
-
-Global Settings
-
-Under the TinyPass Plugin configuration page, TinyPass can be disabled without needing to uninstall.  You can use this option to temoparaily turn off TinyPass
-and access will be granted to all content
-			
-
-
+**For complete instructions for working with TinyPass on your WordPress site, please visit www.developer.tinypass.com/main/wordpress**
 
 == Frequently Asked Questions ==
 
-== Changelog ==
+= What is TinyPass? = 
 
-1.4.5
-More break was not being honored
+TinyPass is a flexible, powerful, enterprise-level paywall software platform. (We don't love the term "paywall", because it implies a binary either-you-pay-or-you're-locked-out paradigm, and TinyPass enables much more sophisticated pricing models, but it is a common industry term.) We enable publishers and content creators to charge in any amount, on their own sites, with pricing rules that they control.
+
+= How do I use TinyPass? = 
+
+You can deploy TinyPass in one of two ways: either you can use one of our existing plug-ins for popular CMS platforms (Wordpress, Drupal and Joomla are currently available, with more on the way), or you can use our API to integrate TinyPass into another existing system. Currently we offer libraries for Java, .NET, and PHP.
+
+= What makes TinyPass unique? = 
+
+Unlike other approaches to paid-content, TinyPass allows anyone publishing digital content to design a pay-to-access plan that won't alienate their audience. Charge at price points from 10¢ to $200, charge for as much or as little content as you want, and charge in a way that allows your audience to make quick, simple and secure payments.
+
+= What features does TinyPass offer for WordPress users? = 
+
+Every site has different content and a unique audience. That's why TinyPass supports a variety of approaches to paid-content. The TinyPass plugin for WordPress works seamlessly with the way content is published, allowing WordPress users to easily charge for access to a single post, a section of content, offer discounts to your most loyal visitors, and even specify when content will cost money to access and when it will become free. 
+
+= Where can I learn more about using TinyPass for WordPress? = 
+
+We're glad you asked! For a complete set of instructions for working with TinyPass for WordPress, please visit www.developer.tinypass.com/main/wordpress
+
+= How do my visitors pay? =
+
+TinyPass offers a quick and painless payment process that allows your visitors to use their preferred payment method (PayPal, Amazon, Google Wallet or Credit Card). There is no new account to create and no long form to fill out. Payment can be made in as little as two clicks, and visitors never leave your site during the payment process. 
+
+= How do I get paid? = 
+
+You can track your sales and revenue in real-time in your TinyPass publisher dashboard, and request payout at anytime. 
+
+= What does it cost to use TinyPass? = 
+
+We pride ourselves on offering unique and useful technology, great service, no startup cost, and a fair and transparent fee structure. We make money by deducting a small percentage of each transaction that is processed through TinyPass. Our system is purpose-built to maximize the revenue you earn while minimizing the fees you pay. In most cases, you'll get all of the services that TinyPass offers and still keep more revenue after fees than you would if you built your own system for processing transactions directly through PayPal, Amazon, or the major credit cards. For more on the TinyPass fee structure, please visit https://tinypass.com/terms/publisher#transfees
+
+= Other Questions? = 
+
+We love questions! Just email support@tinypass.com and we'll get right back to you! 
+
+== Changelog ==
 
 1.4.4
 Bug Fix for TP embed on post
@@ -109,8 +90,6 @@ Changed default sandbox aid/key
 0.5
 Allows custom denied message error
 Fixed bad ticket HTML
-Added enabled/disable for global tinypass enable
 Added support for both sandbox/prod aid/keys
 
 == Upgrade Notice ==
-
