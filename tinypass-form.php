@@ -391,7 +391,7 @@ function __tinypass_price_option_display($opt, $values) {
 		$end_time = $values["po_et$opt"];
 	}
 
-	if(isset($values["po_en$opt"])) {
+	if($opt == 1 || isset($values["po_en$opt"])) {
 		$enabled = 1;
 	}
 

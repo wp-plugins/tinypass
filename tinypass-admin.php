@@ -114,7 +114,7 @@ function tinypass_admin_settings() {
 							<th scope="row"><?php _e('Application ID (Sandbox)'); ?></th>
 							<td>
 								<input id="aid_sand" name="tinypass[aid_sand]" type="text" size="10" maxlength="10" value="<?php echo $options['aid_sand']; ?>"/>
-								<span class="description">The application ID that will corresponding to this website.  Retreived from your account on <a href="http://sandbox.tinypass.com/member/merch">sandbox.tinypass.com</a></span>
+								<span class="description">Retreived from your <b>sandbox</b> account at <a href="http://sandbox.tinypass.com/member/merch">sandbox.tinypass.com</a></span>
 							</td>
 						</tr>
 
@@ -122,21 +122,21 @@ function tinypass_admin_settings() {
 							<th scope="row"><?php _e('Application Secret Key (Sandbox)'); ?></th>
 							<td>
 								<input id="secret_key_sand" name="tinypass[secret_key_sand]" type="text" size="40" maxlength="40" value="<?php echo $options['secret_key_sand']; ?>" style="" />
-								<span class="description">Retreived from your account on <a href="http://sandbox.tinypass.com/member/merch">sandbox.tinypass.com</a></span>
+								<span class="description">Retreived from your <b>sandbox</b> account on <a href="http://sandbox.tinypass.com/member/merch">sandbox.tinypass.com</a></span>
 							</td>
 						</tr>
 						<tr><td></td></tr>
 						<tr><td></td></tr>
 						<tr valign="top">
-							<th scope="row"><?php _e('Application ID (Live)'); ?></th>
+							<th scope="row"><?php _e('Application ID (Production)'); ?></th>
 							<td>
 								<input id="aid_prod" name="tinypass[aid_prod]" type="text" size="10" maxlength="10" value="<?php echo $options['aid_prod']; ?>"/>
-								<span class="description">The application ID that will corresponding to this website.  Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
+								<span class="description">Retreived from your account at <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
 							</td>
 						</tr>
 
 						<tr valign="top">
-							<th scope="row"><?php _e('Application Secret Key (Live)'); ?></th>
+							<th scope="row"><?php _e('Application Secret Key (Production)'); ?></th>
 							<td>
 								<input id="secret_key_prod" name="tinypass[secret_key_prod]" type="text" size="40" maxlength="40" value="<?php echo $options['secret_key_prod']; ?>" style="" />
 								<span class="description">Retreived from your account on <a href="http://www.tinypass.com/member/merch">www.tinypass.com</a></span>
