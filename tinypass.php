@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.4.8
+ * @version 1.4.9
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free TinyPass publisher account and configure the TinyPass plugin for your WordPress site
 Author: TinyPass
-Version: 1.4.8
+Version: 1.4.9
 Author URI: http://www.tinypass.com
 */
 
@@ -208,7 +208,6 @@ function tinypass_intercept_content($content) {
 
 	}
 
-
 	if($postOptions->isEnabled() || $tagOptions->isEnabled()) {
 		include_once dirname( __FILE__ ) . '/api/TinyPass.php';
 
@@ -294,19 +293,11 @@ function tinypass_append_ticket($content) {
 
 	global $tinypass_ticket;
 	global $tinypass_instance;
-	global $loaded_resources;
 	$ticket = $tinypass_ticket;
 	$tp = $tinypass_instance;
 
 	if(!$tinypass_ticket)
 		return $content;
-
-	//if($loaded_resources == null)
-	//	$loaded_resources = array();
-	//$rid = $ticket->getPrimaryOffer()->getResource()->getRID();
-	//if(array_key_exists($rid, $loaded_resources))
-	//	return $content;
-	//$loaded_resources[$rid] = $rid;
 
 	$settings = tinypass_load_settings();
 
@@ -475,8 +466,10 @@ function tinypass_trim_excerpt($text) {
 function tinypass_enabled_tags() {
 	global $wpdb;
 
-	$results = wp_cache_get("tinypass_enabled_tags");
+	$results = false;
 
+	if(WP_CACHE)
+		$results = wp_cache_get("tinypass_enabled_tags");
 
 	$terms = array();
 	if($results == false) {
@@ -487,7 +480,8 @@ function tinypass_enabled_tags() {
 			$terms[$row['term_id']] = $row;
 		}
 
-		wp_cache_set("tinypass_enabled_tags", $results);
+		if(WP_CACHE)
+			wp_cache_set("tinypass_enabled_tags", $results);
 	}
 
 	return $terms;
