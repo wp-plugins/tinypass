@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, premium content, paywall, paid content, monetization, micropayments, access control
 Requires at least: 3.1.0
 Tested up to: 3.3.0
-Stable tag: 1.4.7
+Stable tag: 1.4.8
 
 
 TinyPass is the best way to charge for access to content on your WordPress site.

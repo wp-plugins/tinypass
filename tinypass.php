@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.4.7
+ * @version 1.4.8
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free TinyPass publisher account and configure the TinyPass plugin for your WordPress site
 Author: TinyPass
-Version: 1.4.7
+Version: 1.4.8
 Author URI: http://www.tinypass.com
 */
 
@@ -301,15 +301,12 @@ function tinypass_append_ticket($content) {
 	if(!$tinypass_ticket)
 		return $content;
 
-	if($loaded_resources == null)
-		$loaded_resources = array();
-
-	$rid = $ticket->getPrimaryOffer()->getResource()->getRID();
-
-	if(array_key_exists($rid, $loaded_resources))
-		return $content;
-
-	$loaded_resources[$rid] = $rid;
+	//if($loaded_resources == null)
+	//	$loaded_resources = array();
+	//$rid = $ticket->getPrimaryOffer()->getResource()->getRID();
+	//if(array_key_exists($rid, $loaded_resources))
+	//	return $content;
+	//$loaded_resources[$rid] = $rid;
 
 	$settings = tinypass_load_settings();
 
