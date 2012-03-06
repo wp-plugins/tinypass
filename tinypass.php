@@ -294,13 +294,24 @@ function tinypass_append_ticket($content) {
 
 	global $tinypass_ticket;
 	global $tinypass_instance;
+	global $loaded_resources;
 	$ticket = $tinypass_ticket;
 	$tp = $tinypass_instance;
 
-	$settings = tinypass_load_settings();
-
 	if(!$tinypass_ticket)
 		return $content;
+
+	if($loaded_resources == null)
+		$loaded_resources = array();
+
+	$rid = $ticket->getPrimaryOffer()->getResource()->getRID();
+
+	if(array_key_exists($rid, $loaded_resources))
+		return $content;
+
+	$loaded_resources[$rid] = $rid;
+
+	$settings = tinypass_load_settings();
 
 	$buttonHTML = $ticket->createButton();
 
