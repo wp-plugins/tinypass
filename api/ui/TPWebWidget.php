@@ -36,7 +36,7 @@ class TPWebWidget {
 			$init = true;
 			$data = "";
 			$data.=("&r=").preg_replace('/"/', "\"", $this->tp->getMsgBuilder()->buildTicketRequest($deniedTickets));
-			if ($this->tp->getAccessTokenList() != null) $data.("&c=").($this->tp->getAccessTokenList()->getRawToken());
+			if ($this->tp->getAccessTokenList() != null) $data.=("&c=").($this->tp->getAccessTokenList()->getRawToken());
 
 			$template = file_get_contents(dirname(__FILE__) . '/widget.html');
 			$template = preg_replace('/\${guid}/', TPSecurityUtils::genRandomString(), $template);
@@ -52,7 +52,7 @@ class TPWebWidget {
 
 		if ($this->tp->__hasLocalTokenChanges()) {
 			$init = true;
-			$s = "<script> document.cookie= '" . $this->tp->__generateLocalCookie() . " ;expires=' + new Date(new Date().getTime() + 1000*60*60*24*90).toGMTString();</script>";
+			$s = "<script> document.cookie= '" . $this->tp->__generateLocalCookie() . " ;path=/;expires=' + new Date(new Date().getTime() + 1000*60*60*24*90).toGMTString();</script>";
 			$template .= $s;
 		}
 

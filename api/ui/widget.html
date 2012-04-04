@@ -39,8 +39,8 @@
 			tinypassform.style.width = '0';
 			tinypassform.style.height = '0';
 			tinypassform.innerHTML = "<iframe id=\"TinyPass${guid}\" name=\"TinyPass${guid}\" style=\"width:0;height:0;border:0\"></iframe>" +
-				"<form id=\"TinyPassForm${guid}\" action=\"" + ep + dt + "\" target=\"TinyPass${guid}\" method=\"post\">" +
-				"<textarea name=\"data\">" + data + "</textarea>" +
+				"<form id=\"TinyPassForm${guid}\" action=\"" + _TPWidget.ep + _TPWidget.dt + "\" target=\"TinyPass${guid}\" method=\"post\">" +
+				"<textarea name=\"data\">" + _TPWidget.data + "</textarea>" +
 				"<input type=\"hidden\" name=\"guid\" value=\"${guid}\">" +
 				"<input type=\"hidden\" id=\"state${guid}\" value=\"${guid}\">" +
 				"</form>";
