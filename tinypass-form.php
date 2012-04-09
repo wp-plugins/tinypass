@@ -44,11 +44,11 @@ function ajax_tp_saveEditPopup() {
 	if(!current_user_can('edit_posts')) die();
 
 	$fields = array('po_ap', 'po_cap', 'po_en', 'po_et', 'po_p', 'po_st', 'po_type');
-	foreach($fields as $f){
-		if(isset($_POST['tinypass']['po_en2']) == false || $_POST['tinypass']['po_en2'] == 0){
+	foreach($fields as $f) {
+		if(isset($_POST['tinypass']['po_en2']) == false || $_POST['tinypass']['po_en2'] == 0) {
 			unset($_POST['tinypass'][$f . '2']);
 		}
-		if(isset($_POST['tinypass']['po_en3']) == false || $_POST['tinypass']['po_en3'] == 0){
+		if(isset($_POST['tinypass']['po_en3']) == false || $_POST['tinypass']['po_en3'] == 0) {
 			unset($_POST['tinypass'][$f . '3']);
 		}
 	}
@@ -60,7 +60,7 @@ function ajax_tp_saveEditPopup() {
 	if($errors) {
 		echo "var a;";
 		foreach($errors as $field => $msg) {
-			echo "tp_doError('$field', '$msg');";
+			echo "tinypass.doError('$field', '$msg');";
 		}
 		die();
 	}
@@ -88,20 +88,38 @@ function tinypass_validate_popup_values($values, $type) {
 
 		if($values['resource_name'] == '')
 			$errors['resource_name'] = 'Description cannot be empty';
+	}
 
-		if($values['po_p1'] == '' || is_numeric($values['po_p1']) == false)
-			$errors['po_p1'] = 'Price must be valid number';
+	for($i = 1; $i <= 3; $i++) {
 
-	}else {
+		if($values['po_en' . $i] == 0)
+			continue;
 
-		if($values['po_p1'] == '' || is_numeric($values['po_p1']) == false)
-			$errors['po_p1'] = 'Price must be valid number';
+		if(isset($values['po_p' . $i]) && $values['po_p' . $i] == '' || is_numeric($values['po_p' . $i]) == false)
+			$errors['po_p' . $i] = 'Price must be valid number' . $i;
 
-		if($values['po_ap1'] != '' && is_numeric($values['po_ap1']) == false)
-			$errors['po_ap1'] = 'Access period must be valid number';
+		if(isset($values['po_ap' . $i]) && $values['po_ap' . $i] != '' && is_numeric($values['po_ap' . $i]) == false)
+			$errors['po_ap' . $i] = 'Access period must be valid number';
+	}
+
+
+	if(isset($values['metered']) && $values['metered'] != 'off') {
+
+		if(isset($values['m_lp']) && $values['m_lp'] == '' || is_numeric($values['m_lp']) == false)
+			$errors['m_lp'] = 'Lockout period must be a valid number';
+	}
+
+	//validate metered options
+	if($values['metered'] == 'time') {
+
+		if(isset($values['m_tp']) && $values['m_tp'] == '' || is_numeric($values['m_tp']) == false)
+			$errors['m_tp'] = 'Trial period must be a valid number';
+
+	}else if($values['metered'] == 'count') {
 
 
 	}
+
 
 	return $errors;
 
@@ -197,6 +215,18 @@ function tinypass_options_overview($values, $post = null) {
 
 	}
 
+	$en= __('Disabled');
+	$cond = '';
+	if(isset($values['metered']) && $values['metered'] && $values['metered'] == 'time') {
+		$en= __('Time Based');
+		$cond = $values['m_tp'] . " " . $values['m_tp_type'] . " trial - " . $values['m_lp'] . " " . $values['m_lp_type'] . " lockout";
+	}else if(isset($values['metered']) && $values['metered'] && $values['metered'] == 'count') {
+		$en= __('View Based');
+		$cond = $values['m_maa'] . " views -  " . $values['m_lp'] . " " . $values['m_lp_type'] . " lockout";
+	}
+	$line .= "<div><strong>Metered:</strong>&nbsp;$en</div>";
+	$line .= "$cond";
+
 	$output .= $line;
 
 	return $output;
@@ -210,7 +240,7 @@ function tinypass_post_header_form($meta) {
 <table class="form-table">
 	<tr>
 		<td>
-			<input id="tp_modify_button" class="button" type="button" hef="#" onclick="return tp_showTinyPassPopup();return false;" value="Modify Options">
+			<input id="tp_modify_button" class="button" type="button" hef="#" onclick="return tinypass.showTinyPassPopup();return false;" value="Modify Options">
 			<div id="tp_dialog" title="<img src='http://www.tinypass.com/favicon.ico'> TinyPass Post Options" style="display:none;width:650px;"></div>
 			<br>
 		</td>
@@ -249,10 +279,10 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 		$termId = $meta['term_id'];
 		//$termData = get_term($termId, 'post_tag');
 		$showIDLabel = true;
-		$resource_id_label = 'Tag Name';
-		$resource_id_label_desc = 'Required - standard Wordpress tag';
-		$resource_name_label = 'Description';
-		$resource_name_label_desc = 'Description for this section of content. e.g. "Premium Site Access"';
+		$resource_id_label = __('Tag Name');
+		$resource_id_label_desc = __('Required - standard Wordpress tag');
+		$resource_name_label = __('Description');
+		$resource_name_label_desc = __('Description for this section of content. e.g. "Premium Site Access"');
 	}
 
 	if(isset($meta['resource_id']))
@@ -317,33 +347,32 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 						<?php } else { ?>
 				<input type="hidden" name="tinypass[en]" value="1">
 						<?php } ?>
-				<strong><?php echo $resource_name_label ?></strong> - this value will be displayed in the TinyPass Popup
+				<strong><?php echo $resource_name_label ?></strong> - this value will be displayed in the TinyPass popup window
 				<br>
 				<input type="text" size="35" maxlength="255" name="tinypass[resource_name]" value="<?php echo $resource_name ?>">
 				<div class="description"><?php echo $resource_name_label_desc?></div>
 			</td>
 		</tr>
 	</table>
+		<?php if($type == 'tag'): ?>
+			<hr>
+			<?php __tinypass_metered_options_display($meta)  ?>
+		<?php endif; ?>
 	<hr>
 	<table class="form-table" id="" style="margin-top:0px;padding-top:0px;" >
 		<tr>
 			<td>
-				<strong>Pricing Options 
-					<a class="add_option_link" href="#" onclick="tinypass_addPriceOption();return false;">[+]</a>
-					<a class="add_option_link" href="#" onclick="tinypass_removePriceOption();return false;">[-]</a>
+				<strong>Pricing options
+					<a class="add_option_link" href="#" onclick="tinypass.addPriceOption();return false;">[+]</a>
+					<a class="add_option_link" href="#" onclick="tinypass.removePriceOption();return false;">[-]</a>
 				</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(between 1 and 3)<br>
 					<?php echo __tinypass_price_option_display('1', $meta)  ?>
-				<!--				<hr> -->
 					<?php echo __tinypass_price_option_display('2', $meta)  ?>
 					<?php echo __tinypass_price_option_display('3', $meta)  ?>
-				<!--
-				<hr>
-					<?php //echo __tinypass_price_option_display('3', $meta)  ?>
-				-->
 				<br>
 				<center>
-					<button class="button" type="button" onclick="tp_saveTinyPassPopup();">Save</button>
-					<button class="button" type="button" onclick="tp_closeTinyPassPopup();">Cancel</button>
+					<button class="button" type="button" onclick="tinypass.saveTinyPassPopup();">Save</button>
+					<button class="button" type="button" onclick="tinypass.closeTinyPassPopup();">Cancel</button>
 				</center>
 			</td>
 		</tr>
@@ -352,6 +381,123 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 
 	<?php
 }
+function __tinypass_metered_options_display($values) {
+
+	$metered = "off";
+	if(isset($values["metered"])) {
+		$metered = $values["metered"];
+	}
+
+	$metered_count = "";
+	$metered_access_period_type = "";
+	$metered_access_period = "";
+	$trial_period = "";
+	$trial_period_type = "";
+
+	if(isset($values["m_ap"])) {
+		$metered_access_period = $values["m_ap"];
+	}
+
+	if(isset($values["m_ap_type"])) {
+		$metered_access_period_type = $values["m_ap_type"];
+	}
+
+
+	if(isset($values["m_lp"])) {
+		$lockout_period = $values["m_lp"];
+	}
+
+	if(isset($values["m_lp_type"])) {
+		$lockout_period_type = $values["m_lp_type"];
+	}
+
+
+	if($metered == 'time') {
+		if(isset($values["m_tp"])) {
+			$trial_period = $values["m_tp"];
+		}
+
+		if(isset($values["m_tp_type"])) {
+			$trial_period_type = $values["m_tp_type"];
+		}
+
+	}else if($metered == 'count') {
+
+		if(isset($values["m_maa"])) {
+			$meter_count = $values["m_maa"];
+		}
+
+	}else {
+
+	}
+
+
+	$times = array('minute'=>'minute(s)', 'hour'=>'hour(s)', 'day'=>'day(s)', 'week'=>'week(s)', 'month'=>'month(s)');
+
+
+	?>
+
+<script>
+	jQuery(document).ready(function(){
+		tinypass.showMeteredOptions(document.getElementsByName("tinypass[metered]")[0])
+	})
+</script>
+
+<table class="form-table" id="" style="margin-top:0px;padding-top:0px;" >
+	<tr>
+		<td>
+			<strong>Metered access options:</strong>
+				<?php echo __tinypass_dropdown("tinypass[metered]", array('off'=>'Disabled', 'count'=>'View Based', 'time'=>'Time Based'), $metered, array("onchange"=>"tinypass.showMeteredOptions(this)")) ?>
+
+			<div id="tp-metered-count" class="tp-metered-options">
+				<table class="options">
+					<tr>
+						<td>Max views</td>
+						<td>Lockout Period</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="text" size="5" maxlength="5" name="tinypass[<?php echo "m_maa"?>]" value="<?php echo $meter_count ?>"></td>
+						<td>
+							<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "m_lp"?>]" value="<?php echo $lockout_period ?>">
+								<?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type, array()) ?>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+
+			</div>
+
+			<div id="tp-metered-time" class="tp-metered-options">
+				<table class="options">
+					<tr>
+						<td>Trial Period</td>
+						<td>Lockout Period</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "m_tp"?>]" value="<?php echo $trial_period ?>">
+								<?php echo __tinypass_dropdown("tinypass[m_tp_type]", $times, $trial_period_type, array()) ?>
+						</td>
+						<td>
+							<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "m_lp"?>]" value="<?php echo $lockout_period ?>">
+								<?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type, array()) ?>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+
+		</td>
+	</tr>
+</table>
+
+
+	<?php
+}
+
+
 
 function __tinypass_price_option_display($opt, $values) {
 
@@ -438,11 +584,6 @@ function __tinypass_price_option_display($opt, $values) {
 						<input type="text" size="20" maxlength="20" name="tinypass[<?php echo "po_cap$opt"?>]" value="<?php echo $caption ?>">
 					</td>
 				</tr>
-				<!--
-				<tr>
-					<td colspan=2><strong>Dates Active</strong></td>
-	</tr>
-	 -->
 				<tr>
 					<td></td>
 					<td colspan="2">
@@ -456,4 +597,28 @@ function __tinypass_price_option_display($opt, $values) {
 		</td>
 	</tr>
 </table>
-	<?php }
+<?php }
+
+function __tinypass_dropdown($name, $values, $selected, $attrs) {
+
+	$output = "<select name=\"$name\" ";
+
+	foreach($attrs as $key => $value) {
+		$output .= " $key=\"$value\"";
+	}
+
+	$output .= ">";
+
+	foreach($values as $key=>$value) {
+		if($selected == $key)
+			$output .= "<option value=\"$key\" selected=true>$value</option>";
+		else
+			$output .= "<option value=\"$key\">$value</option>";
+	}
+
+	$output .= "</select>";
+
+	return $output;
+
+}
+?>

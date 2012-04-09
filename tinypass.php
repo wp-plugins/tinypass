@@ -12,11 +12,6 @@ Version: 1.4.9
 Author URI: http://www.tinypass.com
 */
 
-define("TINYPASS_INLINE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
-define("TINYPASS_INLINE_REPLACE", '/(.?)<(tinypass)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?).*/s');
-
-define("TINYPASS_INLINE_BUTTON", '/(.?)<(tinypass_button)\b(.*?)(?:(\/))?>(?:(.+?)<\/\2>)?(.?)/s');
-
 $tinypass_instance = null;
 $tinypass_ticket = null;
 
@@ -32,6 +27,7 @@ if ( is_admin() ) {
 	require_once dirname( __FILE__ ) . '/tinypass-install.php';
 	require_once dirname( __FILE__ ) . '/tinypass-admin.php';
 	require_once dirname( __FILE__ ) . '/tinypass-form.php';
+	include_once (dirname (__FILE__) . '/tinymce/plugin.php');
 }
 
 register_activation_hook(__FILE__,'tinypass_activate');
@@ -60,8 +56,8 @@ function tinypass_save_postdata($post_id) {
 	*/
 
 
-	/*
 	// Check permissions
+	/*
 	if ( 'page' == $_POST['post_type'] ) {
 		if ( !current_user_can( 'edit_page', $post_id ) )
 			return $post_id;
@@ -136,6 +132,11 @@ function tinypass_intercept_content($content) {
 	$tinypass_ticket = null;
 	$settings = tinypass_load_settings();
 
+
+	//don't process if we aren't on a full single page/post
+	if(is_singular() == false)
+		return $content;
+
 	if($settings['enabled'] == false)
 		return $content;
 
@@ -157,58 +158,16 @@ function tinypass_intercept_content($content) {
 		}
 	}
 
-
 	$m = array();
-	if(preg_match(TINYPASS_INLINE, $content, $m)) {
-
-		$tag = $m[2];
-		$attr = shortcode_parse_atts( $m[3] );
-
-		$inline = array();
-
-		$inline['en'] = isset($settings['inline']) && $settings['inline'];
-		$inline['resource_id'] = 'wp_post_' . $post->ID;
-		$inline['po_en1'] = 1;
-
-		if(isset($attr['price']))
-			$inline['po_p1'] = $attr['price'];
-
-		if(isset($attr['access'])) {
-			$sp = preg_split('/\s+/', $attr['access']);
-			if(count($sp) == 2) {
-				$inline['po_ap1'] = $sp[0];
-				$inline['po_type1'] = $sp[1];
-			}
-		}
-
-		if(isset($attr['name']) && $attr['name'])
-			$inline['resource_name'] = $attr['name'];
-		else
-			$inline['resource_name'] = $post->post_title;
-
-		if(isset($attr['start']))
-			$inline['po_st1'] = $attr['start'];
-
-		if(isset($attr['end']))
-			$inline['po_et1'] = $attr['end'];
-
-
-		if(isset($attr['caption']))
-			$inline['po_cap1'] = $attr['caption'];
-
-		if(isset($attr['tag']) && $attr['tag'] != '') {
-			$term = get_term_by('name', $attr['tag'], 'post_tag');
-			if(array_key_exists($term->term_id, $tags)) {
-				$tagOptions = meta_to_object($tags[$term->term_id]['data']);
-			}
-		}
-		else {
-			$postOptions = meta_to_object($inline);
-		}
-
-	}
 
 	if($postOptions->isEnabled() || $tagOptions->isEnabled()) {
+
+		define('DONOTCACHEPAGE', true);
+		define('DONOTCACHEDB', true);
+		define('DONOTMINIFY', true);
+		define('DONOTCDN', true);
+		define('DONOTCACHCEOBJECT', true);
+
 		include_once dirname( __FILE__ ) . '/api/TinyPass.php';
 
 		if($postOptions->getResourceId() == '') {
@@ -247,33 +206,47 @@ function tinypass_intercept_content($content) {
 			$offer2 = null;
 		}
 
+
+		$offerTrialActive1 = false;
+		$offerTrialActive2 = false;
+
+		if($offer1->isMetered()) {
+			$meter = $tp->getMeterDetails($offer1);
+			if($meter->isTrialPeriodActive()) {
+				$offerTrialActive1 = true;
+			}
+		}
+
+		if($offer2 != null && $offer2->isMetered()) {
+			$meter = $tp->getMeterDetails($offer2);
+			if($meter->isTrialPeriodActive()) {
+				$offerTrialActive2 = true;
+			}
+		}
+
 		//check single offer1
-		if($tp->isAccessGranted($offer1)) {
-			return $content;
+		if($tp->isAccessGranted($offer1) || $offerTrialActive1) {
+			return $content . $tp->getWebRequest()->getRequestScript();
 		}
 
 		//check offer2
-		if($offer2 != null && $tp->isAccessGranted($offer2)) {
-			return $content;
+		if($offer2 != null && $tp->isAccessGranted($offer2) || $offerTrialActive2) {
+			return $content . $tp->getWebRequest()->getRequestScript();
 		}
 
 		//They don't have access
 		if(is_page() == false && is_single() == false) {
-			return $content;
+			return $content . $tp->getWebRequest()->getRequestScript();
 		}
 
-		if(has_excerpt()) {
-			$content = get_the_excerpt();
-		}else {
-			$c = get_extended($post->post_content);
+		$c = get_extended_with_tpmore($post->post_content);
 
-			if($c['extended'] == '') {
-				//means there was no <!--more--> defined
-				$content = tinypass_trim_excerpt($content);
+		if($c['extended'] == '') {
+			//means there was no <!--more--> defined
+			$content = tinypass_trim_excerpt($content);
 
-			} else {
-				$content = ($c['main']);
-			}
+		} else {
+			$content = ($c['main']);
 		}
 
 		$ticket = new TPTicket($offer1, null);
@@ -283,11 +256,38 @@ function tinypass_intercept_content($content) {
 
 		$tinypass_ticket = $ticket;
 
+//		return $content .= " [TP_HOOK]" . $tp->getWebRequest()->getRequestScript();
 		return $content .= " [TP_HOOK]";
 	}
 
 	return $content;
 }
+
+function get_extended_with_tpmore($post) {
+
+	$regex ='/<!--more(.*?)?-->/' ;
+	$tpmore_regex ='/<!--tpmore(.*?)?-->/' ;
+
+	if ( preg_match($tpmore_regex, $post)) {
+		$regex = $tpmore_regex;
+	}
+
+	//Match the new style more links
+	if ( preg_match($regex, $post, $matches) ) {
+		list($main, $extended) = explode($matches[0], $post, 2);
+	} else {
+		$main = $post;
+		$extended = '';
+	}
+
+	// Strip leading and trailing whitespace
+	$main = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $main);
+	$extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $extended);
+
+	return array('main' => $main, 'extended' => $extended);
+}
+
+
 
 function tinypass_append_ticket($content) {
 
@@ -310,24 +310,29 @@ function tinypass_append_ticket($content) {
 
 	$code .= '
 			<style type="text/css">
-				.tinypass_button_holder {
-					margin-top:20px;
+				.tinypass_display {
 					text-align: center;
 				}
-				.tinypass_button_holder .tinypass_access_message {
+				.tinypass_display .tinypass_access_message {
 						font-size: 1.1em;
 						margin-bottom: 10px;
 					}
 			</style> ';
 
-	$defaultButton .= '<div class="tinypass_button_holder"> <div class="tinypass_access_message">'
-					. stripslashes($settings['access_message']) .'</div> '
-					. $buttonHTML
-					. ' </div>';
+	$accessMessage = stripslashes($settings['access_message']);
 
-	if(preg_match(TINYPASS_INLINE_BUTTON, $content)) {
-		$content = preg_replace(TINYPASS_INLINE_BUTTON, $buttonHTML, $content);
-	} else if(preg_match('/\[TP_HOOK\]/', $content)) {
+	if(preg_match('/\[TP_BUTTON\]/', $accessMessage)) {
+		$defaultButton .= '<div class="tinypass_display">'
+						. preg_replace('/\[TP_BUTTON\]/', $buttonHTML, $accessMessage)
+						. ' </div>';
+	}else {
+		$defaultButton .= '<div class="tinypass_display"> <div class="tinypass_access_message">'
+						. stripslashes($settings['access_message']) .'</div> '
+						. $buttonHTML
+						. ' </div>';
+	}
+
+	if(preg_match('/\[TP_HOOK\]/', $content)) {
 		$content = preg_replace('/\[TP_HOOK\]/', $defaultButton, $content);
 	}else {
 		$content .= $defaultButton;
@@ -369,12 +374,24 @@ function tinypass_create_offer($tp, TinyPassOptions $options) {
 
 	$offer = new TPOffer($resource, $pos);
 
+
+	if($options->isTimeMetered() ) {
+
+		$offer->addPolicy(TPMeteredPolicy::createReminderByPeriod($options->getTrialPeriod(), $options->getLockoutPeriod()));
+
+	}else if($options->isCountMetered() ) {
+
+		$offer->addPolicy(TPMeteredPolicy::createReminderByAccessCount($options->getMaxAccessAttempts(), $options->getLockoutPeriod()));
+
+	}
+
 	return $offer;
 
 }
 class TinyPassOptions {
 
 	public function  __construct($data) {
+
 		$this->data = $data;
 
 		if($this->_isset('resource_name'))
@@ -443,14 +460,40 @@ class TinyPassOptions {
 		return strtotime($this->data["po_et$i"]);
 	}
 
+	public function isMetered() {
+		if($this->_isset('metered')) {
+			return in_array($this->data['metered'], array('count', 'time'));
+		}
+		return false;
+	}
+
+	public function isTimeMetered() {
+		return $this->isMetered() && $this->data['metered'] == 'time';
+	}
+
+	public function isCountMetered() {
+		return $this->isMetered() && $this->data['metered'] == 'count';
+	}
+
+
+	public function getLockoutPeriod() {
+		return $this->data["m_lp"] . " " . $this->data["m_lp_type"];
+	}
+
+	public function getMaxAccessAttempts() {
+		return $this->data["m_maa"];
+	}
+
+	public function getTrialPeriod() {
+		return $this->data["m_tp"];
+	}
+
 
 }
 
 function tinypass_trim_excerpt($text) {
 
 	$excerpt_length = apply_filters('excerpt_length', 100);
-
-	$text = preg_replace(TINYPASS_INLINE_REPLACE, '', $text);
 
 	$words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
 	if ( count($words) > $excerpt_length ) {
@@ -471,6 +514,9 @@ function tinypass_enabled_tags() {
 	if(WP_CACHE)
 		$results = wp_cache_get("tinypass_enabled_tags");
 
+	if($results)
+		return $results;
+
 	$terms = array();
 	if($results == false) {
 		$results = $wpdb->get_results("select * from $wpdb->tinypass_ref ", ARRAY_A);
@@ -481,12 +527,27 @@ function tinypass_enabled_tags() {
 		}
 
 		if(WP_CACHE)
-			wp_cache_set("tinypass_enabled_tags", $results);
+			wp_cache_set("tinypass_enabled_tags", $terms);
 	}
 
 	return $terms;
 
 }
+
+
+// Add the Style selectbox to the second row of MCE buttons
+//function my_mce_buttons_2($buttons) {
+//	array_unshift($buttons, 'styleselect');
+//	return $buttons;
+//}
+//add_filter('mce_buttons_2', 'my_mce_buttons_2');
+
+//function tinypass_mce_before_init($init_array) {
+	// add classes using a ; separated values
+//	$init_array['theme_advanced_styles'] = "Class=first-class;Other class=other-class";
+//	return $init_array;
+//}
+//add_filter('tiny_mce_before_init', 'tinypass_mce_before_init');
 
 
 ?>
