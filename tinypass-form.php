@@ -171,7 +171,8 @@ function tinypass_options_overview($values, $post = null) {
 		$output .= "<input type='hidden' name='tinypass[$name]' value='$value'>";
 	}
 
-	$resource_name = $values['resource_name'];
+
+	$resource_name = htmlspecialchars(stripslashes($values['resource_name']));
 
 	if($resource_name == '')
 		$resource_name = 'Default to post title';
@@ -201,7 +202,7 @@ function tinypass_options_overview($values, $post = null) {
 		}
 
 		if($caption != '') {
-			$line .= "<div><strong>Caption:</strong>&nbsp; '$caption'</div>";
+			$line .= "<div><strong>Caption:</strong>&nbsp; '". htmlspecialchars(stripslashes($caption)) . "'</div>";
 		}
 
 		if($startTime != '' && $endTime != '')
@@ -349,7 +350,7 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 						<?php } ?>
 				<strong><?php echo $resource_name_label ?></strong> - this value will be displayed in the TinyPass popup window
 				<br>
-				<input type="text" size="35" maxlength="255" name="tinypass[resource_name]" value="<?php echo $resource_name ?>">
+				<input type="text" size="35" maxlength="255" name="tinypass[resource_name]" value="<?php echo htmlspecialchars(stripslashes($resource_name)) ?>">
 				<div class="description"><?php echo $resource_name_label_desc?></div>
 			</td>
 		</tr>
@@ -526,7 +527,7 @@ function __tinypass_price_option_display($opt, $values) {
 	}
 
 	if(isset($values["po_cap$opt"])) {
-		$caption = $values["po_cap$opt"];
+		$caption = htmlspecialchars(stripslashes($values["po_cap$opt"]));
 	}
 
 	if(isset($values["po_st$opt"])) {
