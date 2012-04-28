@@ -1,14 +1,14 @@
 <?php
 /**
  * @package TinyPass
- * @version 1.4.11
+ * @version 1.4.12
  */
 /*
 Plugin Name: TinyPass
 Plugin URI: http://www.tinypass.com
 Description: TinyPass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free TinyPass publisher account and configure the TinyPass plugin for your WordPress site
 Author: TinyPass
-Version: 1.4.11
+Version: 1.4.12
 Author URI: http://www.tinypass.com
 */
 
@@ -362,10 +362,10 @@ function tinypass_create_offer($tp, TinyPassOptions $options) {
 				$po->setCaption($options->getCaption($i));
 
 			if($options->getStartDateSec($i) != '')
-				$po->setStartDate($options->getStartDateSec($i));
+				$po->setStartDateInSecs($options->getStartDateSec($i));
 
 			if($options->getEndDateSec($i) != '')
-				$po->setEndDate($options->getEndDateSec($i));
+				$po->setEndDateInSecs($options->getEndDateSec($i));
 
 			$pos[] = $po;
 
