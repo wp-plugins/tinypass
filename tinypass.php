@@ -303,6 +303,8 @@ function tinypass_append_ticket($content) {
 
 	$buttonHTML = $ticket->createButton();
 
+	$tp->getWebRequest()->setCallback("tinypass_reloader");
+
 	$tp->getWebRequest()->addTicket($ticket);
 
 	$code = $tp->getWebRequest()->getRequestScript();
@@ -317,7 +319,14 @@ function tinypass_append_ticket($content) {
 						font-size: 1.1em;
 						margin-bottom: 10px;
 					}
-			</style> ';
+			</style>
+			<script>
+					if(typeof tinypass_reloader != \'function\') {
+						function tinypass_reloader(status){
+						 if(status.state == \'granted\'){ window.location.reload(); }
+						}
+					}
+			</script>';
 
 	$accessMessage = stripslashes($settings['access_message']);
 
