@@ -43,7 +43,7 @@ class TPReminderMeteredPricing extends TPMeteredPolicyImpl {
 		$meter->set(TPPolicy::POLICY_TYPE, TPPolicy::REMINDER_METER_BY_TIME);
 
 		$parsed = TPPriceOption::parseLoosePeriod($trialPeriod);
-		$trialEndTime = time() + $parsed;
+		$trialEndTime = (time()*1000) + $parsed;
 		$meter->set(TPToken::METER_TRIAL_ENDTIME, TPToken::convertToEpochSeconds($trialEndTime));
 		$meter->set(TPToken::METER_LOCKOUT_ENDTIME, TPToken::convertToEpochSeconds($trialEndTime + TPPriceOption::parseLoosePeriod($lockoutPeriod)));
 		return $meter;

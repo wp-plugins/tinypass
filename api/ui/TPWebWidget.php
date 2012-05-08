@@ -52,7 +52,7 @@ class TPWebWidget {
 
 		if ($this->tp->__hasLocalTokenChanges()) {
 			$init = true;
-			$s = "<script> document.cookie= '" . $this->tp->__generateLocalCookie() . " ;path=/;expires=' + new Date(new Date().getTime() + 1000*60*60*24*90).toGMTString();</script>";
+			$s = "<script> document.cookie= '" . $this->tp->__generateLocalCookie() . " ;path=/;expires=' + new Date(new Date().getTime() + 1296000000).toGMTString();</script>";
 			$template .= $s;
 		}
 
