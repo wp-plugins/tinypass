@@ -6,10 +6,16 @@ add_action('wp_ajax_tp_deleteTagOption', 'ajax_tp_deleteTagOption');
 wp_enqueue_script("jquery-ui");
 wp_enqueue_script('jquery-ui-dialog');
 
+
+/**
+ * AJAX callback for deleting tinypass enabled tags
+ */
 function ajax_tp_deleteTagOption() {
 	global $wpdb;
 
 	if(!current_user_can('edit_posts')) die();
+
+	if (! wp_verify_nonce($_REQUEST['tinypass_nonce'], 'tinypass_options') ) die('Security check failed');
 
 	$termId = $_POST['term_id'];
 	$wpdb->query("delete from $wpdb->tinypass_ref where term_id = $termId ");
@@ -17,8 +23,12 @@ function ajax_tp_deleteTagOption() {
 	die();
 }
 
+/**
+ * AJAX callback to show the TinyPass options form for both tags and posts/pages
+ */
 function ajax_tp_showEditPopup() {
 	if(!current_user_can('edit_posts')) die();
+
 	$postID = $_POST['post_ID'];
 	$type = $_POST['tp_type'];
 	$termId = $_POST['term_id'];
@@ -41,7 +51,10 @@ function ajax_tp_showEditPopup() {
  *
  */
 function ajax_tp_saveEditPopup() {
+
 	if(!current_user_can('edit_posts')) die();
+
+	if (! wp_verify_nonce($_REQUEST['tinypass_nonce'], 'tinypass_options') ) die('Security check failed');
 
 	$fields = array('po_ap', 'po_cap', 'po_en', 'po_et', 'po_p', 'po_st', 'po_type');
 	foreach($fields as $f) {
@@ -71,23 +84,45 @@ function ajax_tp_saveEditPopup() {
 	}else {
 		if(isset($values['en']) == false)
 			$_POST['tinypass']['en'] = 0;
-		tinypass_save_postdata($_POST['post_ID']);
+		tinypass_save_post_data($_POST['post_ID']);
 		echo tinypass_options_overview($values);
 	}
 
 	die();
 }
 
+
+/**
+ * Method will save the TinyPass options data for posts or pages
+ */
+function tinypass_save_post_data($post_id) {
+
+	delete_post_meta($post_id, 'tinypass');
+
+	$data = array();
+
+	if(isset($_POST['tinypass']))
+		$data = $_POST['tinypass'];
+
+	update_post_meta($post_id, 'tinypass', $data, true);
+
+	return $data;
+}
+
+
+/**
+ * Validate TinyPass post/tag options when saving
+ */
 function tinypass_validate_popup_values($values, $type) {
 
 	$errors = array();
 	if($type == 'tag') {
 
 		if($values['resource_id'] == '')
-			$errors['resource_id'] = 'Tag name cannot be empty';
+			$errors['resource_id'] = _('Tag name cannot be empty');
 
 		if($values['resource_name'] == '')
-			$errors['resource_name'] = 'Description cannot be empty';
+			$errors['resource_name'] = _('Description cannot be empty');
 	}
 
 	for($i = 1; $i <= 3; $i++) {
@@ -95,25 +130,25 @@ function tinypass_validate_popup_values($values, $type) {
 		if($values['po_en' . $i] == 0)
 			continue;
 
-		if(isset($values['po_p' . $i]) && $values['po_p' . $i] == '' || is_numeric($values['po_p' . $i]) == false)
-			$errors['po_p' . $i] = 'Price must be valid number' . $i;
+		if(isset($values['po_p' . $i]) && $values['po_p' . $i] == '' || is_numeric($values['po_p' . $i]) == false || intval($values['po_p']) == 0)
+			$errors['po_p' . $i] = _("Price($i) must be valid number greater then zero ");
 
 		if(isset($values['po_ap' . $i]) && $values['po_ap' . $i] != '' && is_numeric($values['po_ap' . $i]) == false)
-			$errors['po_ap' . $i] = 'Access period must be valid number';
+			$errors['po_ap' . $i] = _('Access period must be valid number');
 	}
 
 
 	if(isset($values['metered']) && $values['metered'] != 'off') {
 
 		if(isset($values['m_lp']) && $values['m_lp'] == '' || is_numeric($values['m_lp']) == false)
-			$errors['m_lp'] = 'Lockout period must be a valid number';
+			$errors['m_lp'] = _('Lockout period must be a valid number');
 	}
 
 	//validate metered options
 	if($values['metered'] == 'time') {
 
 		if(isset($values['m_tp']) && $values['m_tp'] == '' || is_numeric($values['m_tp']) == false)
-			$errors['m_tp'] = 'Trial period must be a valid number';
+			$errors['m_tp'] = _('Trial period must be a valid number');
 
 	}else if($values['metered'] == 'count') {
 
@@ -263,7 +298,7 @@ function tinypass_post_header_form($meta) {
  */
 function tinypass_page_form($meta, $postID = null, $type = null) {
 
-	wp_nonce_field( 'tinypass_post_save', 'tinypass_noncename' );
+	wp_nonce_field( 'tinypass_options', 'tinypass_nonce' );
 
 	$resource_id = '';
 	$resource_name = '';

@@ -28,65 +28,15 @@ if ( is_admin() ) {
 	require_once dirname( __FILE__ ) . '/tinypass-admin.php';
 	require_once dirname( __FILE__ ) . '/tinypass-form.php';
 	include_once (dirname (__FILE__) . '/tinymce/plugin.php');
+
+	register_activation_hook(__FILE__,'tinypass_activate');
+	register_deactivation_hook(__FILE__,'tinypass_deactivate');
+	register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 }
 
-register_activation_hook(__FILE__,'tinypass_activate');
-register_deactivation_hook(__FILE__,'tinypass_deactivate');
-register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
-//add_action('save_post', 'tinypass_save_postdata');
 add_filter('the_content', 'tinypass_intercept_content', 5);
 add_filter('the_content', 'tinypass_append_ticket', 200);
-
-function tinypass_save_postdata($post_id) {
-
-	// verify this came from the our screen and with proper authorization,
-	// because save_post can be triggered at other times
-
-	/*
-	if(isset($_POST['tinypass_noncename'])) {
-		if ( !wp_verify_nonce($_POST['tinypass_noncename'], 'tinypass_post_save') )
-			return $post_id;
-	}
-
-	// verify if this is an auto save routine.
-	// If it is our form has not been submitted, so we dont want to do anything
-	if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
-		return $post_id;
-	*/
-
-
-	// Check permissions
-	/*
-	if ( 'page' == $_POST['post_type'] ) {
-		if ( !current_user_can( 'edit_page', $post_id ) )
-			return $post_id;
-	}
-	else {
-		if ( !current_user_can( 'edit_post', $post_id ) )
-			return $post_id;
-	}
-	*/
-
-	delete_post_meta($post_id, 'tinypass');
-
-	$data = array();
-
-	if(isset($_POST['tinypass']))
-		$data = $_POST['tinypass'];
-
-	update_post_meta($post_id, 'tinypass', $data, true);
-
-	return $data;
-}
-
-/**
- * Wrap the TinyPass options in a more useful class
- */
-function meta_to_object($meta) {
-	$options = new TinyPassOptions($meta);
-	return $options;
-}
 
 /**
  * Load and init global tinypass settings
@@ -142,18 +92,18 @@ function tinypass_intercept_content($content) {
 
 	//pull tinypass options from post_meta
 	$meta = get_post_meta($post->ID, 'tinypass', true);
-	$postOptions = meta_to_object($meta);
+	$postOptions = meta_to_tp_options($meta);
 
 	//pull tinypass options from tag
 	$terms = get_the_terms($post->ID, 'post_tag');
 	$tags = tinypass_enabled_tags();
 
-	$tagOptions = meta_to_object(array());
+	$tagOptions = meta_to_tp_options(array());
 
 	if($terms) {
 		foreach($terms as $term) {
 			if(array_key_exists($term->term_id, $tags)) {
-				$tagOptions = meta_to_object($tags[$term->term_id]['data']);
+				$tagOptions = meta_to_tp_options($tags[$term->term_id]['data']);
 			}
 		}
 	}
@@ -256,7 +206,6 @@ function tinypass_intercept_content($content) {
 
 		$tinypass_ticket = $ticket;
 
-//		return $content .= " [TP_HOOK]" . $tp->getWebRequest()->getRequestScript();
 		return $content .= " [TP_HOOK]";
 	}
 
@@ -397,6 +346,62 @@ function tinypass_create_offer($tp, TinyPassOptions $options) {
 	return $offer;
 
 }
+
+function tinypass_trim_excerpt($text) {
+
+	$excerpt_length = apply_filters('excerpt_length', 100);
+
+	$words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
+	if ( count($words) > $excerpt_length ) {
+		array_pop($words);
+		$text = implode(' ', $words);
+	} else {
+		$text = implode(' ', $words);
+	}
+	return $text;
+
+}
+
+function tinypass_enabled_tags() {
+	global $wpdb;
+
+	$results = false;
+
+	if(WP_CACHE)
+		$results = wp_cache_get("tinypass_enabled_tags");
+
+	if($results)
+		return $results;
+
+	$terms = array();
+	if($results == false) {
+		$results = $wpdb->get_results("select * from $wpdb->tinypass_ref ", ARRAY_A);
+
+		foreach($results as $i => $row) {
+			$row['data'] = unserialize($row['data']);
+			$terms[$row['term_id']] = $row;
+		}
+
+		if(WP_CACHE)
+			wp_cache_set("tinypass_enabled_tags", $terms);
+	}
+
+	return $terms;
+
+}
+
+/**
+ * Wrap the TinyPass options in our Options class
+ */
+function meta_to_tp_options($meta) {
+	$options = new TinyPassOptions($meta);
+	return $options;
+}
+
+
+/**
+ * Options Helper Class used generically across PHP plugins
+ */
 class TinyPassOptions {
 
 	public function  __construct($data) {
@@ -500,63 +505,7 @@ class TinyPassOptions {
 
 }
 
-function tinypass_trim_excerpt($text) {
 
-	$excerpt_length = apply_filters('excerpt_length', 100);
-
-	$words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
-	if ( count($words) > $excerpt_length ) {
-		array_pop($words);
-		$text = implode(' ', $words);
-	} else {
-		$text = implode(' ', $words);
-	}
-	return $text;
-
-}
-
-function tinypass_enabled_tags() {
-	global $wpdb;
-
-	$results = false;
-
-	if(WP_CACHE)
-		$results = wp_cache_get("tinypass_enabled_tags");
-
-	if($results)
-		return $results;
-
-	$terms = array();
-	if($results == false) {
-		$results = $wpdb->get_results("select * from $wpdb->tinypass_ref ", ARRAY_A);
-
-		foreach($results as $i => $row) {
-			$row['data'] = unserialize($row['data']);
-			$terms[$row['term_id']] = $row;
-		}
-
-		if(WP_CACHE)
-			wp_cache_set("tinypass_enabled_tags", $terms);
-	}
-
-	return $terms;
-
-}
-
-
-// Add the Style selectbox to the second row of MCE buttons
-//function my_mce_buttons_2($buttons) {
-//	array_unshift($buttons, 'styleselect');
-//	return $buttons;
-//}
-//add_filter('mce_buttons_2', 'my_mce_buttons_2');
-
-//function tinypass_mce_before_init($init_array) {
-	// add classes using a ; separated values
-//	$init_array['theme_advanced_styles'] = "Class=first-class;Other class=other-class";
-//	return $init_array;
-//}
-//add_filter('tiny_mce_before_init', 'tinypass_mce_before_init');
 
 
 ?>

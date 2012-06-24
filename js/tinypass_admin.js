@@ -40,6 +40,8 @@ var tinypass = {
 	deleteTagOption:function(termId){
 		data = 'tagPopup=t&action=tp_deleteTagOption&tp_type=tag&term_id=' + termId;
 
+		data += "&tinypass_nonce=" + jQuery("#tinypass_nonce").val();
+
 		jQuery.post(ajaxurl, data, function(response) {
 			jQuery("#tp_hidden_options").html(response);
 			jQuery("#tp_dialog").dialog('close');
