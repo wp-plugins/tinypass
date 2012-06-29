@@ -130,7 +130,7 @@ function tinypass_validate_popup_values($values, $type) {
 		if($values['po_en' . $i] == 0)
 			continue;
 
-		if(isset($values['po_p' . $i]) && $values['po_p' . $i] == '' || is_numeric($values['po_p' . $i]) == false || intval($values['po_p']) == 0)
+		if(isset($values['po_p' . $i]) && $values['po_p' . $i] == '' || is_numeric($values['po_p' . $i]) == false || intval($values['po_p' . $i]) == 0)
 			$errors['po_p' . $i] = _("Price($i) must be valid number greater then zero ");
 
 		if(isset($values['po_ap' . $i]) && $values['po_ap' . $i] != '' && is_numeric($values['po_ap' . $i]) == false)

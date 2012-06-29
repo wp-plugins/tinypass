@@ -37,18 +37,27 @@ function tinypass_meta_box_display($post) {
 }
 
 
-define( 'TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace( basename( __FILE__ ), "", plugin_basename( __FILE__ ) ) );
+/* Adding scripts to admin pages */
+add_action('admin_enqueue_scripts' . $page, 'tinypass_add_admin_scripts');
 
-if (version_compare($wp_version, '3.1', '<')) {
-	wp_enqueue_script( 'jquery-ui-slider', TINYPASSS_PLUGIN_PATH . 'js/ui.slider.min-1.7.3.js', array( 'jquery-ui-core' ), false, true );
-	wp_enqueue_script( 'jquery-ui-datepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.datepicker.min-1.7.3.js', array( 'jquery-ui-core' ), false, true );
-} else {
-	wp_enqueue_script( 'jquery-ui-slider', TINYPASSS_PLUGIN_PATH . 'js/ui.slider.min-1.8.10.js', array( 'jquery-ui-core' ), false, true );
-	wp_enqueue_script( 'jquery-ui-datepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.datepicker.min-1.8.10.js', array( 'jquery-ui-core' ), false, true );
+function tinypass_add_admin_scripts(){
+    
+    define( 'TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace( basename( __FILE__ ), "", plugin_basename( __FILE__ ) ) );
+    
+    wp_enqueue_script("jquery-ui");
+    wp_enqueue_script('jquery-ui-dialog');
+
+    if (version_compare($wp_version, '3.1', '<')) {
+            wp_enqueue_script( 'jquery-ui-slider', TINYPASSS_PLUGIN_PATH . 'js/ui.slider.min-1.7.3.js', array( 'jquery-ui-core' ), false, true );
+            wp_enqueue_script( 'jquery-ui-datepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.datepicker.min-1.7.3.js', array( 'jquery-ui-core' ), false, true );
+    } else {
+            wp_enqueue_script( 'jquery-ui-slider', TINYPASSS_PLUGIN_PATH . 'js/ui.slider.min-1.8.10.js', array( 'jquery-ui-core' ), false, true );
+            wp_enqueue_script( 'jquery-ui-datepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.datepicker.min-1.8.10.js', array( 'jquery-ui-core' ), false, true );
+    }
+    wp_enqueue_script( 'jquery-ui-timepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.timepicker.min.js', array( 'jquery-ui-datepicker' ), false, true );
+    wp_enqueue_script( 'tinypass_admin', TINYPASSS_PLUGIN_PATH . 'js/tinypass_admin.js', array('jquery' ), false, true );
+    wp_enqueue_style( 'jquery-ui-1.8.2.custom.css', TINYPASSS_PLUGIN_PATH . 'css/jquery-ui-1.8.2.custom.css' );    
 }
-wp_enqueue_script( 'jquery-ui-timepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.timepicker.min.js', array( 'jquery-ui-datepicker' ), false, true );
-wp_enqueue_script( 'tinypass_admin', TINYPASSS_PLUGIN_PATH . 'js/tinypass_admin.js', array('jquery' ), false, true );
-wp_enqueue_style( 'jquery-ui-1.8.2.custom.css', TINYPASSS_PLUGIN_PATH . 'css/jquery-ui-1.8.2.custom.css' );
 
 
 function tinypass_admin_settings() {
