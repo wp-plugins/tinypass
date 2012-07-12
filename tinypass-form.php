@@ -130,8 +130,15 @@ function tinypass_validate_popup_values($values, $type) {
 		if($values['po_en' . $i] == 0)
 			continue;
 
-		if(isset($values['po_p' . $i]) && $values['po_p' . $i] == '' || is_numeric($values['po_p' . $i]) == false || intval($values['po_p' . $i]) == 0)
-			$errors['po_p' . $i] = _("Price($i) must be valid number greater then zero ");
+
+		if(isset($values['po_p' . $i])) {
+			$p = $values['po_p' . $i];
+			if($p == '' || (is_numeric($p) && doubleval($p) < 0)) {
+				$errors['po_p' . $i] = _("Price($i) must be greater then zero");
+			} else if (!preg_match('/\d*[.,]?\d+/', $p)) {
+				$errors['po_p' . $i] = _("Price($i) must be a number or <# CUR> e.g. 1 EUR or 2.99 NOK or 1 (default USD) ");
+			}
+		}
 
 		if(isset($values['po_ap' . $i]) && $values['po_ap' . $i] != '' && is_numeric($values['po_ap' . $i]) == false)
 			$errors['po_ap' . $i] = _('Access period must be valid number');
@@ -144,7 +151,7 @@ function tinypass_validate_popup_values($values, $type) {
 			$errors['m_lp'] = _('Lockout period must be a valid number');
 	}
 
-	//validate metered options
+//validate metered options
 	if($values['metered'] == 'time') {
 
 		if(isset($values['m_tp']) && $values['m_tp'] == '' || is_numeric($values['m_tp']) == false)
@@ -391,7 +398,7 @@ function tinypass_page_form($meta, $postID = null, $type = null) {
 		</tr>
 	</table>
 		<?php if($type == 'tag'): ?>
-			<hr>
+	<hr>
 			<?php __tinypass_metered_options_display($meta)  ?>
 		<?php endif; ?>
 	<hr>
@@ -602,7 +609,7 @@ function __tinypass_price_option_display($opt, $values) {
 						<input type="hidden" name="tinypass[<?php echo "po_en$opt"?>]" value="<?php echo $enabled ?>">
 					</td>
 					<td>
-						<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_p$opt"?>]" value="<?php echo $price ?>">
+						<input type="text" size="5" maxlength="10" name="tinypass[<?php echo "po_p$opt"?>]" value="<?php echo $price ?>">
 					</td>
 					<td>
 						<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_ap$opt"?>]" value="<?php echo $access_period ?>">
@@ -633,7 +640,7 @@ function __tinypass_price_option_display($opt, $values) {
 		</td>
 	</tr>
 </table>
-<?php }
+	<?php }
 
 function __tinypass_dropdown($name, $values, $selected, $attrs) {
 
