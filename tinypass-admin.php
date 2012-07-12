@@ -257,7 +257,7 @@ function tinypass_admin_tags() {
 				</div>
 
 				<input id="tp_enabled" type="hidden" name="tinypass[en]" checked=true>
-				<div id="tp_dialog" title="<img src='http://www.tinypass.com/favicon.ico'> TinyPass Post Options" style="display:none;width:650px;"></div>
+				<div id="tp_dialog" title="<img src='http://www.tinypass.com/favicon.ico'> TinyPass Tag Settings" style="display:none;width:650px;"></div>
 				<div id="tp_hidden_options">
 						<?php echo tinypass_admin_tags_body() ?>
 				</div>
