@@ -3,6 +3,7 @@
 add_action('wp_ajax_tp_showEditPopup', 'ajax_tp_showEditPopup');
 add_action('wp_ajax_tp_saveEditPopup', 'ajax_tp_saveEditPopup');
 add_action('wp_ajax_tp_deleteTagOption', 'ajax_tp_deleteTagOption');
+wp_enqueue_script("jquery-core");
 wp_enqueue_script("jquery-ui");
 wp_enqueue_script('jquery-ui-dialog');
 

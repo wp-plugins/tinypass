@@ -44,7 +44,8 @@ function tinypass_add_admin_scripts(){
     
     define( 'TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace( basename( __FILE__ ), "", plugin_basename( __FILE__ ) ) );
     
-    wp_enqueue_script("jquery-ui");
+    wp_enqueue_script("jquery-core");
+		wp_enqueue_script("jquery-ui");
     wp_enqueue_script('jquery-ui-dialog');
 
     if (version_compare($wp_version, '3.1', '<')) {
