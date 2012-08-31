@@ -1,6 +1,6 @@
 === TinyPass ===
 Contributors: wordpress@tinypass.com
-Tags: tinypass, premium content, paywall, paid content, monetization, micropayments, access control
+Tags: tinypass, premium content, paywall, paid content, monetization, micropayments, access control, sell content, sell access, subscriptions, 
 Requires at least: 3.1.0
 Tested up to: 3.3.0
 Stable tag: 1.4.16
@@ -10,9 +10,15 @@ TinyPass is the best way to charge for access to content on your WordPress site.
 
 == Description ==
 
-TinyPass is a simple, powerful service that allows any online publisher to easily accept quick and secure payments for access to any type of content. TinyPass can process payments as small as 10 cents, and doesn't require changing your site's existing structure or layout.
+TinyPass is a simple, powerful plugin that allows any online publisher to easily sell access to any type of content, whether it's a blog post, a site subscription, a digital download, or even a pay-per-view video. TinyPass can accept payments as small as 10 cents, and doesn't require changing your site's existing structure or layout. We make it easy to charge for content! 
 
-You can use TinyPass to charge for access to a single post or a bundle of posts. TinyPass also allows you to offer discounts to those visitors who choose to purchase multiple posts.
+Any site, large or small, can use TinyPass to easily build a new revenue stream from paid-content. And while you're still free to earn money from advertising anywhere on your site, we've seen that a simply paid-content plan can quickly surpass what you can earn from advertising, even if you're only selling access to a small percentage of your site's content. And since it doesn't cost anything to get started with TinyPass, we make it easy to experiment with charging for content.  
+
+You can use TinyPass to charge for access to a single post or a bundle of posts, and you can even offer discounts to those visitors who choose to purchase multiple posts. There are no merchant accounts to create, and no hoops to jump through when it comes to getting paid. 
+
+Selling content is easy with TinyPass. Just create a free publisher account at TinyPass.com, download our plugin, then decide what content you want to charge for. In minutes you can start to sell access on a per-post basis, or use our simple tagging method to build a subscription plan, offer tiers of membership, bundles of content, or simply sell access to the occasional "premium" post. 
+
+And for your visitors, buying access to content through TinyPass couldn't be easier. We offer a wide choice of payment methods, we don't require your visitors to create an account before making a purchase, and all transactions happen in a quick, secure environment. Gone are the days of clunky shopping carts and confusing checkouts! 
 
 For more on TinyPass, visit http://www.tinypass.com
 
@@ -22,7 +28,7 @@ For more on TinyPass, visit http://www.tinypass.com
 
 1. In your WordPress dashboard, go to Plugins->Add New and either upload TinyPass (if you've already downloaded the plugin), or search for the TinyPass plugin within WordPress and simply click "install".
 
-2. If you haven't already, go to http://tinypass.com/home/publishers/register to create a free publisher account and to register your initial application. (An application is the category of content that you want to charge for using TinyPass, e.g. the recipe section of your WordPress food blog.)
+2. If you haven't already, go to http://tinypass.com/home/publishers/register to create a free publisher account and to register your initial application. (When using TinyPass for WordPress, you only need to register one application per site. If you'd like to use TinyPass on multiple sites but collect all the payments into one account, please contact us and we'll help you get that setup.)
 
 3. In your WordPress dashboard, go to TinyPass->Settings. Under Application IDs and Keys you will see four fields. 
 
@@ -40,15 +46,41 @@ For more on TinyPass, visit http://www.tinypass.com
 
 = What is TinyPass? =
 
-TinyPass is a flexible, powerful, enterprise-level paywall software platform. (We don't love the term "paywall", because it implies a binary either-you-pay-or-you're-locked-out paradigm, and TinyPass enables much more sophisticated pricing models, but it is a common industry term.) We enable publishers and content creators to charge in any amount, on their own sites, with pricing rules that they control.
+TinyPass is a flexible, powerful, enterprise-grade tool for selling access to any kind of digital content. We enable publishers and content creators to charge in any amount, on their own sites, with pricing rules that they control.
+
+For WordPress, we offer a customized interface in your WordPress dashboard that takes all the hard work out of charging for access to your content. Whether you're using TinyPass to protect a blog post, charge for a pay-per-view video, or monetize your photography website, TinyPass offers a simple system for selling content that works seamlessly with WordPress. 
+
+= So it's like a paywall? = 
+
+We don't love the term "paywall", because it implies a binary either-you-pay-or-you're-locked-out paradigm, and TinyPass enables much more sophisticated pricing models, but it is a common industry term. So if a paywall is what you're looking for, we have lots of satisfied publishers who use TinyPass for exactly that! 
 
 = How do I use TinyPass? =
 
 You can deploy TinyPass in one of two ways: either you can use one of our existing plug-ins for popular CMS platforms (Wordpress, Drupal and Joomla are currently available, with more on the way), or you can use our API to integrate TinyPass into another existing system. Currently we offer libraries for Java, .NET, and PHP.
 
+But since you're looking at TinyPass for WordPress, here's how it works: Just create a free publisher account at TinyPass.com, download our plugin, then decide what content you want to charge for. In minutes you can start to sell access on a per-post basis. Just use the simple WordPress dashboard interface to set a preview, a price, an access period, and you're done! OR, you can use our simple tagging method to build a subscription plan, offer tiers of membership, bundles of content, or simply sell access to the occasional "premium" post. 
+
+The TinyPass plugin was designed to sell content in a way that makes sense for WordPress, and there's no need to work with any of the code if you don't want to.
+
+= Do I need to have any merchant or payment accounts to use TinyPass? =
+
+Nope! We think WordPress publishers should be able to sell content without jumping through payment industry hoops. So we handle all of that for you, managing relationships with PayPal, Google Checkout, Amazon, and all the major credit card processors in order to offer your visitors a wide variety of payment methods. You can log in to your publisher dashboard at TinyPass.com at anytime to track your sales in real time and request payout of your balance. 
+
+= How much can I charge? =
+
+You can use TinyPass to charge as little as 10¿ or as much as $200 per transaction. (Higher price points are allowed on a case-by-case basis. Just drop us a line if needed!) 
+
+= Can I set my prices in other currencies? =
+
+TinyPass can be used to sell access to content around the world. To support that, we make it easy to display pricing in 24 of the most popular currencies. There's a full list here: http://www.developer.tinypass.com/main/wordpress#foreign_currency
+
+= Do you manage subscriptions? = 
+
+Yep. With TinyPass, you can setup ongoing subscriptions to whatever content you've protected. 
+
 = What makes TinyPass unique? =
 
-Unlike other approaches to paid-content, TinyPass allows anyone publishing digital content to design a pay-to-access plan that won't alienate their audience. Charge at price points from 10¢ to $200, charge for as much or as little content as you want, and charge in a way that allows your audience to make quick, simple and secure payments.
+Unlike other approaches to paid-content, TinyPass allows anyone publishing digital content to design a pay-to-access plan that won't alienate their audience. Charge at price points from 10¿ to $200, charge for as much or as little content as you want, and charge in a way that allows your audience to make quick, simple and secure payments.
 
 = What features does TinyPass offer for WordPress users? =
 
@@ -135,3 +167,4 @@ Added support for both sandbox/prod aid/keys
 == Upgrade Notice ==
 
 None
+
