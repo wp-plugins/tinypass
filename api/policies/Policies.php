@@ -15,20 +15,17 @@ class TPMeteredPolicy {
 	}
 }
 
-class TPMeteredPolicyImpl extends TPPolicy {
-
-}
-class TPReminderMeteredPricing extends TPMeteredPolicyImpl {
+class TPReminderMeteredPricing extends TPPolicy {
 
 	public static function createByAccessCount($trialCount, $lockoutPeriod) {
 
 		$meter = new TPReminderMeteredPricing();
 
-		$meter->set(TPToken::METER_LOCKOUT_PERIOD, $lockoutPeriod);
+		$meter->set(TPTokenData::METER_LOCKOUT_PERIOD, $lockoutPeriod);
 		$meter->set(TPPolicy::POLICY_TYPE, TPPolicy::REMINDER_METER_BY_COUNT);
-		$meter->set(TPToken::METER_TYPE, TPMeterDetails::REMINDER);
-		$meter->set(TPToken::METER_TRIAL_MAX_ACCESS_ATTEMPTS, $trialCount);
-		$meter->set(TPToken::METER_TRIAL_ACCESS_ATTEMPTS, 0);
+		$meter->set(TPTokenData::METER_TYPE, TPTokenData::METER_REMINDER);
+		$meter->set(TPTokenData::METER_TRIAL_MAX_ACCESS_ATTEMPTS, $trialCount);
+		$meter->set(TPTokenData::METER_TRIAL_ACCESS_ATTEMPTS, 0);
 		return $meter;
 
 	}
@@ -37,15 +34,15 @@ class TPReminderMeteredPricing extends TPMeteredPolicyImpl {
 
 		$meter = new TPReminderMeteredPricing();
 
-		$meter->set(TPToken::METER_TRIAL_ACCESS_PERIOD, $trialPeriod);
-		$meter->set(TPToken::METER_LOCKOUT_PERIOD, $lockoutPeriod);
-		$meter->set(TPToken::METER_TYPE, TPMeterDetails::REMINDER);
+		$meter->set(TPTokenData::METER_TRIAL_ACCESS_PERIOD, $trialPeriod);
+		$meter->set(TPTokenData::METER_LOCKOUT_PERIOD, $lockoutPeriod);
+		$meter->set(TPTokenData::METER_TYPE, TPTokenData::METER_REMINDER);
 		$meter->set(TPPolicy::POLICY_TYPE, TPPolicy::REMINDER_METER_BY_TIME);
 
-		$parsed = TPPriceOption::parseLoosePeriod($trialPeriod);
-		$trialEndTime = (time()*1000) + $parsed;
-		$meter->set(TPToken::METER_TRIAL_ENDTIME, TPToken::convertToEpochSeconds($trialEndTime));
-		$meter->set(TPToken::METER_LOCKOUT_ENDTIME, TPToken::convertToEpochSeconds($trialEndTime + TPPriceOption::parseLoosePeriod($lockoutPeriod)));
+		$parsed = TPUtils::parseLoosePeriodInSecs($trialPeriod);
+		$trialEndTime = time() + $parsed;
+		$meter->set(TPTokenData::METER_TRIAL_ENDTIME, TPTokenData::convertToEpochSeconds($trialEndTime));
+		$meter->set(TPTokenData::METER_LOCKOUT_ENDTIME, TPTokenData::convertToEpochSeconds($trialEndTime + TPUtils::parseLoosePeriodInSecs($lockoutPeriod)));
 		return $meter;
 	}
 }
@@ -53,13 +50,13 @@ class TPReminderMeteredPricing extends TPMeteredPolicyImpl {
 /**
  * Metered Pricing
  */
-class TPStrictMeteredPricing extends TPMeteredPolicyImpl {
+class TPStrictMeteredPricing extends TPPolicy {
 
 	public static function createByPeriod($trialPeriod, $lockoutPeriod) {
 		$meter = new TPStrictMeteredPricing();
-		$meter->set(TPToken::METER_TRIAL_ACCESS_PERIOD, $trialPeriod);
-		$meter->set(TPToken::METER_LOCKOUT_PERIOD, $lockoutPeriod);
-		$meter->set(TPToken::METER_TYPE, TPMeterDetails::STRICT);
+		$meter->set(TPTokenData::METER_TRIAL_ACCESS_PERIOD, $trialPeriod);
+		$meter->set(TPTokenData::METER_LOCKOUT_PERIOD, $lockoutPeriod);
+		$meter->set(TPTokenData::METER_TYPE, TPTokenData::METER_STRICT);
 		$meter->set(TPPolicy::POLICY_TYPE, TPPolicy::STRICT_METER_BY_TIME);
 		return $meter;
 	}
@@ -95,7 +92,7 @@ class TPRestrictionPolicy extends TPPolicy {
 		$r = new TPRestrictionPolicy();
 		$r->set(TPPolicy::POLICY_TYPE, TPPolicy::RESTRICT_MAX_PURCHASES);
 		$r->set("amount", $maxAmount);
-		$r->set("withInPeriod", $withInPeriod);
+		$r->set("withinPeriod", $withInPeriod);
 		if($linkWithDetails)
 			$r->set("linkWithDetails", $linkWithDetails);
 

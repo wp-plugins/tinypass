@@ -26,7 +26,9 @@ class TPPolicy {
 
 class TPPricingPolicy {
 
-	public static function createBasic(array $priceOptions) {
+	public static function createBasic(array $priceOptions = null) {
+		if($priceOptions == null)
+				$priceOptions = array();
 		return new TPBasicPricing($priceOptions);
 	}
 }

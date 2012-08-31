@@ -2,48 +2,96 @@
 
 class TPJsonMsgBuilder {
 
-	public function buildTicketRequest(array $tickets) {
+	public function parseAccessTokens($raw) {
+
+		if($raw == null || $raw == "") return null;
+
+		$json = (array)json_decode($raw);
+		$accessTokenList = array();
+
+		if(!is_array($json)) {
+			$tokenMap = $json;
+			$ridHash = TPRIDHash::parse($tokenMap[TPTokenData::RID]);
+			$token = $this->parseAccessToken($ridHash, $tokenMap);
+			$accessToken = new TPAccessToken($token);
+			$accessTokenList[] = $accessToken;
+		}else {
+			foreach($json as $tokenMap) {
+				$tokenMap = (array)$tokenMap;
+				$rid = TPRID::parse($tokenMap[TPTokenData::RID]);
+				$token = $this->parseAccessToken($rid->toString(), $tokenMap);
+				$accessToken = new TPAccessToken($token);
+				$accessTokenList[] = $accessToken;
+			}
+		}
+
+		return new TPAccessTokenList($accessTokenList);
+	}
+
+	private function parseAccessToken($rid, $map) {
+
+		$token = new TPTokenData($rid);
+
+		$fields = array(
+						TPTokenData::ACCESS_ID,
+						TPTokenData::EX,
+						TPTokenData::IPS,
+						TPTokenData::UID,
+						TPTokenData::EARLY_EX,
+						TPTokenData::METER_TRIAL_ENDTIME,
+						TPTokenData::METER_LOCKOUT_PERIOD,
+						TPTokenData::METER_LOCKOUT_ENDTIME,
+						TPTokenData::METER_TRIAL_ACCESS_ATTEMPTS,
+						TPTokenData::METER_TRIAL_MAX_ACCESS_ATTEMPTS,
+						TPTokenData::METER_TYPE,
+		);
+
+
+		foreach($fields as $f) {
+			if(isset($map[$f]))
+				$token->addField($f, $map[$f]);
+		}
+
+
+		return $token;
+	}
+
+
+
+	public function buildPurchaseRequest(array $requestData) {
 		$list = array();
 
-		foreach($tickets as $ticket) {
-			$list[] = $this->buildTicket($ticket);
+		foreach($requestData as $request) {
+			$list[] = $this->buildRequest($request);
 		}
 
 		return json_encode($list);
 	}
 
-	public function buildTicket(TPTicket $ticket) {
+	public function buildRequest(TPPurchaseRequest $request) {
 
 		$ticketMap = array();
 
-		$ticketMap["o1"] = $this->buildOffer($ticket->getPrimaryOffer());
-		$ticketMap["t"] =  $ticket->getTimestampSecs();
-		$ticketMap["tags"] =  $ticket->getTags();
-		$ticketMap["v"] =  $ticket->getVersion();
-		$ticketMap["ip"] =  $ticket->getClientIP();
+		$ticketMap["o1"] = $this->buildOffer($request->getPrimaryOffer());
+		$ticketMap["t"] =  TPUtils::now();
+		$ticketMap["v"] =  TPConfig::$MSG_VERSION;
+		$ticketMap["cb"] =  $request->getCallback();
 
+		if($request->getClientIP())
+			$ticketMap["ip"] =  $request->getClientIP();
 
-		if ($ticket->getOptions() != null && count($ticket->getOptions()) > 0)
-			$ticketMap["opts"] =  $ticket->getOptions();
+		if($request->getUserRef() != null)
+			$ticketMap["uref"] = $request->getUserRef();
 
-		if ($ticket->getSecondaryOffer() != null) {
-			$ticketMap["o2"] = $this->buildOffer($ticket->getSecondaryOffer());
+		if ($request->getOptions() != null && count($request->getOptions()) > 0)
+			$ticketMap["opts"] =  $request->getOptions();
+
+		if ($request->getSecondaryOffer() != null) {
+			$ticketMap["o2"] = $this->buildOffer($request->getSecondaryOffer());
 		}
 
 
 		return $ticketMap;
-
-//		$ticketMap["rid"] = $ticket->getResource()->getRID();
-//		$ticketMap["rnm"] =  $ticket->getResource()->getResourceName();
-//		$ticketMap["t"] = $ticket->getTimestamp()*1000;
-//		$ticketMap["tags"] = $ticket->getTags();
-
-//		$pos = array();
-//		for ($i = 0; $i < count($ticket->getPriceOptions()); $i++) {
-//			$options = $ticket->getPriceOptions();
-//			$pos["opt" . $i] = $this->buildPriceOption($options[$i], $i);
-//		}
-//		$ticketMap["pos"] = $pos;
 
 	}
 
@@ -54,8 +102,8 @@ class TPJsonMsgBuilder {
 		$map["rnm"] = $offer->getResource()->getName();
 		$map["rurl"] = $offer->getResource()->getURL();
 
-		if ($options != null)
-			$map["opts"] = $options;
+		if ($offer->getTags())
+			$map["tags"] = $offer->getTags();
 
 		$pos = array();
 		$priceOptions = $offer->getPricing()->getPriceOptions();
@@ -74,22 +122,17 @@ class TPJsonMsgBuilder {
 
 	}
 
-	public function buildAccessTokenList(TPAccessTokenList $list) {
-		$map = array();
-		$map["aid"] = $list->getAID();
-		$map["uid"] = $list->getUID();
-		$map["built"] = time();
-		$map["ips"] = $list->getIPs();
-
-
+	public function buildAccessTokens(TPAccessTokenList $list) {
 		$tokens = array();
 
-		foreach($list->getTokens() as $rid => $token) {
-			array_push($tokens, $token->getValues());
+		foreach($list->getTokens() as $token) {
+			$tokens[] = $token->getTokenData()->getValues();
 		}
+		return json_encode($tokens);
+	}
 
-		$map["tokens"] = $tokens;
-		return json_encode($map);
+	public function buildAccessToken($accessToken) {
+		return json_encode($accessToken->getTokenData()->getValues());
 	}
 
 	private function nuller($value) {
@@ -107,6 +150,9 @@ class TPJsonMsgBuilder {
 		if ($po->getEndDateInSecs() != null && $po->getEndDateInSecs() != 0)
 			$map["ed"] = $this->nuller($po->getEndDateInSecs());
 
+		if ($po->isRecurring()) {
+			$map["recur"] = "true";
+		}
 
 		$map["cpt"] =  $this->nuller($po->getCaption());
 
@@ -119,56 +165,6 @@ class TPJsonMsgBuilder {
 		}
 		return $map;
 	}
-
-	public function parseAccessTokenList($raw) {
-		$json = (array)json_decode($raw);
-		$tokenList = new TPAccessTokenList();
-
-		$tokenList->setAID($json["aid"]);
-		$tokenList->setUID($json["uid"]);
-		$tokenList->setBuildTime($json["built"]);
-
-		$ips = array();
-		if(isset($json["ips"]))
-			$ips = $json["ips"];
-		$tokenList->setIPs($ips);
-
-		$list = (array)$json["tokens"];
-		for ($i = 0; $i < count($list); $i++) {
-			$map = (array)$list[$i];
-
-
-			if(!isset($map[TPToken::RID]))
-				$ridHash = TPRIDHash::parse("");
-			else
-				$ridHash = TPRIDHash::parse($map["rid"]);
-
-			$token = new TPToken($ridHash);
-
-
-			$fields = array(
-							TPToken::EX,
-							TPToken::EARLY_EX,
-							TPToken::METER_TRIAL_ENDTIME,
-							TPToken::METER_LOCKOUT_PERIOD,
-							TPToken::METER_LOCKOUT_ENDTIME,
-							TPToken::METER_TRIAL_ACCESS_ATTEMPTS,
-							TPToken::METER_TRIAL_MAX_ACCESS_ATTEMPTS,
-							TPToken::METER_TYPE,
-			);
-
-
-			foreach($fields as $f) {
-				if(isset($map[$f]))
-					$token->addField($f, $map[$f]);
-			}
-
-			$tokenList->add($ridHash, $token);
-		}
-
-		return $tokenList;
-	}
-
 
 }
 

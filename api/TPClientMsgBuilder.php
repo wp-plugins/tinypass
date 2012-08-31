@@ -18,8 +18,8 @@ class TPClientMsgBuilder {
 		return $this->parseToken($aid, $cookies, TinyPass::$COOKIE_SUFFIX);
 	}
 
-	public function buildTicketRequest($tickets) {
-		return $this->builder->buildTicketRequest($tickets);
+	public function buildPurchaseRequest($tickets) {
+		return $this->builder->buildPurchaseRequest($tickets);
 	}
 
 	public function buildAccessTokenList($tokentList) {

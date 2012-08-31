@@ -6,14 +6,19 @@ class TPOffer {
 	private $resource;
 	private $pricing;
 	private $policies = array();
+	private $tags = array();
 
 	public function __construct(TPResource $resource, $priceOptions) {
 		$this->resource = $resource;
 
-		if(!is_array($priceOptions))
-			$priceOptions = array($priceOptions);
-
-		$this->pricing = TPPricingPolicy::createBasic($priceOptions);
+		if($priceOptions instanceof TPBasicPricing) {
+			$this->pricing = $priceOptions;
+		} else {
+			if(!is_array($priceOptions))
+				$priceOptions = array($priceOptions);
+			$this->pricing = TPPricingPolicy::createBasic($priceOptions);
+		}
+	
 	}
 
 	public function getResource() {
@@ -24,14 +29,6 @@ class TPOffer {
 		return $this->pricing;
 	}
 
-	public function isMetered() {
-		foreach ($this->policies as $policy) {
-			if ($policy instanceof TPMeteredPolicyImpl)
-				return true;
-		}
-		return false;
-	}
-
 	public function addPolicy($policy) {
 		$this->policies[] = $policy;
 		return $this;
@@ -39,14 +36,6 @@ class TPOffer {
 
 	public function getPolicies() {
 		return $this->policies;
-	}
-
-	public function getMeteredPolicy() {
-		foreach ($this->policies as $policy) {
-			if ($policy instanceof TPMeteredPolicyImpl)
-				return $policy;
-		}
-		return new TPPolicy();
 	}
 
 	public function addPriceOption(TPPriceOption $priceOption) {
@@ -59,5 +48,24 @@ class TPOffer {
 				$this->pricing->addPriceOption($arg);
 		}
 	}
+
+	public function hasActivePrices() {
+		return $this->getPricing()->hasActiveOptions();
+	}
+
+	public function addTags($tags) {
+		if(!is_array($tags)) {
+			$tags = func_get_args();
+		}
+		$this->tags = array_merge($this->tags, $tags);
+		return $this;
+	}
+
+	public function getTags() {
+		return $this->tags;
+	}
+
+
+
 }
 ?>

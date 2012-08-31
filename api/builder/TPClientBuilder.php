@@ -7,6 +7,10 @@ class TPClientBuilder {
 	const ENCODING_AES = 'a';
 	const ENCODING_OPEN = 'o';
 
+	const STD_ENC = "{jax}";
+	const ZIP_ENC = "{jzx}";
+	const OPEN_ENC = "{jox}";
+
 	private $builder;
 	private $encoder;
 
@@ -14,8 +18,8 @@ class TPClientBuilder {
 
 	private $mask = "";
 
-	function __construct($privateKey, $settings = null) {
-		$this->privateKey = $privateKey;
+	function __construct($settings = null) {
+		$this->privateKey = TinyPass::$PRIVATE_KEY;
 		$this->mask.=("{");
 		switch ($settings!=null && strlen($settings)>1 ? $settings{1} : self::TYPE_JSON) {
 			case self::TYPE_JSON:
@@ -37,17 +41,28 @@ class TPClientBuilder {
 		$this->mask.=("}");
 	}
 
-	public function buildAccessTokenList(TPAccessTokenList $accesstokenlist) {
-		return $this->mask . $this->encoder->encode($this->builder->buildAccessTokenList($accesstokenlist));
+	/**
+	 *
+	 * @param <type> $tokens - can be a TPAccessTokne or TPAccessTokenList
+	 * @return <type>
+	 */
+	public function buildAccessTokens($tokens) {
+
+		if($tokens instanceof TPAccessToken) {
+//			$tokens = array($tokens);
+			$tokens = new TPAccessTokenList(array($tokens));
+		}
+
+		return $this->mask . $this->encoder->encode($this->builder->buildAccessTokens($tokens));
 	}
 
-	public function buildTicketRequest($tickets) {
+	public function buildPurchaseRequest($tickets) {
 
-		if($tickets instanceof TPTicket) {
+		if($tickets instanceof TPPurchaseRequest) {
 			$tickets = array($tickets);
 		}
 
-		return $this->mask . $this->encoder->encode($this->builder->buildTicketRequest($tickets));
+		return $this->mask . $this->encoder->encode($this->builder->buildPurchaseRequest($tickets));
 	}
 
 }

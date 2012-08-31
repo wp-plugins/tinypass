@@ -2,9 +2,6 @@
 
 class TPSecurityUtils {
 
-	//private static $LONG_MAX = "9223372036854775807";
-	//private static $LONG_MIN = "-9223372036854775808";
-
 	public static function hashCode($s) {
 		if($s == null || strlen($s) == 0) return "0";
 
@@ -120,6 +117,25 @@ class TPSecurityUtils {
 
 		return $string;
 	}
+
+	public static function hashHmacSha1($key, $value) {
+		return self::urlensafe(hash_hmac('sha1', $value, $key, true));
+	}
+
+	public static function hashHmacSha256($key, $value) {
+		return self::urlensafe(hash_hmac('sha256', $value, $key, true));
+	}
+
+	public static function hashHmacSha($key, $value) {
+		if(in_array('sha256', hash_algos()))
+			return self::hashHmacSha256($key, $value);
+		else if(in_array('sha1', hash_algos()))
+			return self::hashHmacSha1($key, $value);
+		else
+			throw new Exception("Could not load hashing algorithm sha1/sha256");
+
+	}
+
 }
 
 ?>
