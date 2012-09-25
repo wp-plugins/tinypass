@@ -25,6 +25,10 @@ require_once "token/TPMeter.php";
 require_once "token/TPAccessToken.php";
 require_once "token/TPAccessTokenList.php";
 require_once "token/TPTokenData.php";
+require_once "util/TPSiteSettings.php";
+require_once "util/TPPaySettings.php";
+require_once "util/TPStorage.php";
+require_once "util/TPValidate.php";
 
 
 class TinyPass {

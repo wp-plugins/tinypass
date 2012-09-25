@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../../../api/TPSettings.php';
+require_once dirname(__FILE__) . '/../../../../../api/util/TPSettings.php';
 
 /**
  * Test class for NiceArray.

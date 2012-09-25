@@ -56,13 +56,13 @@ class TPClientBuilder {
 		return $this->mask . $this->encoder->encode($this->builder->buildAccessTokens($tokens));
 	}
 
-	public function buildPurchaseRequest($tickets) {
+	public function buildPurchaseRequest($requests) {
 
-		if($tickets instanceof TPPurchaseRequest) {
-			$tickets = array($tickets);
+		if($requests instanceof TPPurchaseRequest) {
+			$requests = array($requests);
 		}
 
-		return $this->mask . $this->encoder->encode($this->builder->buildPurchaseRequest($tickets));
+		return $this->mask . $this->encoder->encode($this->builder->buildPurchaseRequest($requests));
 	}
 
 }

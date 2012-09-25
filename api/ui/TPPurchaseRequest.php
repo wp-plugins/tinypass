@@ -30,7 +30,7 @@ class TPPurchaseRequest {
 		return $this->secondaryOffer;
 	}
 
-	public function setSecondaryOffer(TPOffer $offer) {
+	public function setSecondaryOffer(TPOffer $offer = null) {
 		$this->secondaryOffer = $offer;
 		return $this;
 	}

@@ -1,19 +1,25 @@
 var tinypass = {
 
 	addPriceOption: function(){
-		var count = jQuery(".tinypass_price_options_form:visible").size();
+		var count = jQuery(".option_form:visible", scope).size();
 		if(count <= 3){
 			var opt = count+1;
-			jQuery(".option_form" + opt).show('fast');
-			jQuery(".option_form" + opt).find("input:hidden").val("1");
+			if(typeof scope == 'undefined')
+				scope = null;
+			jQuery("#po_en" + opt, scope).val(1);
+			jQuery(".option_form" + opt, scope).show('fast');
+			jQuery(".option_form" + opt, scope).find("input, select").removeAttr("disabled");
 		}
 	},
 	removePriceOption: function(){
-		var count = jQuery(".tinypass_price_options_form:visible").size();
+		var count = jQuery(".option_form:visible", scope).size();
 		if(count > 1){
 			var opt = count;
-			jQuery(".option_form" + opt).hide('fast');
-			jQuery(".option_form" + opt).find("input:hidden").val("0");
+			if(typeof scope == 'undefined')
+				scope = null;
+			jQuery("#po_en" + opt, scope).val(0);
+			jQuery(".option_form" + opt, scope).hide('fast');
+			jQuery(".option_form" + opt, scope).find("input, select").attr("disabled", "disabled");
 		}
 	},
 
@@ -49,7 +55,8 @@ var tinypass = {
 	},
 
 	doError:function(fieldName, msg){
-		jQuery("#tp-error").html(msg);
+		jQuery("#tp-error").append("<p>" + msg + "</p>");
+		jQuery('*[name*="'+fieldName+'"]').addClass("error");
 	},
 
 	saveTinyPassPopup:function(){
