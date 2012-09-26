@@ -232,6 +232,15 @@ class TPSiteSettings {
 					$form[$name . "_ref"] = $page->ID;
 				}
 			}
+		
+			if(isset($form['sub_page_ref']) && !isset($form['sub_page_success_ref']))
+					$errors['sub_page_success'] = "Confirmation page must be defined if dedicated page is created";
+			
+			if(isset($form['sub_page_ref']) && isset($form['sub_page_success_ref']))
+				if($form['sub_page_ref'] == $form['sub_page_success_ref'])
+					$errors['sub_page_success'] = "Dedicated sign page and confirmation page must be different";
+
+
 		} else if ($activeMode == self::MODE_DONATION) {
 			throw new Exception("Not implemented yet");
 		}

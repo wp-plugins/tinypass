@@ -11,15 +11,20 @@ class TPMeter {
 	 * Create a Meter based upon the number of views
 	 * @param name name of the meter that can be stored as a cookie
 	 * @param maxViews max number of views allowed before meter expires
-	 * @param lockoutPeriod period the user will be locked out after the meter expires
+	 * @param trialPeriod the period in which the max number of views is allowed
 	 * @return a new meter
 	 */
-	public static function createViewBased($name, $maxViews, $lockoutPeriod) {
+	public static function createViewBased($name, $maxViews, $trialPeriod) {
 		$accessToken = new TPAccessToken(new TPRID($name));
 		$accessToken->getTokenData()->addField(TPTokenData::METER_TYPE, TPTokenData::METER_REMINDER);
 		$accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_MAX_ACCESS_ATTEMPTS, $maxViews);
 		$accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_ACCESS_ATTEMPTS, 0);
-		$accessToken->getTokenData()->addField(TPTokenData::METER_LOCKOUT_PERIOD, $lockoutPeriod);
+		$accessToken->getTokenData()->addField(TPTokenData::METER_LOCKOUT_PERIOD, $trialPeriod);
+
+		$trialPeriodParsed = TPUtils::parseLoosePeriodInSecs($trialPeriod);
+		$trialEndTime = TPUtils::now() + $trialPeriodParsed;
+		$accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_ENDTIME, $trialEndTime);
+
 		return new TPMeter($accessToken);
 	}
 
@@ -48,7 +53,8 @@ class TPMeter {
 			if ($this->getTrialViewCount() == $this->getTrialViewLimit()) {
 				$this->accessToken->getTokenData()->addField(
 								TPTokenData::METER_LOCKOUT_ENDTIME,
-								TPUtils::now() + TPUtils::parseLoosePeriodInSecs($this->accessToken->getTokenData()->getField(TPTokenData::METER_LOCKOUT_PERIOD)));
+								//TPUtils::now() + TPUtils::parseLoosePeriodInSecs($this->accessToken->getTokenData()->getField(TPTokenData::METER_LOCKOUT_PERIOD)));
+								$this->accessToken->getTokenData()->getField(TPTokenData::METER_TRIAL_ENDTIME));
 			}
 		}
 		$this->accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_ACCESS_ATTEMPTS, $this->getTrialViewCount() + 1);

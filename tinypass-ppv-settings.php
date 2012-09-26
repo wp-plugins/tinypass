@@ -7,7 +7,6 @@ function tinypass_ppv_settings() {
 
 	if (isset($_POST['_Submit'])) {
 		$ss = $storage->getSiteSettings();
-		//$errors = $ss->updatePPVSettings($_POST['tinypass']);
 		$ss->mergeValues($_POST['tinypass']);
 		$storage->saveSiteSettings($ss);
 	}
@@ -64,10 +63,9 @@ function tinypass_ppv_settings() {
 
 
 	<script>
-			
+				
 		jQuery(function(){
 			var $ = jQuery;
-			//setup modes
 			$('#tp_modes .choice').hover(
 			function(){
 				$(this).addClass("choice-on");
@@ -83,7 +81,7 @@ function tinypass_ppv_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-							
+								
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -110,4 +108,3 @@ function tinypass_ppv_settings() {
 
 
 <?php } ?>
-

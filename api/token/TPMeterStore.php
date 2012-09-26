@@ -52,7 +52,7 @@ class TPMeterHelper {
 
 		$expires = "expires=' + new Date(new Date().getTime() + 1000*60*60*24*90).toGMTString();";
 		if ($meter->isLockoutPeriodActive()) {
-			$expires = "expires=" . ($meter->getLockoutEndTimeSecs() + 60) * 1000 + ";";
+			$expires = "expires=" . ($meter->getLockoutEndTimeSecs() + 60) * 1000 + "';";
 		}
 		//TODO adjust for time and count based - time should end after lockout
 		$sb.=($expires);
@@ -60,8 +60,8 @@ class TPMeterHelper {
 		return $sb;
 	}
 
-	public static function createViewBased($name, $maxViews, $lockoutPeriod) {
-		return TPMeter::createViewBased($name, $maxViews, $lockoutPeriod);
+	public static function createViewBased($name, $maxViews, $withinPeriod) {
+		return TPMeter::createViewBased($name, $maxViews, $withinPeriod);
 	}
 
 	public static function createTimeBased($name, $trialPeriod, $lockoutPeriod) {

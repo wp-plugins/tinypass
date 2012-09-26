@@ -1,5 +1,6 @@
 <?php
 
+/*
 class TPMeteredPolicy {
 
 	public static function createMeteredByPeriod($trialPeriod, $lockoutPeriod) {
@@ -46,10 +47,11 @@ class TPReminderMeteredPricing extends TPPolicy {
 		return $meter;
 	}
 }
-
+*/
 /**
  * Metered Pricing
  */
+/*
 class TPStrictMeteredPricing extends TPPolicy {
 
 	public static function createByPeriod($trialPeriod, $lockoutPeriod) {
@@ -60,8 +62,8 @@ class TPStrictMeteredPricing extends TPPolicy {
 		$meter->set(TPPolicy::POLICY_TYPE, TPPolicy::STRICT_METER_BY_TIME);
 		return $meter;
 	}
-
 }
+ */
 
 class TPDiscountPolicy extends TPPolicy {
 

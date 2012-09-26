@@ -8,7 +8,6 @@
   Version: 2.0.1
   Author URI: http://www.tinypass.com
  */
-
 $tinypass_ppv_req = null;
 $tinypass_site_req = null;
 define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
@@ -25,11 +24,15 @@ if (is_admin()) {
 	include_once dirname(__FILE__) . '/tinymce/plugin.php';
 }
 
-
 add_filter('the_content', 'tinypass_intercept_content', 5);
 add_filter('the_content', 'tinypass_append_ticket', 200);
+add_action('init', 'tinypass_init');
 wp_enqueue_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
 wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+
+function tinypass_init() {
+	ob_start();
+}
 
 /**
  * Load and init global tinypass settings
@@ -83,13 +86,39 @@ function tinypass_intercept_content($content) {
 
 	//we want to dump the button on this page
 	if ($tagOptions->getSubscriptionPageRef() == $post->ID) {
-		$siteOffer = tinypass_create_offer($tagOptions, "wp_site");
-		$req = new TPPurchaseRequest($siteOffer);
-		$button1 = $req->generateTag();
+		$siteOffer = TPPaySettings::create_offer($tagOptions, "wp_site");
+		$token = $store->getAccessToken("wp_site");
 
+//		if ($token->isAccessGranted()) {
+			//wp_redirect(get_page_link($tagOptions->getSubscriptionPageSuccessRef()));
+//			$gotolink = get_page_link($tagOptions->getSubscriptionPageSuccessRef());
+//			exit;
+//		}
+		$gotolink = get_page_link($tagOptions->getSubscriptionPageSuccessRef());
+
+		$req = new TPPurchaseRequest($siteOffer);
+		$req->setCallback('tinypass_redirect');
+		$button1 = $req->generateTag();
 		$tinypass_ppv_req = array('req' => $req);
 
-		return $content . "<div id='tinypass_subscription_holder'>$button1</div>";
+		return $content . "<div id='tinypass_subscription_holder'>$button1</div>"
+						. "<script>"
+						. "var tp_goto = '$gotolink';"
+						. "if(typeof tinypass_redirect != 'function') {
+								function tinypass_redirect(status){
+								if(status.state == 'granted'){
+									window.location = tp_goto;
+								}
+								}
+							}
+							if(typeof tpOnPrepare != 'function') {
+							function tpOnPrepare(status){
+								if(status.state == 'granted'){
+									//window.location = tp_goto;
+								}
+							}
+						}" 
+						. "</script>";
 	}
 
 
@@ -119,61 +148,43 @@ function tinypass_intercept_content($content) {
 	$siteToken = null;
 
 	if ($ppvOptions->isEnabled() && $ss->isPPVEnabled()) {
-		$ppvOffer = tinypass_create_offer($ppvOptions, "wp_post_" . strval($post->ID), $ppvOptions->getResourceName() == '' ? $post->post_title : $ppvOptions->getResourceName());
+		$ppvOffer = TPPaySettings::create_offer($ppvOptions, "wp_post_" . strval($post->ID), $ppvOptions->getResourceName() == '' ? $post->post_title : $ppvOptions->getResourceName());
 		$ppvToken = $store->getAccessToken($ppvOffer->getResource()->getRID());
 	}
 
+	$siteOfferTrialActive = FALSE;
 
 	if ($tagProtected) {
-		$siteOffer = tinypass_create_offer($tagOptions, "wp_site");
+		$siteOffer = TPPaySettings::create_offer($tagOptions, "wp_site");
 		$siteToken = $store->getAccessToken($siteOffer->getResource()->getRID());
 
-		/*
-		  if ($tagOptions->isMetered()) {
+		if ($tagOptions->isMetered()) {
 
-		  //TODO
-		  $cookieName = "TR_" . $node->tinypass->tag_meta['tid'];
-		  $meter = TPMeterHelper::loadMeterFromCookie($cookieName, $_COOKIE);
+			$cookieName = "TR_S";
+			$meter = TPMeterHelper::loadMeterFromCookie($cookieName, $_COOKIE);
 
-		  if ($meter == null) {
+			if ($meter == null) {
 
+				if ($tagOptions->isTimeMetered()) {
+					$meter = TPMeterHelper::createTimeBased($cookieName, $tagOptions->getMeterTrialPeriod(), $tagOptions->getMeterLockoutPeriodFull());
+				} elseif ($tagOptions->isCountMetered()) {
+					$meter = TPMeterHelper::createViewBased($cookieName, $tagOptions->getMeterMaxAccessAttempts(), $tagOptions->getMeterLockoutPeriodFull());
+				}
+			} else {
+				$meter->increment();
+			}
 
-		  if ($tp_options->isTimeMetered()) {
-		  $meter = TPMeterHelper::createTimeBased($cookieName, $tp_options->getTrialPeriod(), $tp_options->getLockoutPeriod());
-		  } elseif ($tp_options->isCountMetered()) {
-		  $meter = TPMeterHelper::createViewBased($cookieName, $tp_options->getMaxAccessAttempts(), $tp_options->getLockoutPeriod());
-		  }
-		  } else {
-		  $meter->increment();
-		  }
+			setcookie($cookieName, TPMeterHelper::__generateLocalToken($cookieName, $meter), time() + 60 * 60 * 24 * 30, '/');
 
-		  $domain = variable_get('site_name', "localhost");
-		  setcookie($cookieName, TPMeterHelper::__generateLocalToken($cookieName, $meter), time() + 60 * 60 * 24 * 30, '/', $domain);
-
-		  if ($meter->isTrialPeriodActive()) {
-		  $secondaryOfferTrialActive = TRUE;
-		  }
-		  }
-		 */
+			if ($meter->isTrialPeriodActive()) {
+				$siteOfferTrialActive = TRUE;
+			}
+		}
 	}
 
-	//$ppvOfferTrialActive = FALSE;
-	$siteOfferTrialActive = FALSE;
 
 	if ($ppvOffer == null && $siteOffer == null)
 		return $content;
-
-	/*
-	  if ($ppvOffer == null && $siteOffer != null) {
-	  $ppvOffer = $siteOffer;
-	  $ppvToken = $siteToken;
-	  $ppvOfferTrialActive = $siteOfferTrialActive;
-	  $siteOffer = null;
-	  $siteToken = null;
-	  $siteOfferTrialActive = FALSE;
-	  }
-	 */
-
 
 	//check single offer1
 	if ($ppvToken != null && $ppvToken->isAccessGranted()) {
@@ -184,7 +195,6 @@ function tinypass_intercept_content($content) {
 	if ($siteToken != null && $siteToken->isAccessGranted() || $siteOfferTrialActive) {
 		return $content;
 	}
-
 
 	$c = get_extended_with_tpmore($post->post_content);
 
@@ -322,55 +332,6 @@ function __tinypass_render_template($template, $vars = array()) {
 	ob_end_clean();
 	return $tout;
 }
-
-/**
- * Create offer from settings data
- *  
- * @param TPPaySettings $ps
- * @return returns null or a valid TPOffer
- */
-function tinypass_create_offer(&$ps, $rid, $rname = null) {
-	if ($ps == null)
-		return null;
-
-	if ($rname == '' || $rname == null)
-		$rname = $ps->getResourceName();
-
-	$resource = new TPResource($rid, $rname);
-
-	$pos = array();
-
-	for ($i = 1; $i <= $ps->getNumPrices(); $i++) {
-
-		$po = new TPPriceOption($ps->getPrice($i));
-
-		if ($ps->getAccess($i) != '')
-			$po->setAccessPeriod($ps->getAccess($i));
-
-		if ($ps->getCaption($i) != '')
-			$po->setCaption($ps->getCaption($i));
-
-		if ($ps->getRecurring($i) != '')
-			$po->setRecurringBilling($ps->getRecurring($i));
-
-		$pos[] = $po;
-	}
-
-	$offer = new TPOffer($resource, $pos);
-
-	/*
-	  if ($ps->isTimeMetered()) {
-
-	  $offer->addPolicy(TPMeteredPolicy::createReminderByPeriod($ps->getTrialPeriod(), $ps->getLockoutPeriod()));
-	  } else if ($ps->isCountMetered()) {
-
-	  $offer->addPolicy(TPMeteredPolicy::createReminderByAccessCount($ps->getMaxAccessAttempts(), $ps->getLockoutPeriod()));
-	  }
-	 */
-
-	return $offer;
-}
-
 /**
  *
  * Trims a string based on WP settings

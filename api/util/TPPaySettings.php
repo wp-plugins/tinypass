@@ -192,7 +192,6 @@ class TPPaySettings {
 		return $this->data->val(self::METERED, $def);
 	}
 
-
 	public function isTimeMetered() {
 		return $this->isMetered() && $this->data[self::METERED] == 'time';
 	}
@@ -299,6 +298,44 @@ class TPPaySettings {
 		if (isset($this->data))
 			return $this->data->toArray();
 		return array();
+	}
+
+	/**
+	 * Create offer from settings data
+	 *  
+	 * @param TPPaySettings $ps
+	 * @return returns null or a valid TPOffer
+	 */
+	public static function create_offer(&$ps, $rid, $rname = null) {
+		if ($ps == null)
+			return null;
+
+		if ($rname == '' || $rname == null)
+			$rname = $ps->getResourceName();
+
+		$resource = new TPResource($rid, $rname);
+
+		$pos = array();
+
+		for ($i = 1; $i <= $ps->getNumPrices(); $i++) {
+
+			$po = new TPPriceOption($ps->getPrice($i));
+
+			if ($ps->getAccess($i) != '')
+				$po->setAccessPeriod($ps->getAccess($i));
+
+			if ($ps->getCaption($i) != '')
+				$po->setCaption($ps->getCaption($i));
+
+			if ($ps->getRecurring($i) != '')
+				$po->setRecurringBilling($ps->getRecurring($i));
+
+			$pos[] = $po;
+		}
+
+		$offer = new TPOffer($resource, $pos);
+
+		return $offer;
 	}
 
 }

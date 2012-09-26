@@ -56,7 +56,7 @@ function tinypass_mode_settings() {
 					<?php __tinypass_pricing_display($modeMetered) ?>
 					<?php __tinypass_metered_display($modeMetered) ?>
 					<?php __tinypass_payment_display($modeMetered) ?>
-					<?php __tinypass_strict_messaging_display($modeMetered) ?>
+					<?php __tinypass_purchase_page_display($modeMetered) ?>
 				</div>
 				<div id="tp_mode3_panel" class="tp_mode_panel">
 					<div class="heading">
@@ -68,7 +68,7 @@ function tinypass_mode_settings() {
 					<?php __tinypass_tag_display($modeStrict) ?>
 					<?php __tinypass_pricing_display($modeStrict) ?>
 					<?php __tinypass_payment_display($modeStrict) ?>
-					<?php __tinypass_strict_messaging_display($modeStrict) ?>
+					<?php __tinypass_purchase_page_display($modeStrict) ?>
 				</div>
 
 				<p>

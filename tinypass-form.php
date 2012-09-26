@@ -373,20 +373,20 @@ function __tinypass_metered_display(TPPaySettings $ps) {
 <?php } ?>
 <?php
 
-function __tinypass_strict_messaging_display(TPPaySettings $ps) { ?>
+function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
 
 	<div class="postbox" id="">
 		<h3><?php _e('Add an information page (optional)'); ?> </h3>
 		<div class="inside"> 
 
 			<div class="tp-simple-table">
-				<div class="label"><?php _e('Upsell splash page') ?></div>
+				<div class="label"><?php _e('Purchase page') ?></div>
 				<input name="tinypass[sub_page]" size="40" value="<?php echo $ps->getSubscriptionPage() ?>" >
 				<p class="help">Path of existing page e.g. /signup, /join</p>
 
 				<br>
 
-				<div class="label"><?php _e('Confirmation (thank you page)') ?></div>
+				<div class="label"><?php _e('Confirmation page') ?></div>
 				<input name="tinypass[sub_page_success]" size="40" value="<?php echo $ps->getSubscriptionPageSuccess() ?>" >
 				<p class="help">Path of existing page e.g. /signup, /join</p>
 			</div>
@@ -548,13 +548,16 @@ function __tinypass_payment_display(TPPaySettings $ps) {
 	<div class="postbox" id="">
 		<h3><?php _e('Customize your messaging'); ?> </h3>
 		<div class="inside"> 
-			<p class="info">When users reach any restricted post, the will see an inline block with your header, description, and the Tinypass purchase button</p>
+			
+			<p class="info">Give a name to the access you are selling to your users.  This will show up in the Tinypass popup</p>
 
 			<div class="tp-simple-table">
-				<label><?php _e('Site description:') ?></label>
+				<label><?php _e('Offer description:') ?></label>
 				<input name="tinypass[resource_name]" size="40" value="<?php echo $ps->getResourceName() ? esc_attr($ps->getResourceName()) : bloginfo("name") . " - Premium Access" ?>" >
 				<p class="help">This will be dispalyed on the Tinypass ticket and user's purchase history</p>
 			</div>
+			
+			<p class="info">When users reach any restricted post, the will see an inline block with your header, description, and the Tinypass purchase button</p>
 
 			<div class="tp_pd_type_panel">
 
