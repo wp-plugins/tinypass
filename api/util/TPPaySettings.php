@@ -133,7 +133,7 @@ class TPPaySettings {
 	}
 
 	public function getAccess($i) {
-		if ($this->getAccessPeriod($i) == null && $this->getAccessPeriodType($i) == null)
+		if ($this->getAccessPeriod($i) == null)
 			return '';
 		return $this->getAccessPeriod($i, '') . " " . $this->getAccessPeriodType($i, '');
 	}

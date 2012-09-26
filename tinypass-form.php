@@ -395,9 +395,7 @@ function __tinypass_strict_messaging_display(TPPaySettings $ps) { ?>
 		</div>
 	</div>
 
-	<?php
-}
-?>
+<?php } ?>
 <?php
 
 /**
@@ -442,7 +440,6 @@ function __tinypass_strict_options_display(TPPaySettings $ps) {
 	</div>
 
 <?php } ?>
-
 <?php
 
 /**
@@ -455,7 +452,7 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 		<h3><?php _e('Select the tags you\'d like to restrict'); ?> </h3>
 		<div class="inside"> 
 			<p class="info">All posts associated with these tags wil automatically be restricted with Tinypass</p>
-			<div id="tag-holder">
+			<div class="tag-holder">
 				<?php foreach ($ps->getPremiumTagsArray() as $tag): ?>
 					<div class="tag">
 						<div class="text"><?php echo $tag ?></div>
@@ -465,7 +462,7 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 				<?php endforeach; ?>
 			</div>
 			<div class="clear"></div>
-			<div id="tag-entry">
+			<div class="tag-entry tp-bg">
 				<input class="tp_enable_per_tag" type="hidden" name="tinypass[per_tag]" <?php echo checked($ps->isEnabledPerTag()) ?> >
 				<input type="text" class="premium_tags" autocomplete="off" >
 				<a class="add_tag button-secondary"><?php _e('Add') ?></a>
@@ -474,9 +471,6 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 	</div>
 
 <?php } ?>
-
-
-
 <?php
 
 /**
@@ -490,6 +484,7 @@ function __tinypass_pricing_display(TPPaySettings $ps) {
 		<div class="inside"> 
 			<p class="info">Add up to three options.  You can offer hours, days, weeks, or even months.  Leave access field empty for unlimited.</p>
 			<p class="info">Specify an additional currency by entering "20 NOK" or "4 EUR" in the price field</p>
+			<p class="info">Leave length of access empty for unlimited access</p>
 			<table class="tinypass_price_options_form" style="<?php echo $display ?>">
 				<tr>
 					<th width="100"><?php _e('Price') ?></th>
@@ -542,7 +537,6 @@ function __tinypass_ppv_payment_display(TPSiteSettings $ss) {
 
 
 <?php } ?>
-
 <?php
 
 /**
@@ -554,7 +548,7 @@ function __tinypass_payment_display(TPPaySettings $ps) {
 	<div class="postbox" id="">
 		<h3><?php _e('Customize your messaging'); ?> </h3>
 		<div class="inside"> 
-		<p class="info">When users reach any restricted post, the will see an inline block with your header, description, and the Tinypass purchase button</p>
+			<p class="info">When users reach any restricted post, the will see an inline block with your header, description, and the Tinypass purchase button</p>
 
 			<div class="tp-simple-table">
 				<label><?php _e('Site description:') ?></label>
@@ -578,9 +572,7 @@ function __tinypass_payment_display(TPPaySettings $ps) {
 		</div>
 	</div>
 
-	<?php
-}
-?>
+<?php } ?>
 <?php
 
 /**

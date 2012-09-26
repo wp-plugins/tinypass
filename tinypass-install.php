@@ -1,37 +1,20 @@
 <?php
-register_activation_hook(__FILE__, 'tinypass_activate');
-register_deactivation_hook(__FILE__, 'tinypass_deactivate');
-register_uninstall_hook(__FILE__, 'tinypass_uninstall');
+
+//register_activation_hook(__FILE__, 'tinypass_activate');
+//register_deactivation_hook(__FILE__, 'tinypass_deactivate');
+//register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 function tinypass_activate() {
-	//global $wpdb;
-
-	//tinypass_include();
-
 	/*
-	$tinypass_settings = array(
-			'enabled' => 'on',
-			'aid_sand' => 'W7JZEZFu2h', '', true,
-			'secret_key_sand' => 'jeZC9ykDfvW6rXR8ZuO3EOkg9HaKFr90ERgEb3RW',
-			'aid_prod' => 'GETKEY',
-			'secret_key_prod' => 'Retreive your secret key from www.tinypass.com',
-			'env' => 0,
-			'inline' => 1,
-			'access_message' => __('To continue, please purchase using TinyPass')
-	);
-	add_option("tinypass_settings", $tinypass_settings, 0, true);
+	  $table_name = $wpdb->prefix . 'tinypass_ref';
+
+	  $sql = "CREATE TABLE $table_name (
+	  `term_id` BIGINT(20) UNSIGNED NOT NULL,
+	  `type` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+	  `data` LONGTEXT,
+	  INDEX `tinypass_ref_index`(`term_id`)
+	  )";
 	 */
-
-	/*
-	$table_name = $wpdb->prefix . 'tinypass_ref';
-
-	$sql = "CREATE TABLE $table_name (
-						`term_id` BIGINT(20) UNSIGNED NOT NULL,
-						`type` TINYINT UNSIGNED NOT NULL DEFAULT 0,
-						`data` LONGTEXT,
-						INDEX `tinypass_ref_index`(`term_id`)
-					)";
-	*/
 	//require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	//dbDelta($sql);
 
@@ -48,28 +31,28 @@ function tinypass_activate() {
 	if ($error)
 		die('TinyPass could not be enabled<br>' . $error);
 
-	/*
-	echo 'LSDJFLJSDFLJSLDFJSFD';
-	exit;
-	$wtf = get_plugin_data('tinypass.php');
-	print_r($wtf);
-	add_option('tinypass_version', 1, 0, true);
-	die('new shit');
-	 */
+	$old = get_option("tinypass_setting");
+	if ($old && count($old))
+		die("Upgrading from Tinypass version 1.x to 2.x is currently restricted.  <br><br>Please contact support@tinypass.com for migration instructions from 1.x to 2.x");
+
+	$data = get_plugin_data(plugin_dir_path(__FILE__) . "/tinypass.php");
+	$version = $data['Version'];
+	update_option('tinypass_version', $version);
 }
 
 function tinypass_deactivate() {
-	$tinypass_settings = get_option("tinypass_settings");
-	$tinypass_settings['enabled'] == 'off';
-	update_option("tinypass_settings", $tinypass_settings);
+	$storage = new TPStorage();
+	$ss = $storage->getSiteSettings();
+	$ss->setMode(TPSiteSettings::MODE_OFF);
+	$storage->saveSiteSettings($ss);
 }
 
 function tinypass_uninstall() {
 	//global $wpdb;
 	//$table_name = $wpdb->prefix . 'tinypass_ref';
 	//$wpdb->query("drop table $table_name ");
-	$wpdb->query("delete from $wpdb->postmeta where meta_key = 'tinypass'");
-	$wpdb->query("delete from $wpdb->options where option_name like 'tinypass%'");
+	//$wpdb->query("delete from $wpdb->postmeta where meta_key = 'tinypass'");
+	//$wpdb->query("delete from $wpdb->options where option_name like 'tinypass%'");
 }
 
 ?>

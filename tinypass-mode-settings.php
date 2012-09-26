@@ -52,11 +52,11 @@ function tinypass_mode_settings() {
 						</p>
 					</div>
 
-					<?php __tinypass_tag_display($modeStrict) ?>
+					<?php __tinypass_tag_display($modeMetered) ?>
 					<?php __tinypass_pricing_display($modeMetered) ?>
 					<?php __tinypass_metered_display($modeMetered) ?>
-					<?php __tinypass_payment_display($modeStrict) ?>
-					<?php __tinypass_strict_messaging_display($modeStrict) ?>
+					<?php __tinypass_payment_display($modeMetered) ?>
+					<?php __tinypass_strict_messaging_display($modeMetered) ?>
 				</div>
 				<div id="tp_mode3_panel" class="tp_mode_panel">
 					<div class="heading">
@@ -100,7 +100,7 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-						
+								
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -114,7 +114,7 @@ function tinypass_mode_settings() {
 			});
 			$("#tp_modes .choice[checked=checked]").trigger('click');
 
-			$("#tag-holder", scope).click(function(event){
+			$(".tag-holder").click(function(event){
 				if($(event.target).hasClass("remove"))
 					$(event.target).parent().remove();
 			})
@@ -122,62 +122,25 @@ function tinypass_mode_settings() {
 			function addTag(){
 				var tag = $(".premium_tags", scope).val();
 
-				$("#tag-holder", scope).append("<div class='tag'><div class='text'>" + tag + "</div><div class='remove'></div>" 
+				$(".tag-holder", scope).append("<div class='tag'><div class='text'>" + tag + "</div><div class='remove'></div>" 
 					+ "<input type='hidden' name='tinypass[tags][]' value='" + tag  + "'>" 
 					+ "</div>"
 			);
 				$(".premium_tags", scope).val("");
 				$(".premium_tags", scope).focus();
 			}
-			$("#tag-entry .add_tag", scope).click(function(){
+			$(".tag-entry .add_tag").click(function(){
 				addTag();
 			});
 
-			$("#tag-entry .premium_tags").keypress(function(event){
+			$(".tag-entry .premium_tags").keypress(function(event){
 				if(event.which == 13){
 					addTag();
 					event.stopPropagation();
 					return false;
 				}
 			});
-
-			//Per Post Option
-			/*
-			$('.tp_enable_per_post').bind('change', function(){
-				$(scope + ' .tp_pd_type').removeAttr('disabled', 'disabled')
-				if(!$(this).is(":checked")){
-					$(scope + ' .tp_pd_type').attr('disabled', 'disabled')
-					//$(scope + ' .tp_pd_type').val(0);
-					$(scope + ' .tp_pd_type').trigger('change');
-				}
-			})
-			$('.tp_enable_per_post').trigger('change');
-			 */
-
-
-			$('.premium_tags').suggest("admin-ajax.php?action=ajax-tag-search&tax=post_tag",{minchars:2,multiple:false,multipleSep:""})
-
-			/*
-			$('.tp_enable_per_tag').bind('change', function(){
-				$(scope + " .site-opts-group").hide();
-				if($(this).is(":checked")){
-					$(scope + " .site-opts-group").show();
-				}
-			});
-			$('.tp_enable_per_tag').trigger('change');
-			 */
-
-			//toggle payment display options
-			/*
-			$('.tp_pd_type').bind('change', function(){
-				var index = $(this).val();
-				fullHide(scope + ' .tp_pd_type_panel');
-				fullShow($(scope + ' .tp_pd_type_panel').get(index));
-			});
-			$('.tp_pd_type').trigger('change');
-			 */
-
-
+				
 			//toggle access_period after recurring is changed
 			$('.recurring-opts').bind('change', function(){
 				var index = $(this).attr("opt");
@@ -188,6 +151,8 @@ function tinypass_mode_settings() {
 				}
 			})
 			$('.recurring-opts').trigger('change');
+
+			$('.premium_tags').suggest("admin-ajax.php?action=ajax-tag-search&tax=post_tag",{minchars:2,multiple:false,multipleSep:""})
 
 			tinypass.showMeteredOptions(document.getElementsByName("tinypass[metered]")[0])
 

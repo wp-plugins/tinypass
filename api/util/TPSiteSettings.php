@@ -21,11 +21,8 @@ class TPSiteSettings {
 	const PA_DEFAULT = 0;
 	const PA_EXPANDED = 1;
 	const PPV_ENABLED = 'ppv';
-
 	const PD_DENIED_MSG1 = 'pd_denied_msg1';
 	const PD_DENIED_SUB1 = 'pd_denied_sub1';
-
-
 
 	public static $PA_CHOICES = array(TPSiteSettings::PA_DEFAULT => 'Default', TPSiteSettings::PA_EXPANDED => 'Expanded');
 	public static $PERIOD_CHOICES = array('hour' => 'hour(s)', 'day' => 'day(s)', 'week' => 'week(s)', 'month' => 'month(s)');
@@ -159,8 +156,9 @@ class TPSiteSettings {
 	}
 
 	public function updatePPVSettings($form) {
-
+		
 	}
+
 	public function updatePaySettings($form) {
 
 		$form = new NiceArray($form);
@@ -171,29 +169,21 @@ class TPSiteSettings {
 		$ps = new TPPaySettings();
 		$errors = array();
 
+		if ($activeMode != self::MODE_OFF) {
 
-		$form['tags'] = array_unique($form['tags']);
+			$form['tags'] = array_unique($form['tags']);
 
-		$tags = array();
-		foreach ($form['tags'] as $tag) {
-			if (is_term($tag))
-				$tags[] = $tag;
-			else
-				$errors['tags' . $tag] = "Invalid tag for '$tag'";
-		}
-		$form['tags'] = $tags;
+			$tags = array();
+			foreach ($form['tags'] as $tag) {
+				if (is_term($tag))
+					$tags[] = $tag;
+				else
+					$errors['tags' . $tag] = "Invalid tag for '$tag'";
+			}
+			$form['tags'] = $tags;
 
-		if (count($form['tags']) == 0)
-			$errors['tags'] = "Tinypass should be configured for at least 1 tag.  None specified below!";
-
-
-
-		if ($activeMode == self::MODE_STRICT) {
-
-			$form['resource_id'] == 'wp_site_access';
-
-			if ($form['resource_name'] == '')
-				$errors['resource_name'] = _('Description cannot be empty');
+			if (count($form['tags']) == 0)
+				$errors['tags'] = "Tinypass should be configured for at least 1 tag.  None specified below!";
 
 			for ($i = 1; $i <= 3; $i++) {
 
@@ -201,6 +191,7 @@ class TPSiteSettings {
 					unset($form["po_en$i"]);
 					unset($form["po_p$i"]);
 					unset($form["po_ap$i"]);
+					unset($form["po_ap_type$i"]);
 					unset($form["po_cap$i"]);
 					unset($form["po_st$i"]);
 					unset($form["po_et$i"]);
@@ -241,8 +232,6 @@ class TPSiteSettings {
 					$form[$name . "_ref"] = $page->ID;
 				}
 			}
-		} else if ($activeMode == self::MODE_METERED) {
-			
 		} else if ($activeMode == self::MODE_DONATION) {
 			throw new Exception("Not implemented yet");
 		}

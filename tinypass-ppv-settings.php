@@ -26,28 +26,21 @@ function tinypass_ppv_settings() {
 		<?php endif; ?>
 
 
-		<div class="wrap">
+		<div class="">
 			<h2><?php _e('TinyPass'); ?></h2>
-			<form action="" method="post">
+			<form method="post">
 
 				<div class="">
 					<div class="inside">
-						<table class="form-table">
-
-							<tr>
-								<td>
-									<div id="tp_modes">
-										<input id="tp_ppv" name="tinypass[ppv]" type="hidden">
-										<div id="tp_mode1" class="choice" value="0" <?php checked(!$ss->isPPVEnabled()) ?> >Off</div>
-										<div id="tp_mode2" class="choice" value="1" <?php checked($ss->isPPVEnabled()) ?>>On</div>
-										<div class="clear"></div>
-									</div>
-								</td>
-							</tr>
-
-						</table>
+						<div id="tp_modes">
+							<input id="tp_ppv" name="tinypass[ppv]" type="hidden">
+							<div id="tp_mode1" class="choice" value="0" <?php checked(!$ss->isPPVEnabled()) ?> >Off</div>
+							<div id="tp_mode2" class="choice" value="1" <?php checked($ss->isPPVEnabled()) ?>>On</div>
+							<div class="clear"></div>
+						</div>
 					</div>
 				</div>
+				<div class="clear"></div>
 
 				<div id="tp_mode1_panel" class="tp_mode_panel">
 					Pay-per-view is disabled
@@ -71,7 +64,7 @@ function tinypass_ppv_settings() {
 
 
 	<script>
-		
+			
 		jQuery(function(){
 			var $ = jQuery;
 			//setup modes
@@ -90,7 +83,7 @@ function tinypass_ppv_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-						
+							
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 

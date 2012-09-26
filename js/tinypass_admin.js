@@ -88,9 +88,6 @@ var tinypass = {
 		jQuery(".tp-metered-options :input").attr('disabled', 'disabled')
 		jQuery("#tp-metered-" + type).show();
 		jQuery("#tp-metered-" + type + " :input").removeAttr('disabled');
-
-		this.log("Setting type:" + type);
-
 	},
 
 	initPopup:function(){

@@ -5,13 +5,18 @@
   Plugin URI: http://www.tinypass.com
   Description: TinyPass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free TinyPass publisher account and configure the TinyPass plugin for your WordPress site
   Author: TinyPass
-  Version: 1.4.16
+  Version: 2.0.1
   Author URI: http://www.tinypass.com
  */
 
-$tinypass_request = null;
+$tinypass_ppv_req = null;
+$tinypass_site_req = null;
 define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
 
+
+register_activation_hook(__FILE__, 'tinypass_activate');
+register_deactivation_hook(__FILE__, 'tinypass_deactivate');
+register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 //setup
 if (is_admin()) {
 	require_once dirname(__FILE__) . '/tinypass-install.php';
@@ -40,9 +45,11 @@ function tinypass_load_settings() {
  */
 function tinypass_intercept_content($content) {
 
-	global $tinypass_request;
+	global $tinypass_ppv_req;
+	global $tinypass_site_req;
 	global $post;
-	$tinypass_request = null;
+	$tinypass_ppv_req = null;
+	$tinypass_site_req = null;
 
 	tinypass_include();
 
@@ -62,9 +69,9 @@ function tinypass_intercept_content($content) {
 		return $content;
 
 	$storage = new TPStorage();
-	$postOptions = $storage->getPostSettings($post->ID);
+	$ppvOptions = $storage->getPostSettings($post->ID);
 
-	$siteOptions = $ss->getActiveSettings();
+	$tagOptions = $ss->getActiveSettings();
 
 	TinyPass::$AID = $ss->getAID();
 	TinyPass::$PRIVATE_KEY = $ss->getSecretKey();
@@ -75,12 +82,12 @@ function tinypass_intercept_content($content) {
 	$store->loadTokensFromCookie($_COOKIE);
 
 	//we want to dump the button on this page
-	if ($siteOptions->getSubscriptionPageRef() == $post->ID) {
-		$secondaryOffer = tinypass_create_offer($siteOptions, "wp_site");
-		$req = new TPPurchaseRequest($secondaryOffer);
+	if ($tagOptions->getSubscriptionPageRef() == $post->ID) {
+		$siteOffer = tinypass_create_offer($tagOptions, "wp_site");
+		$req = new TPPurchaseRequest($siteOffer);
 		$button1 = $req->generateTag();
 
-		$tinypass_request = $req;
+		$tinypass_ppv_req = array('req' => $req);
 
 		return $content . "<div id='tinypass_subscription_holder'>$button1</div>";
 	}
@@ -88,17 +95,16 @@ function tinypass_intercept_content($content) {
 
 	$post_terms = wp_get_post_terms($post->ID, 'post_tag', array());
 	$tagProtected = false;
-	if ($siteOptions->isEnabledPerTag()) {
-		foreach ($post_terms as $term) {
-			if ($siteOptions->tagMatches($term->name)) {
-				$tagProtected = true;
-				break;
-			}
+	foreach ($post_terms as $term) {
+		if ($tagOptions->tagMatches($term->name)) {
+			$tagProtected = true;
+			break;
 		}
 	}
 
+
 	//exit if everything is disabled 
-	if ($postOptions->isEnabled() == false && $tagProtected == false)
+	if ($ppvOptions->isEnabled() == false && $tagProtected == false)
 		return $content;
 
 	define('DONOTCACHEPAGE', true);
@@ -107,20 +113,20 @@ function tinypass_intercept_content($content) {
 	define('DONOTCDN', true);
 	define('DONOTCACHCEOBJECT', true);
 
-	$primaryOffer = null;
-	$secondaryOffer = null;
-	$primaryToken = null;
-	$secondaryToken = null;
+	$ppvOffer = null;
+	$siteOffer = null;
+	$ppvToken = null;
+	$siteToken = null;
 
-	if ($postOptions->isEnabled() && $ss->isEnabledPerPost()) {
-		$primaryOffer = tinypass_create_offer($postOptions, "wp_post_" . strval($post->ID), $postOptions->getResourceName() == '' ? $post->post_title : $postOptions->getResourceName());
-		$primaryToken = $store->getAccessToken($primaryOffer->getResource()->getRID());
+	if ($ppvOptions->isEnabled() && $ss->isPPVEnabled()) {
+		$ppvOffer = tinypass_create_offer($ppvOptions, "wp_post_" . strval($post->ID), $ppvOptions->getResourceName() == '' ? $post->post_title : $ppvOptions->getResourceName());
+		$ppvToken = $store->getAccessToken($ppvOffer->getResource()->getRID());
 	}
 
 
 	if ($tagProtected) {
-		$secondaryOffer = tinypass_create_offer($siteOptions, "wp_site");
-		$secondaryToken = $store->getAccessToken($secondaryOffer->getResource()->getRID());
+		$siteOffer = tinypass_create_offer($tagOptions, "wp_site");
+		$siteToken = $store->getAccessToken($siteOffer->getResource()->getRID());
 
 		/*
 		  if ($tagOptions->isMetered()) {
@@ -151,29 +157,31 @@ function tinypass_intercept_content($content) {
 		 */
 	}
 
-	$primaryOfferTrialActive = FALSE;
-	$secondaryOfferTrialActive = FALSE;
+	//$ppvOfferTrialActive = FALSE;
+	$siteOfferTrialActive = FALSE;
 
-	if ($primaryOffer == null && $secondaryOffer == null)
+	if ($ppvOffer == null && $siteOffer == null)
 		return $content;
 
-	if ($primaryOffer == null && $secondaryOffer != null) {
-		$primaryOffer = $secondaryOffer;
-		$primaryToken = $secondaryToken;
-		$primaryOfferTrialActive = $secondaryOfferTrialActive;
-		$secondaryOffer = null;
-		$secondaryToken = null;
-		$secondaryOfferTrialActive = FALSE;
-	}
+	/*
+	  if ($ppvOffer == null && $siteOffer != null) {
+	  $ppvOffer = $siteOffer;
+	  $ppvToken = $siteToken;
+	  $ppvOfferTrialActive = $siteOfferTrialActive;
+	  $siteOffer = null;
+	  $siteToken = null;
+	  $siteOfferTrialActive = FALSE;
+	  }
+	 */
 
 
 	//check single offer1
-	if ($primaryToken->isAccessGranted() || $primaryOfferTrialActive) {
+	if ($ppvToken != null && $ppvToken->isAccessGranted()) {
 		return $content;
 	}
 
 	//check offer2
-	if ($secondaryToken != null && $secondaryToken->isAccessGranted() || $secondaryOfferTrialActive) {
+	if ($siteToken != null && $siteToken->isAccessGranted() || $siteOfferTrialActive) {
 		return $content;
 	}
 
@@ -188,18 +196,25 @@ function tinypass_intercept_content($content) {
 	}
 
 	$ticketoptions = array();
-	$req = new TPPurchaseRequest($primaryOffer, $ticketoptions);
+	if ($ppvOffer) {
+		$req = new TPPurchaseRequest($ppvOffer, $ticketoptions);
+		$tinypass_ppv_req = array('req' => $req,
+				'message1' => $ss->getDeniedMessage1(),
+				'sub1' => $ss->getDeniedSub1());
+		$req->setCallback('tinypass_reloader');
+	}
 
-	if ($secondaryOffer)
-		$req->setSecondaryOffer($secondaryOffer);
+	if ($siteOffer) {
+		$req2 = new TPPurchaseRequest($siteOffer, $ticketoptions);
+		$tinypass_site_req = array('req' => $req2,
+				'message1' => $tagOptions->getDeniedMessage1(),
+				'sub1' => $tagOptions->getDeniedSub1());
+		$req2->setCallback('tinypass_reloader');
+	}
 
-	$req->setCallback('tinypass_reloader');
 
-	$tinypass_request = $req;
 
 	return $content .= " [TP_HOOK]";
-	//}
-//	return $content;
 }
 
 function get_extended_with_tpmore($post) {
@@ -228,34 +243,34 @@ function get_extended_with_tpmore($post) {
 
 function tinypass_append_ticket($content) {
 
-	global $tinypass_request;
-	$request1 = $tinypass_request;
+	global $tinypass_ppv_req;
+	global $tinypass_site_req;
 
-	if (!$tinypass_request)
+	if ($tinypass_ppv_req == null && $tinypass_site_req == null)
 		return $content;
 
-	$settings = tinypass_load_settings();
+	$ss = tinypass_load_settings();
 
-	$ps = $settings->getActiveSettings();
+	$ps = $ss->getActiveSettings();
 
 	$tout = '';
 
-	if ($ps->isPaymentDisplayExpanded() && $request1->getSecondaryOffer() != null) {
+	if ($tinypass_ppv_req != null && $tinypass_site_req) {
+
+		$request1 = $tinypass_ppv_req['req'];
+		$request2 = $tinypass_site_req['req'];
 
 		$resource1 = $request1->getPrimaryOffer()->getResource()->getName();
-		$resource2 = $request1->getSecondaryOffer()->getResource()->getName();
+		$resource2 = $request2->getPrimaryOffer()->getResource()->getName();
 
-		$request2 = new TPPurchaseRequest($request1->getSecondaryOffer(), null);
+		$button1 = $request1->generateTag();
 		$button2 = $request2->generateTag();
 
-		$request1->setSecondaryOffer(null);
-		$button1 = $request1->generateTag();
+		$message1 = stripslashes($tinypass_ppv_req['message1']);
+		$message2 = stripslashes($tinypass_site_req['message1']);
 
-		$message1 = stripslashes($ps->getDeniedMessage1());
-		$message2 = stripslashes($ps->getDeniedMessage2());
-
-		$sub1 = stripslashes($ps->getDeniedSub1());
-		$sub2 = stripslashes($ps->getDeniedSub2());
+		$sub1 = stripslashes($tinypass_ppv_req['sub1']);
+		$sub2 = stripslashes($tinypass_site_req['sub1']);
 
 		$tout = __tinypass_render_template('/view/tinypass_display_default.php', array(
 				"button1" => $button1,
@@ -269,12 +284,16 @@ function tinypass_append_ticket($content) {
 						));
 	} else {
 
-		$button1 = $request1->generateTag();
-		$button2 = '';
-		$message1 = stripslashes($ps->getDeniedMessage1());
-		$sub1 = stripslashes($ps->getDeniedSub1());
+		$request = $tinypass_site_req;
+		if ($tinypass_ppv_req != null)
+			$request = $tinypass_ppv_req;
 
-		$resource1 = $request1->getPrimaryOffer()->getResource()->getName();
+		$button1 = $request['req']->generateTag();
+		$button2 = '';
+		$message1 = stripslashes($request['message1']);
+		$sub1 = stripslashes($request['sub1']);
+
+		$resource1 = $request['req']->getPrimaryOffer()->getResource()->getName();
 
 		$tout = __tinypass_render_template('/view/tinypass_display_default.php', array(
 				"button1" => $button1,
@@ -333,7 +352,6 @@ function tinypass_create_offer(&$ps, $rid, $rname = null) {
 
 		if ($ps->getRecurring($i) != '')
 			$po->setRecurringBilling($ps->getRecurring($i));
-
 
 		$pos[] = $po;
 	}
