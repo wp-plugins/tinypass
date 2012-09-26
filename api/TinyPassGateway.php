@@ -17,9 +17,8 @@ class TinyPassGateway {
 
 	public static function cancelSubscription($params) {
 		$gw = new TinyPassGateway();
-		$config = $gw->config;
 		try {
-			return $gw->call("POST", $config::$REST_CONTEXT . "/subscription/cancel", $params);
+			return $gw->call("POST", TPConfig::$REST_CONTEXT . "/subscription/cancel", $params);
 		} catch(Exception $e) {
 			throw $e;
 		}
@@ -29,9 +28,8 @@ class TinyPassGateway {
 
 	public static function revokeAccess($params) {
 		$gw = new TinyPassGateway();
-		$config = $gw->config;
 		try {
-			return $gw->call("POST", $config::$REST_CONTEXT . "/access/revoke", $params);
+			return $gw->call("POST", TPConfig::$REST_CONTEXT . "/access/revoke", $params);
 		} catch(Exception $e) {
 			throw $e;
 		}
@@ -39,9 +37,8 @@ class TinyPassGateway {
 
 	public static function fetchAccessDetail($params) {
 		$gw = new TinyPassGateway();
-		$config = $gw->config;
 		try {
-			return $gw->call("GET", $config::$REST_CONTEXT . "/access", $params);
+			return $gw->call("GET", TPConfig::$REST_CONTEXT . "/access", $params);
 		} catch(Exception $e) {
 			if ($e->getCode() == 404) return null;
 			throw $e;
@@ -50,12 +47,11 @@ class TinyPassGateway {
 
 	public static function fetchAccessDetails($params, $page = 0, $pagesize = 500) {
 		$gw = new TinyPassGateway();
-		$config = $gw->config;
 		if(is_array($params)) {
 			$params['page'] = $page;
 			$params['pagesize'] = $pagesize;
 		}
-		return $gw->call("GET", $config::$REST_CONTEXT . "/access/search", $params);
+		return $gw->call("GET", TPConfig::$REST_CONTEXT . "/access/search", $params);
 	}
 
 	public function call($method, $action, $query) {

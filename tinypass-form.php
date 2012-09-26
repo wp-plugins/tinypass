@@ -7,26 +7,6 @@ wp_enqueue_script("jquery-ui");
 wp_enqueue_script('jquery-ui-dialog');
 
 /**
- * AJAX callback for deleting tinypass enabled tags
- */
-/*
-  function ajax_tp_deleteTagOption() {
-  global $wpdb;
-
-  if (!current_user_can('edit_posts'))
-  die();
-
-  if (!wp_verify_nonce($_REQUEST['tinypass_nonce'], 'tinypass_options'))
-  die('Security check failed');
-
-  $termId = $_POST['term_id'];
-  $wpdb->query("delete from $wpdb->tinypass_ref where term_id = $termId ");
-  tinypass_admin_tags_body();
-  die();
-  }
- */
-
-/**
  * AJAX callback to show the TinyPass options form for both tags and posts/pages
  */
 function ajax_tp_showEditPopup() {
@@ -219,7 +199,7 @@ function tinypass_post_header_form($meta) {
 		<tr>
 			<td>
 				<input id="tp_modify_button" class="button" type="button" hef="#" onclick="return tinypass.showTinyPassPopup();return false;" value="Modify Options">
-				<div id="tp_dialog" title="<img src='http://www.tinypass.com/favicon.ico'> TinyPass Post Options" style="display:none;width:650px;"></div>
+				<div id="tp_dialog" title="<img src='http://www.tinypass.com/favicon.ico'> TinyPass Post Options" style="display:none;"></div>
 				<br>
 			</td>
 		</tr>
@@ -246,61 +226,46 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 
 	$resource_name_label = 'Title';
 	$resource_name_label_desc = 'Optional - Leave empty to default to post title';
-	$termId = "-1";
 	?>
 
 
-	<div id="tinypass_post_options_form">
-		<div id="tp-error" style="text-align:center;color:red;font-size:10pt"></div>
+	<div id="poststuff">
+			<div class="inside">
+				<div id="tp-error" style="text-align:center;color:red;font-size:10pt"></div>
 
-		<input type="hidden" name="tinypass[post_ID]" value="<?php echo $postID ?>"/>
-		<input type="hidden" name="post_ID" value="<?php echo $postID ?>"/>
+				<input type="hidden" name="tinypass[post_ID]" value="<?php echo $postID ?>"/>
+				<input type="hidden" name="post_ID" value="<?php echo $postID ?>"/>
 
-		<table class="form-table" id="" style="" >
-			<tr>
-				<td>
-					<div style="float:right">
-						<strong>Enabled?</strong>: <input type="checkbox" autocomplete=off name="tinypass[en]" value="1" <?php echo checked($ps->isEnabled()) ?>>
-					</div>
-					<strong><?php echo $resource_name_label ?></strong> - this value will be displayed in the TinyPass popup window
-					<br>
-					<input type="text" size="35" maxlength="255" name="tinypass[resource_name]" value="<?php echo htmlspecialchars(stripslashes($resource_name)) ?>">
-					<div class="description"><?php echo $resource_name_label_desc ?></div>
-			</tr>
-		</table>
+				<div style="float:right">
+					<strong>Enabled?</strong>: <input type="checkbox" autocomplete=off name="tinypass[en]" value="1" <?php echo checked($ps->isEnabled()) ?>>
+				</div>
+				<strong><?php echo $resource_name_label ?></strong> - this value will be displayed in the TinyPass popup window
+				<br>
+				<input type="text" size="35" maxlength="255" name="tinypass[resource_name]" value="<?php echo htmlspecialchars(stripslashes($resource_name)) ?>">
+				<div class="description"><?php echo $resource_name_label_desc ?></div>
+				<hr>
+				<strong>Pricing options
+					<a class="add_option_link" href="#" onclick="tinypass.addPriceOption();return false;">[+]</a>
+					<a class="add_option_link" href="#" onclick="tinypass.removePriceOption();return false;">[-]</a>
+				</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(between 1 and 3)<br>
 
-		<?php
-		/*
-		  <hr>
-		  <table class="form-table">
-		  <tr>
-		  <td>
-		  <input type="checkbox" autocomplete=off name="tinypass[ht]" value="1" <?php echo checked($ps->isHideTeaser()) ?>>
-		  Hide the teaser after successful purchase
-		  </td>
-		  </tr>
-		  </table>
-		 */
-		?>
-		<hr>
-		<table class="form-table" id="" style="margin-top:0px;padding-top:0px;" >
-			<tr>
-				<td>
-					<strong>Pricing options
-						<a class="add_option_link" href="#" onclick="tinypass.addPriceOption();return false;">[+]</a>
-						<a class="add_option_link" href="#" onclick="tinypass.removePriceOption();return false;">[-]</a>
-					</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(between 1 and 3)<br>
-					<?php echo __tinypass_price_option_display('1', $ps, false) ?>
-					<?php echo __tinypass_price_option_display('2', $ps, false) ?>
-					<?php echo __tinypass_price_option_display('3', $ps, false) ?>
-					<br>
-			<center>
-				<button class="button" type="button" onclick="tinypass.saveTinyPassPopup();">Save</button>
-				<button class="button" type="button" onclick="tinypass.closeTinyPassPopup();">Cancel</button>
-			</center>
-			</td>
-			</tr>
-		</table>
+				<table class="tinypass_price_options_form">
+					<tr>
+						<th width="100"><?php _e('Price') ?></th>
+						<th width="180"><?php _e('Length of access') ?></th>
+						<th width="270"><?php _e('Caption (optional)') ?></th>
+					</tr>
+				</table>
+
+				<?php echo __tinypass_price_option_display('1', $ps, false) ?>
+				<?php echo __tinypass_price_option_display('2', $ps, false) ?>
+				<?php echo __tinypass_price_option_display('3', $ps, false) ?>
+				<br>
+				<center>
+					<button class="button" type="button" onclick="tinypass.saveTinyPassPopup();">Save</button>
+					<button class="button" type="button" onclick="tinypass.closeTinyPassPopup();">Cancel</button>
+				</center>
+			</div>
 	</div>
 
 <?php } ?>
@@ -485,12 +450,13 @@ function __tinypass_pricing_display(TPPaySettings $ps) {
 			<p class="info">Add up to three options.  You can offer hours, days, weeks, or even months.  Leave access field empty for unlimited.</p>
 			<p class="info">Specify an additional currency by entering "20 NOK" or "4 EUR" in the price field</p>
 			<p class="info">Leave length of access empty for unlimited access</p>
-			<table class="tinypass_price_options_form" style="<?php echo $display ?>">
+
+			<table class="tinypass_price_options_form">
 				<tr>
 					<th width="100"><?php _e('Price') ?></th>
-					<th width="150"><?php _e('Length of access') ?></th>
+					<th width="180"><?php _e('Length of access') ?></th>
 					<th width="200"><?php _e('Monthly subscription') ?></th>
-					<th width="300"><?php _e('Caption (optional)') ?></th>
+					<th width="270"><?php _e('Caption (optional)') ?></th>
 				</tr>
 			</table>
 
@@ -548,7 +514,7 @@ function __tinypass_payment_display(TPPaySettings $ps) {
 	<div class="postbox" id="">
 		<h3><?php _e('Customize your messaging'); ?> </h3>
 		<div class="inside"> 
-			
+
 			<p class="info">Give a name to the access you are selling to your users.  This will show up in the Tinypass popup</p>
 
 			<div class="tp-simple-table">
@@ -556,7 +522,7 @@ function __tinypass_payment_display(TPPaySettings $ps) {
 				<input name="tinypass[resource_name]" size="40" value="<?php echo $ps->getResourceName() ? esc_attr($ps->getResourceName()) : bloginfo("name") . " - Premium Access" ?>" >
 				<p class="help">This will be dispalyed on the Tinypass ticket and user's purchase history</p>
 			</div>
-			
+
 			<p class="info">When users reach any restricted post, the will see an inline block with your header, description, and the Tinypass purchase button</p>
 
 			<div class="tp_pd_type_panel">
@@ -611,7 +577,7 @@ function __tinypass_price_option_display($opt, TPPaySettings $ps, $sub = true) {
 				<input type="hidden" id="<?php echo "po_en$opt" ?>" name="tinypass[<?php echo "po_en$opt" ?>]" value="<?php echo $enabled ?>">
 				<input type="text" size="5" maxlength="10" name="tinypass[<?php echo "po_p$opt" ?>]" value="<?php echo $price ?>">
 			</td>
-			<td width="150">
+			<td width="180">
 				<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_ap$opt" ?>]" value="<?php echo $access_period ?>" class="po_ap_opts<?php echo $opt ?>">
 				<?php echo __tinypass_dropdown("tinypass[po_ap_type$opt]", $times, $access_period_type, array('class' => "po_ap_opts$opt")) ?>
 			</td>
@@ -621,7 +587,7 @@ function __tinypass_price_option_display($opt, TPPaySettings $ps, $sub = true) {
 					<input class="recurring-opts" opt="<?php echo $opt ?>" id="<?php echo "po_recur$opt" ?>" value="1 month" type="checkbox" name="tinypass[po_recur<?php echo $opt ?>]" <?php checked($recur) ?> >
 				</td>
 			<?php endif; ?>
-			<td width="300">
+			<td width="270">
 				<input type="text" size="20" maxlength="20" name="tinypass[<?php echo "po_cap$opt" ?>]" value="<?php echo $caption ?>">
 			</td>
 		</tr>

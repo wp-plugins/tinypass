@@ -32,8 +32,12 @@ function tinypass_activate() {
 		die('TinyPass could not be enabled<br>' . $error);
 
 	$old = get_option("tinypass_setting");
-	if ($old && count($old))
-		die("Upgrading from Tinypass version 1.x to 2.x is currently restricted.  <br><br>Please contact support@tinypass.com for migration instructions from 1.x to 2.x");
+	if ($old && count($old)) {
+
+		$message = "Upgrading from Tinypass version 1.x to 2.x is currently restricted.  <br><br>Please contact support@tinypass.com for migration instructions from 1.x to 2.x";
+		$message .= "<br><br>You can restore your previous version by manually downloading latest 1.4.x plugin at http://wordpress.org/extend/plugins/tinypass/developers";
+		die($message);
+	}
 
 	$data = get_plugin_data(plugin_dir_path(__FILE__) . "/tinypass.php");
 	$version = $data['Version'];
