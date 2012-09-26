@@ -7,13 +7,12 @@ function tinypass_ppv_settings() {
 
 	if (isset($_POST['_Submit'])) {
 		$ss = $storage->getSiteSettings();
-		$errors = $ss->updatePPVSettings($_POST['tinypass']);
+		//$errors = $ss->updatePPVSettings($_POST['tinypass']);
+		$ss->mergeValues($_POST['tinypass']);
 		$storage->saveSiteSettings($ss);
 	}
 
 	$ss = $storage->getSiteSettings();
-	$modeStrict = $ss->getModeSettings(TPSiteSettings::MODE_STRICT);
-	$modeMetered = $ss->getModeSettings(TPSiteSettings::MODE_METERED);
 	?>
 
 	<div id="poststuff">
@@ -38,9 +37,9 @@ function tinypass_ppv_settings() {
 							<tr>
 								<td>
 									<div id="tp_modes">
-										<input id="tp_mode" name="tinypass[mode]" type="hidden">
-										<div id="tp_mode1" class="choice" value="<?php echo TPSiteSettings::MODE_OFF ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_OFF) ?> >Off</div>
-										<div id="tp_mode2" class="choice" value="<?php echo TPSiteSettings::MODE_METERED ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_METERED) ?>>Metered</div>
+										<input id="tp_ppv" name="tinypass[ppv]" type="hidden">
+										<div id="tp_mode1" class="choice" value="0" <?php checked(!$ss->isPPVEnabled()) ?> >Off</div>
+										<div id="tp_mode2" class="choice" value="1" <?php checked($ss->isPPVEnabled()) ?>>On</div>
 										<div class="clear"></div>
 									</div>
 								</td>
@@ -51,16 +50,16 @@ function tinypass_ppv_settings() {
 				</div>
 
 				<div id="tp_mode1_panel" class="tp_mode_panel">
-					TinyPass is disabled
+					Pay-per-view is disabled
 				</div>
 				<div id="tp_mode2_panel" class="tp_mode_panel">
 					<div class="heading">
-						<h3><?php _e("Metered Mode")?></h3>
+						<h3><?php _e("Customize your PPV messaging") ?></h3>
 						<p>
-								Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
+							When users reach any restricted post, they will see an inline block with your header, description, and the Tinypass purchase button
 						</p>
 					</div>
-					<?php __tinypass_ppv_payment_display($modeStrict) ?>
+					<?php __tinypass_ppv_payment_display($ss) ?>
 				</div>
 				<p>
 					<input type="submit" name="_Submit" id="publish" value="Save Changes" tabindex="4" class="button-primary" />
@@ -70,8 +69,44 @@ function tinypass_ppv_settings() {
 		</div>
 	</div>
 
-	<div id="tp-slot"></div>
-	<script></script>
+
+	<script>
+		
+		jQuery(function(){
+			var $ = jQuery;
+			//setup modes
+			$('#tp_modes .choice').hover(
+			function(){
+				$(this).addClass("choice-on");
+			}, 
+			function(){
+				$(this).removeClass("choice-on");
+			});
+
+
+			$('#tp_modes .choice').click(function(){
+				$('#tp_modes .choice').removeClass("choice-selected");
+				$('#tp_modes .choice').removeAttr("checked");
+
+				$(this).addClass("choice-selected");
+				$(this).attr("checked", "checked");
+						
+				var elem = $(".choice[checked=checked]");
+				var id = elem.attr("id");
+
+				scope = '#' + id + '_panel';
+
+				$("#tp_ppv").val(elem.attr('value'));
+
+				tinypass.fullHide('.tp_mode_panel');
+				tinypass.fullShow(scope);
+
+			});
+			$("#tp_modes .choice[checked=checked]").trigger('click');
+
+		});
+
+	</script>
 
 
 	<?php if (count($errors)): ?>

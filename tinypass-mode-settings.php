@@ -26,47 +26,29 @@ function tinypass_mode_settings() {
 			<div id="tp-error" class="error fade"><p></p></div>
 		<?php endif; ?>
 
-
-		<div class="wrap">
+		<div class="">
 			<h2><?php _e('TinyPass'); ?></h2>
 			<form action="" method="post">
 
-				<div class="">
-					<div class="inside">
-						<table class="form-table">
-
-							<tr>
-								<td>
-									<!--
-									<input id="tp_mode1" class="tp_modes" type="radio" name="tinypass[mode]" value="<?php echo TPSiteSettings::MODE_OFF ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_OFF) ?> >
-									<label for="tp_mode1">Off</label>
-									<input id="tp_mode2" class="tp_modes" type="radio" name="tinypass[mode]" value="<?php echo TPSiteSettings::MODE_METERED ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_METERED) ?> >
-									<label for="tp_mode2">Metered</label>
-									<input id="tp_mode3" class="tp_modes" type="radio" name="tinypass[mode]" value="<?php echo TPSiteSettings::MODE_STRICT ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_STRICT) ?> >
-									<label for="tp_mode3">Strict</label>
-									-->
-									<div id="tp_modes">
-										<input id="tp_mode" name="tinypass[mode]" type="hidden">
-										<div id="tp_mode1" class="choice" value="<?php echo TPSiteSettings::MODE_OFF ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_OFF) ?> >Off</div>
-										<div id="tp_mode2" class="choice" value="<?php echo TPSiteSettings::MODE_METERED ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_METERED) ?>>Metered</div>
-										<div id="tp_mode3" class="choice" value="<?php echo TPSiteSettings::MODE_STRICT ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_STRICT) ?>>Strict</div>
-										<div class="clear"></div>
-									</div>
-								</td>
-							</tr>
-
-						</table>
+				<div class="inside">
+					<div id="tp_modes">
+						<input id="tp_mode" name="tinypass[mode]" type="hidden">
+						<div id="tp_mode1" class="choice" value="<?php echo TPSiteSettings::MODE_OFF ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_OFF) ?> >Off</div>
+						<div id="tp_mode2" class="choice" value="<?php echo TPSiteSettings::MODE_METERED ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_METERED) ?>>Metered</div>
+						<div id="tp_mode3" class="choice" value="<?php echo TPSiteSettings::MODE_STRICT ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_STRICT) ?>>Strict</div>
+						<div class="clear"></div>
 					</div>
 				</div>
+				<div class="clear"></div>
 
 				<div id="tp_mode1_panel" class="tp_mode_panel">
 					TinyPass is disabled
 				</div>
 				<div id="tp_mode2_panel" class="tp_mode_panel">
 					<div class="heading">
-						<h3><?php _e("Metered Mode")?></h3>
+						<h3><?php _e("Metered Mode") ?></h3>
 						<p>
-								Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
+							Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
 						</p>
 					</div>
 
@@ -78,9 +60,9 @@ function tinypass_mode_settings() {
 				</div>
 				<div id="tp_mode3_panel" class="tp_mode_panel">
 					<div class="heading">
-						<h3><?php _e("Strict Mode")?></h3>
+						<h3><?php _e("Strict Mode") ?></h3>
 						<p>
-								Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
+							Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
 						</p>
 					</div>
 					<?php __tinypass_tag_display($modeStrict) ?>
@@ -97,22 +79,11 @@ function tinypass_mode_settings() {
 		</div>
 	</div>
 
-	<div id="tp-slot"></div>
 	<script>
 		var scope = '';
-		function fullHide(selector, scope){
-			jQuery(selector).hide();
-			jQuery("input, textarea, select", selector).attr("disabled", "disabled");
-		}	
-		function fullShow(selector){
-			jQuery(selector).show();
-			jQuery("input, textarea, select", selector).removeAttr("disabled");
-		}	
-
 		jQuery(function(){
 			var $ = jQuery;
 
-					
 			//setup modes
 			$('#tp_modes .choice').hover(
 			function(){
@@ -129,17 +100,16 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-				
+						
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
-				console.log(id);
 
 				scope = '#' + id + '_panel';
 
 				$("#tp_mode").val(elem.attr('value'));
 
-				fullHide('.tp_mode_panel');
-				fullShow(scope);
+				tinypass.fullHide('.tp_mode_panel');
+				tinypass.fullShow(scope);
 
 			});
 			$("#tp_modes .choice[checked=checked]").trigger('click');
@@ -150,12 +120,12 @@ function tinypass_mode_settings() {
 			})
 
 			function addTag(){
-				var tag  = $(".premium_tags", scope).val();
+				var tag = $(".premium_tags", scope).val();
 
 				$("#tag-holder", scope).append("<div class='tag'><div class='text'>" + tag + "</div><div class='remove'></div>" 
 					+ "<input type='hidden' name='tinypass[tags][]' value='" + tag  + "'>" 
 					+ "</div>"
-					);
+			);
 				$(".premium_tags", scope).val("");
 				$(".premium_tags", scope).focus();
 			}
@@ -172,6 +142,7 @@ function tinypass_mode_settings() {
 			});
 
 			//Per Post Option
+			/*
 			$('.tp_enable_per_post').bind('change', function(){
 				$(scope + ' .tp_pd_type').removeAttr('disabled', 'disabled')
 				if(!$(this).is(":checked")){
@@ -181,11 +152,12 @@ function tinypass_mode_settings() {
 				}
 			})
 			$('.tp_enable_per_post').trigger('change');
+			 */
 
 
 			$('.premium_tags').suggest("admin-ajax.php?action=ajax-tag-search&tax=post_tag",{minchars:2,multiple:false,multipleSep:""})
 
-/*
+			/*
 			$('.tp_enable_per_tag').bind('change', function(){
 				$(scope + " .site-opts-group").hide();
 				if($(this).is(":checked")){
@@ -193,7 +165,7 @@ function tinypass_mode_settings() {
 				}
 			});
 			$('.tp_enable_per_tag').trigger('change');
-*/
+			 */
 
 			//toggle payment display options
 			/*
@@ -203,7 +175,7 @@ function tinypass_mode_settings() {
 				fullShow($(scope + ' .tp_pd_type_panel').get(index));
 			});
 			$('.tp_pd_type').trigger('change');
-			*/
+			 */
 
 
 			//toggle access_period after recurring is changed

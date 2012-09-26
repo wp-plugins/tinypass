@@ -112,7 +112,7 @@ function tinypass_intercept_content($content) {
 	$primaryToken = null;
 	$secondaryToken = null;
 
-	if ($postOptions->isEnabled() && $siteOptions->isEnabledPerPost()) {
+	if ($postOptions->isEnabled() && $ss->isEnabledPerPost()) {
 		$primaryOffer = tinypass_create_offer($postOptions, "wp_post_" . strval($post->ID), $postOptions->getResourceName() == '' ? $post->post_title : $postOptions->getResourceName());
 		$primaryToken = $store->getAccessToken($primaryOffer->getResource()->getRID());
 	}

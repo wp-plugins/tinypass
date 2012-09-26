@@ -382,13 +382,13 @@ function __tinypass_strict_messaging_display(TPPaySettings $ps) { ?>
 			<div class="tp-simple-table">
 				<div class="label"><?php _e('Upsell splash page') ?></div>
 				<input name="tinypass[sub_page]" size="40" value="<?php echo $ps->getSubscriptionPage() ?>" >
-				<div class="info">Path of existing page e.g. /signup, /join</div>
+				<p class="help">Path of existing page e.g. /signup, /join</p>
 
 				<br>
 
 				<div class="label"><?php _e('Confirmation (thank you page)') ?></div>
 				<input name="tinypass[sub_page_success]" size="40" value="<?php echo $ps->getSubscriptionPageSuccess() ?>" >
-				<div class="info">Path of existing page e.g. /signup, /join</div>
+				<p class="help">Path of existing page e.g. /signup, /join</p>
 			</div>
 
 
@@ -453,8 +453,8 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 
 	<div class="postbox">
 		<h3><?php _e('Select the tags you\'d like to restrict'); ?> </h3>
-		<div class="info">All posts associated with these tags wil automatically be restricted with Tinypass</div>
 		<div class="inside"> 
+			<p class="info">All posts associated with these tags wil automatically be restricted with Tinypass</p>
 			<div id="tag-holder">
 				<?php foreach ($ps->getPremiumTagsArray() as $tag): ?>
 					<div class="tag">
@@ -487,9 +487,9 @@ function __tinypass_pricing_display(TPPaySettings $ps) {
 
 	<div class="postbox">
 		<h3><?php _e('Set price options for access'); ?> </h3>
-		<div class="info">Add up to three options.  You can offer hours, days, weeks, or even months.  Leave access field empty for unlimited.</div>
-		<div class="info">Specify an additional currency by entering "20 NOK" or "4 EUR" in the price field</div>
 		<div class="inside"> 
+			<p class="info">Add up to three options.  You can offer hours, days, weeks, or even months.  Leave access field empty for unlimited.</p>
+			<p class="info">Specify an additional currency by entering "20 NOK" or "4 EUR" in the price field</p>
 			<table class="tinypass_price_options_form" style="<?php echo $display ?>">
 				<tr>
 					<th width="100"><?php _e('Price') ?></th>
@@ -520,21 +520,21 @@ function __tinypass_pricing_display(TPPaySettings $ps) {
 /**
  * 
  */
-function __tinypass_ppv_payment_display(TPPaySettings $ps) {
+function __tinypass_ppv_payment_display(TPSiteSettings $ss) {
 	?>
 
 	<div class="postbox">
-		<h3><?php _e('Payment Display Options'); ?> </h3>
+		<h3><?php _e('Inline purchase table'); ?> </h3>
 		<div class="inside"> 
 
 			<div class="tp-simple-table">
 
 				<div class="label">Header</div>
-				<input id="tp_pd_denied_msg1" name="tinypass[pd_denied_msg1]" value="<?php echo esc_attr(stripslashes($ps->getDeniedMessage1())) ?>" size="80" maxlength="80">
+				<input id="tp_pd_denied_msg1" name="tinypass[pd_denied_msg1]" value="<?php echo esc_attr(stripslashes($ss->getDeniedMessage1())) ?>" size="80" maxlength="80">
 				<br>
 
 				<div class="label">Description</div>
-				<textarea id="tp_pd_denied_sub1" rows="5" cols="80" name="tinypass[pd_denied_sub1]"><?php echo stripslashes($ps->getDeniedSub1()) ?></textarea>
+				<textarea id="tp_pd_denied_sub1" rows="5" cols="80" name="tinypass[pd_denied_sub1]"><?php echo stripslashes($ss->getDeniedSub1()) ?></textarea>
 			</div>
 
 		</div>
@@ -553,22 +553,13 @@ function __tinypass_payment_display(TPPaySettings $ps) {
 
 	<div class="postbox" id="">
 		<h3><?php _e('Customize your messaging'); ?> </h3>
-		<div class="info">When users reach any restricted post, the will see an inline block with your header, description, and the Tinypass purchase button</div>
 		<div class="inside"> 
-
-			<?php
-			/*
-			  <div class="section">
-			  <label for="tp_pa_expand"><?php _e('Select your payment display:') ?></label>
-			  <?php echo __tinypass_dropdown("tinypass[pd_type]", TPSiteSettings::$PA_CHOICES, $ps->getPaymentDisplay(), array('class' => 'tp_pd_type')) ?>
-			  </div>
-			 */
-			?>
+		<p class="info">When users reach any restricted post, the will see an inline block with your header, description, and the Tinypass purchase button</p>
 
 			<div class="tp-simple-table">
 				<label><?php _e('Site description:') ?></label>
 				<input name="tinypass[resource_name]" size="40" value="<?php echo $ps->getResourceName() ? esc_attr($ps->getResourceName()) : bloginfo("name") . " - Premium Access" ?>" >
-				<div class="info">This will be dispalyed on the Tinypass ticket and user's purchase history</div>
+				<p class="help">This will be dispalyed on the Tinypass ticket and user's purchase history</p>
 			</div>
 
 			<div class="tp_pd_type_panel">

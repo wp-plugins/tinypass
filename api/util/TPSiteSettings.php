@@ -20,6 +20,12 @@ class TPSiteSettings {
 	const MODE_STRICT = 3;
 	const PA_DEFAULT = 0;
 	const PA_EXPANDED = 1;
+	const PPV_ENABLED = 'ppv';
+
+	const PD_DENIED_MSG1 = 'pd_denied_msg1';
+	const PD_DENIED_SUB1 = 'pd_denied_sub1';
+
+
 
 	public static $PA_CHOICES = array(TPSiteSettings::PA_DEFAULT => 'Default', TPSiteSettings::PA_EXPANDED => 'Expanded');
 	public static $PERIOD_CHOICES = array('hour' => 'hour(s)', 'day' => 'day(s)', 'week' => 'week(s)', 'month' => 'month(s)');
@@ -135,6 +141,21 @@ class TPSiteSettings {
 			return $this->data->val(self::SECRET_KEY_SAND, 'GET_KEY');
 		}
 		return $this->data->val(self::SECRET_KEY_PROD, 'GET_KEY');
+	}
+
+	/**
+	 * PPV Settings
+	 */
+	public function isPPVEnabled() {
+		return $this->data->isValEnabled(self::PPV_ENABLED);
+	}
+
+	public function getDeniedMessage1() {
+		return $this->data->val(self::PD_DENIED_MSG1, TPPaySettings::DEFAULT_DENIED_MESSAGE);
+	}
+
+	public function getDeniedSub1() {
+		return $this->data->val(self::PD_DENIED_SUB1, TPPaySettings::DEFAULT_DENIED_MESSAGE);
 	}
 
 	public function updatePPVSettings($form) {

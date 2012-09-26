@@ -75,6 +75,9 @@ TinyPass admin form sytles
 .clear {
 	clear:both;
 }
+.tp-bg {
+	background-color:#F7F7F7;
+}
 .tp-simple-table div.label, .tp-simple-table label{
 	display:block;
 	float:left;
@@ -83,7 +86,8 @@ TinyPass admin form sytles
 	vertical-align: top;
 	padding-top:7px;
 }
-.tp-simple-table div.info {
+
+#poststuff .inside .tp-simple-table p.help {
 	margin-left:125px;
 	margin-top:4px;
 	margin-bottom:20px;
@@ -133,6 +137,22 @@ TinyPass admin form sytles
 	padding: 8px;
 	margin: 0px;
 	border:1px solid #DFDFDF;
+}
+
+
+#tag-holder {
+	height:40px;
+	padding-top:10px;
+	padding-left:10px;
+	border:1px solid #DFDFDF;
+	border-radius: 2px;
+}
+
+#tag-entry {
+	border:1px solid #DFDFDF;
+	height:40px;
+	padding-top:15px;
+	padding-left:10px;
 }
 
 #tag-holder div.tag {

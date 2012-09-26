@@ -115,5 +115,15 @@ var tinypass = {
 	log:function(msg){
 		if(console && console.log)
 			console.log(msg);
-	}
+	},
+	fullHide:function(selector, scope){
+		jQuery(selector).hide();
+		jQuery("input, textarea, select", selector).attr("disabled", "disabled");
+	},
+	fullShow:function(selector){
+		jQuery(selector).show();
+		jQuery("input, textarea, select", selector).removeAttr("disabled");
+	}	
+
+
 }

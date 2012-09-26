@@ -23,7 +23,7 @@ class TPPaySettings {
 	const METER_TRIAL_PERIOD_TYPE = 'm_tp_type';
 	const PREMIUM_TAGS = 'tags';
 	const ENABLE_PER_TAG = 'per_tag';
-	const ENABLE_PER_POST = 'per_post';
+	//const ENABLE_PER_POST = 'per_post';
 	const SUBSCRIPTION_PAGE = 'sub_page';
 	const SUBSCRIPTION_PAGE_REF = 'sub_page_ref';
 	const SUBSCRIPTION_PAGE_SUCCESS = 'sub_page_success';
@@ -87,10 +87,6 @@ class TPPaySettings {
 
 	public function getMode() {
 		return $this->data->val(TPSiteSettings::MODE, TPSiteSettings::MODE_OFF);
-	}
-
-	public function isEnabledPerPost() {
-		return $this->data->isValEnabled(self::ENABLE_PER_POST);
 	}
 
 	public function isEnabledPerTag() {

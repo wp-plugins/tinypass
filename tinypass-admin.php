@@ -28,9 +28,10 @@ function tinypass_add_meta_boxes() {
 
 
 	$storage = new TPStorage();
-	$ps = $storage->getSiteSettings()->getActiveSettings();
+	$ss = $storage->getSiteSettings();
+	$ps = $ss->getActiveSettings();
 
-	if (!$ps->isEnabledPerPost()) {
+	if (!$ss->isPPVEnabled()) {
 		return;
 	}
 
