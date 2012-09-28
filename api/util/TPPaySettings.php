@@ -7,6 +7,15 @@ class TPPaySettings {
 
 	const RESOURCE_NAME = 'resource_name';
 	const RESOURCE_ID = 'resource_id';
+	//MODES
+	const MODE = 'mode';
+	const MODE_STRICT_KEY = 'tinypass_mode_strict';
+	const MODE_METERED_KEY = 'tinypass_mode_metered';
+	const MODE_OFF = 0;
+	const MODE_DONATION = 1;
+	const MODE_METERED = 2;
+	const MODE_STRICT = 3;
+	//PRICE OPTIONS
 	const PO_PRICE = 'po_p';
 	const PO_PERIOD = 'po_ap';
 	const PO_PERIOD_TYPE = 'po_ap_type';
@@ -23,7 +32,6 @@ class TPPaySettings {
 	const METER_TRIAL_PERIOD_TYPE = 'm_tp_type';
 	const PREMIUM_TAGS = 'tags';
 	const ENABLE_PER_TAG = 'per_tag';
-	//const ENABLE_PER_POST = 'per_post';
 	const SUBSCRIPTION_PAGE = 'sub_page';
 	const SUBSCRIPTION_PAGE_REF = 'sub_page_ref';
 	const SUBSCRIPTION_PAGE_SUCCESS = 'sub_page_success';
@@ -33,6 +41,7 @@ class TPPaySettings {
 	const PD_DENIED_SUB1 = 'pd_denied_sub1';
 	const PD_DENIED_SUB2 = 'pd_denied_sub2';
 	const PD_TYPE = 'pd_type';
+	const OFFER_ORDER  = 'pd_order';
 	const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with TinyPass';
 
 	//settings
@@ -60,7 +69,19 @@ class TPPaySettings {
 	}
 
 	public function isEnabled() {
-		return $this->_isset('en');
+		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) != TPPaySettings::MODE_OFF;
+	}
+
+	public function isMode($type) {
+		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) == $type;
+	}
+
+	public function getMode() {
+		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+	}
+
+	public function setMode($i) {
+		$this->data[TPPaySettings::MODE] = $i;
 	}
 
 	public function getPremiumTags($delimiter = null) {
@@ -79,18 +100,6 @@ class TPPaySettings {
 
 	public function tagMatches($name) {
 		return in_array($name, $this->getPremiumTagsArray());
-	}
-
-	public function isMode($type) {
-		return $this->data->val(TPSiteSettings::MODE, TPSiteSettings::MODE_OFF) == $type;
-	}
-
-	public function getMode() {
-		return $this->data->val(TPSiteSettings::MODE, TPSiteSettings::MODE_OFF);
-	}
-
-	public function isEnabledPerTag() {
-		return $this->data->isValEnabled(self::ENABLE_PER_TAG);
 	}
 
 	public function isHideTeaser() {
@@ -292,6 +301,14 @@ class TPPaySettings {
 
 	public function getDeniedSub2() {
 		return $this->data->val(self::PD_DENIED_SUB2, self::DEFAULT_DENIED_MESSAGE);
+	}
+
+	public function getOfferOrder() {
+		return $this->data->val(self::OFFER_ORDER, 0);
+	}
+
+	public function isPostFirstInOrder() {
+		return $this->data->val(self::OFFER_ORDER, 0) == 1;
 	}
 
 	public function toArray() {

@@ -7,13 +7,14 @@ function tinypass_mode_settings() {
 
 	if (isset($_POST['_Submit'])) {
 		$ss = $storage->getSiteSettings();
-		$errors = $ss->updatePaySettings($_POST['tinypass']);
-		$storage->saveSiteSettings($ss);
+		$errors = array();
+		$ps = $ss->validatePaySettings($_POST['tinypass'], $errors);
+
+		$storage->savePaywallSettings($ss, $ps);
+
 	}
 
-	$ss = $storage->getSiteSettings();
-	$modeStrict = $ss->getModeSettings(TPSiteSettings::MODE_STRICT);
-	$modeMetered = $ss->getModeSettings(TPSiteSettings::MODE_METERED);
+	$ps = $storage->getPaywall("wp_bundle1", true);
 	?>
 
 	<div id="poststuff">
@@ -30,11 +31,16 @@ function tinypass_mode_settings() {
 			<h2><?php _e('TinyPass'); ?></h2>
 			<form action="" method="post">
 
+
+				<div style="float:right">
+				RID:<input type="text" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+				</div>
+
 				<div id="tp_modes">
 					<input id="tp_mode" name="tinypass[mode]" type="hidden">
-					<div id="tp_mode1" class="choice" value="<?php echo TPSiteSettings::MODE_OFF ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_OFF) ?> >Off</div>
-					<div id="tp_mode2" class="choice" value="<?php echo TPSiteSettings::MODE_METERED ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_METERED) ?>>Metered</div>
-					<div id="tp_mode3" class="choice" value="<?php echo TPSiteSettings::MODE_STRICT ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_STRICT) ?>>Strict</div>
+					<div id="tp_mode1" class="choice" value="<?php echo TPPaySettings::MODE_OFF ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_OFF) ?> >Off</div>
+					<div id="tp_mode2" class="choice" value="<?php echo TPPaySettings::MODE_METERED ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_METERED) ?>>Metered</div>
+					<div id="tp_mode3" class="choice" value="<?php echo TPPaySettings::MODE_STRICT ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_STRICT) ?>>Strict</div>
 					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
@@ -42,9 +48,8 @@ function tinypass_mode_settings() {
 
 				<div id="tp_mode1_panel" class="tp_mode_panel">
 					<div class="heading">
-						<h3><?php _e("Disabled") ?></h3>
 						<p>
-							Tinypass is disabled.
+							This paywall has been disabled.  Content will be publically available.
 						</p>
 					</div>
 				</div>
@@ -57,11 +62,11 @@ function tinypass_mode_settings() {
 						</p>
 					</div>
 					<?php $num = 0; ?>
-					<?php __tinypass_tag_display($modeMetered, ++$num) ?>
-					<?php __tinypass_metered_display($modeMetered, ++$num) ?>
-					<?php __tinypass_pricing_display($modeMetered, ++$num) ?>
-					<?php __tinypass_payment_display($modeMetered, ++$num) ?>
-					<?php __tinypass_purchase_page_display($modeMetered, ++$num) ?>
+					<?php __tinypass_tag_display($ps, ++$num) ?>
+					<?php __tinypass_metered_display($ps, ++$num) ?>
+					<?php __tinypass_pricing_display($ps, ++$num) ?>
+					<?php __tinypass_payment_messaging_display($ps, ++$num) ?>
+					<?php __tinypass_purchase_page_display($ps, ++$num) ?>
 				</div>
 
 				<div id="tp_mode3_panel" class="tp_mode_panel">
@@ -72,10 +77,10 @@ function tinypass_mode_settings() {
 						</p>
 					</div>
 					<?php $num = 0; ?>
-					<?php __tinypass_tag_display($modeStrict, ++$num) ?>
-					<?php __tinypass_pricing_display($modeStrict, ++$num)?>
-					<?php __tinypass_payment_display($modeStrict, ++$num)?>
-					<?php __tinypass_purchase_page_display($modeStrict, ++$num) ?>
+					<?php __tinypass_tag_display($ps, ++$num) ?>
+					<?php __tinypass_pricing_display($ps, ++$num) ?>
+					<?php __tinypass_payment_messaging_display($ps, ++$num) ?>
+					<?php __tinypass_purchase_page_display($ps, ++$num) ?>
 				</div>
 
 				<p>
@@ -107,7 +112,7 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-										
+													
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -147,7 +152,7 @@ function tinypass_mode_settings() {
 					return false;
 				}
 			});
-						
+									
 			//toggle access_period after recurring is changed
 			$('.recurring-opts').bind('change', function(){
 				var index = $(this).attr("opt");

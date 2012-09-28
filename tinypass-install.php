@@ -47,7 +47,7 @@ function tinypass_activate() {
 function tinypass_deactivate() {
 	$storage = new TPStorage();
 	$ss = $storage->getSiteSettings();
-	$ss->setMode(TPSiteSettings::MODE_OFF);
+	$ss->setEnabled(0);
 	$storage->saveSiteSettings($ss);
 }
 

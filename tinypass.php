@@ -71,10 +71,11 @@ function tinypass_intercept_content($content) {
 	if ($ss->isEnabled() == false)
 		return $content;
 
+
 	$storage = new TPStorage();
 	$ppvOptions = $storage->getPostSettings($post->ID);
 
-	$tagOptions = $ss->getActiveSettings();
+	$tagOptions = $storage->getPaywallByTag($ss, $post->ID);
 
 	TinyPass::$AID = $ss->getAID();
 	TinyPass::$PRIVATE_KEY = $ss->getSecretKey();
@@ -90,7 +91,7 @@ function tinypass_intercept_content($content) {
 		$token = $store->getAccessToken("wp_bundle1");
 
 //		if ($token->isAccessGranted()) {
-			//wp_redirect(get_page_link($tagOptions->getSubscriptionPageSuccessRef()));
+		//wp_redirect(get_page_link($tagOptions->getSubscriptionPageSuccessRef()));
 //			$gotolink = get_page_link($tagOptions->getSubscriptionPageSuccessRef());
 //			exit;
 //		}
@@ -117,23 +118,13 @@ function tinypass_intercept_content($content) {
 									//window.location = tp_goto;
 								}
 							}
-						}" 
+						}"
 						. "</script>";
 	}
 
 
-	$post_terms = wp_get_post_terms($post->ID, 'post_tag', array());
-	$tagProtected = false;
-	foreach ($post_terms as $term) {
-		if ($tagOptions->tagMatches($term->name)) {
-			$tagProtected = true;
-			break;
-		}
-	}
-
-
 	//exit if everything is disabled 
-	if ($ppvOptions->isEnabled() == false && $tagProtected == false)
+	if ($ppvOptions->isEnabled() == false && $tagOptions->isEnabled() == false)
 		return $content;
 
 	define('DONOTCACHEPAGE', true);
@@ -154,7 +145,7 @@ function tinypass_intercept_content($content) {
 
 	$siteOfferTrialActive = FALSE;
 
-	if ($tagProtected) {
+	if ($tagOptions->isEnabled()) {
 		$siteOffer = TPPaySettings::create_offer($tagOptions, "wp_bundle1");
 		$siteToken = $store->getAccessToken($siteOffer->getResource()->getRID());
 
@@ -209,8 +200,8 @@ function tinypass_intercept_content($content) {
 	if ($ppvOffer) {
 		$req = new TPPurchaseRequest($ppvOffer, $ticketoptions);
 		$tinypass_ppv_req = array('req' => $req,
-				'message1' => $ss->getDeniedMessage1(),
-				'sub1' => $ss->getDeniedSub1());
+				'message1' => $ppvOptions->getDeniedMessage1(),
+				'sub1' => $ppvOptions->getDeniedSub1());
 		$req->setCallback('tinypass_reloader');
 	}
 
@@ -221,6 +212,13 @@ function tinypass_intercept_content($content) {
 				'sub1' => $tagOptions->getDeniedSub1());
 		$req2->setCallback('tinypass_reloader');
 	}
+
+	if ($tagOptions->isPostFirstInOrder() == false) {
+		$temp = $tinypass_ppv_req;
+		$tinypass_ppv_req = $tinypass_site_req;
+		$tinypass_site_req = $temp;
+	}
+
 
 
 
@@ -258,10 +256,6 @@ function tinypass_append_ticket($content) {
 
 	if ($tinypass_ppv_req == null && $tinypass_site_req == null)
 		return $content;
-
-	$ss = tinypass_load_settings();
-
-	$ps = $ss->getActiveSettings();
 
 	$tout = '';
 
@@ -332,6 +326,7 @@ function __tinypass_render_template($template, $vars = array()) {
 	ob_end_clean();
 	return $tout;
 }
+
 /**
  *
  * Trims a string based on WP settings

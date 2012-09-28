@@ -237,7 +237,7 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 			<input type="hidden" name="post_ID" value="<?php echo $postID ?>"/>
 
 			<div style="float:right">
-				<strong>Enabled?</strong>: <input type="checkbox" autocomplete=off name="tinypass[en]" value="1" <?php echo checked($ps->isEnabled()) ?>>
+				<strong>Enabled?</strong>: <input type="checkbox" autocomplete=off name="tinypass[mode]" value="1" <?php echo checked($ps->isEnabled()) ?>>
 			</div>
 			<strong><?php echo $resource_name_label ?></strong> - this value will be displayed in the TinyPass popup window
 			<br>
@@ -387,31 +387,6 @@ function __tinypass_metered_options_display(TPPaySettings $ps) {
 /**
  * 
  */
-function __tinypass_strict_options_display(TPPaySettings $ps) {
-	?>
-
-	<div class="postbox">
-		<h3><?php _e('Protected Content'); ?> </h3>
-		<div class="inside"> 
-			<div>
-				<input class="tp_enable_per_tag" type="checkbox" name="tinypass[per_tag]" <?php echo checked($ps->isEnabledPerTag()) ?> >
-				<label for="tp_enable_per_tag"><?php _e('Enable site-wide restriction based on the following tags:') ?></label>
-				<input type="text" name="tinypass[tags]" class="premium_tags" autocomplete="off" value="<?php echo $ps->getPremiumTags(', ') ?>">
-			</div>
-
-			<div>
-				<input class="tp_enable_per_post" type="checkbox" name="tinypass[per_post]" <?php echo checked($ps->isEnabledPerPost()) ?> >
-				<label for="tp_enable_per_post"><?php _e('Allow pay-per-view on individual pages or posts') ?></label>
-			</div>
-		</div>
-	</div>
-
-<?php } ?>
-<?php
-
-/**
- * 
- */
 function __tinypass_tag_display(TPPaySettings $ps, $num = "") {
 	?>
 
@@ -431,7 +406,6 @@ function __tinypass_tag_display(TPPaySettings $ps, $num = "") {
 				</div>
 				<div class="clear"></div>
 				<div class="tag-entry tp-bg">
-					<input class="tp_enable_per_tag" type="hidden" name="tinypass[per_tag]" <?php echo checked($ps->isEnabledPerTag()) ?> >
 					<input type="text" class="premium_tags" autocomplete="off" >
 					<a class="add_tag button-secondary"><?php _e('Add') ?></a>
 				</div>
@@ -514,7 +488,7 @@ function __tinypass_ppv_payment_display(TPSiteSettings $ss) {
 /**
  * Display payment display options 
  */
-function __tinypass_payment_display(TPPaySettings $ps, $num = "") {
+function __tinypass_payment_messaging_display(TPPaySettings $ps, $num = "") {
 	?>
 
 	<div class="tp-section" id="">
@@ -542,6 +516,15 @@ function __tinypass_payment_display(TPPaySettings $ps, $num = "") {
 
 						<div class="label">Description</div>
 						<textarea id="tp_pd_denied_sub1" rows="5" cols="80" name="tinypass[pd_denied_sub1]"><?php echo stripslashes($ps->getDeniedSub1()) ?></textarea>
+					</div>
+				</div>
+
+				<div class="tp-simple-table">
+					<p class="info">If a post is configured for Tinypass and that post has Tinypass enabled at the tag level show the following offer first</p>
+
+					<div class="label">&nbsp;</div>
+					<div>
+						<?php echo __tinypass_dropdown("tinypass[pd_order]", TPSiteSettings::$OFFER_ORDER_CHOICES, $ps->getOfferOrder()) ?>
 					</div>
 				</div>
 			</div>

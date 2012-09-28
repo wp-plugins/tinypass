@@ -10,22 +10,18 @@ class TPSiteSettings {
 	const SECRET_KEY_SAND = 'secret_key_sand';
 	const AID_PROD = 'aid_prod';
 	const SECRET_KEY_PROD = 'secret_key_prod';
-	const MODE = 'mode';
+	const PAYWALLS = 'pws';
 	const TINYPASS_SITE_SETTINGS = "tinypass_site_settings";
-	const MODE_STRICT_KEY = 'tinypass_mode_strict';
-	const MODE_METERED_KEY = 'tinypass_mode_metered';
-	const MODE_OFF = 0;
-	const MODE_DONATION = 1;
-	const MODE_METERED = 2;
-	const MODE_STRICT = 3;
 	const PA_DEFAULT = 0;
 	const PA_EXPANDED = 1;
+	const ENABLED = 'en';
 	const PPV_ENABLED = 'ppv';
 	const PD_DENIED_MSG1 = 'pd_denied_msg1';
 	const PD_DENIED_SUB1 = 'pd_denied_sub1';
 
 	public static $PA_CHOICES = array(TPSiteSettings::PA_DEFAULT => 'Default', TPSiteSettings::PA_EXPANDED => 'Expanded');
 	public static $PERIOD_CHOICES = array('hour' => 'hour(s)', 'day' => 'day(s)', 'week' => 'week(s)', 'month' => 'month(s)');
+	public static $OFFER_ORDER_CHOICES = array('0' => 'This offer first', '1' => 'Post offer first');
 
 	const MSG_PD_EXPANDED = 'This option will be displayed when TinyPass is enabled at the pay-per-view level at at the tag leve.  The user will be presented with two purchase choices.';
 	const MSG_PD_DEFAULT = 'Default payment dispaly option.  Will show a single TinyPass button.';
@@ -41,12 +37,12 @@ class TPSiteSettings {
 			$this->init($arr);
 		else {
 			$this->init(array(
-					TPSiteSettings::MODE => '3',
 					TPSiteSettings::AID_SAND => 'W7JZEZFu2h',
 					TPSiteSettings::SECRET_KEY_SAND => 'jeZC9ykDfvW6rXR8ZuO3EOkg9HaKFr90ERgEb3RW',
 					TPSiteSettings::AID_PROD => 'GETKEY',
 					TPSiteSettings::SECRET_KEY_PROD => 'Retreive your secret key from www.tinypass.com',
 					TPSiteSettings::ENV => 0,
+					TPSiteSettings::ENABLED => 1,
 			));
 		}
 	}
@@ -66,22 +62,12 @@ class TPSiteSettings {
 			$this->data = new NiceArray($data);
 	}
 
-	public function addModeSettings(TPPaySettings $settings) {
-		$this->modes[$settings->getMode()] = $settings;
-	}
-
-	public function getModeSettings($mode) {
-		if (isset($this->modes[$mode]))
-			return $this->modes[$mode];
-		return new TPPaySettings(array());
-	}
-
-	public function getActiveSettings() {
-		return $this->getModeSettings($this->getMode());
-	}
-
 	public function isEnabled() {
-		return !$this->data->valEquals(self::MODE, 0);
+		return $this->data->isValEnabled(self::ENABLED);
+	}
+
+	public function setEnabled($i = 1) {
+		$this->data[self::ENABLED] = $i;
 	}
 
 	public function isProd() {
@@ -92,14 +78,6 @@ class TPSiteSettings {
 		if (!isset($this->data[self::ENV]))
 			return true;
 		return $this->data->valEquals(self::ENV, 0);
-	}
-
-	public function getMode() {
-		return $this->data->val(self::MODE, self::MODE_OFF);
-	}
-
-	public function setMode($i) {
-		$this->data[self::MODE] = $i;
 	}
 
 	public function setSand() {
@@ -140,6 +118,26 @@ class TPSiteSettings {
 		return $this->data->val(self::SECRET_KEY_PROD, 'GET_KEY');
 	}
 
+	//Paywal Operations
+	public function addPaywall(TPPaySettings $ps) {
+		$rid = $ps->getResourceId();
+		$arr = $this->data[self::PAYWALLS];
+		if ($arr == null)
+			$arr = array();
+		$arr[] = $rid;
+		$arr = array_unique($arr);
+		$this->data[self::PAYWALLS] = $arr;
+	}
+
+	public function removePaywall(TPPaySettings $ps) {
+		$rid = $ps->getResourceId();
+		unset($this->data[TPSiteSettings::PAYWALLS][$rid]);
+	}
+
+	public function getPaywalls() {
+		return $this->data->val(TPSiteSettings::PAYWALLS, array());
+	}
+
 	/**
 	 * PPV Settings
 	 */
@@ -159,23 +157,27 @@ class TPSiteSettings {
 		
 	}
 
-	public function updatePaySettings($form) {
+	public function validatePaySettings($form, &$errors) {
 
 		$form = new NiceArray($form);
 
 		$activeMode = $form['mode'];
-		$this->setMode($activeMode);
 
-		$ps = new TPPaySettings();
-		$errors = array();
 
-		if ($activeMode != self::MODE_OFF) {
+		if ($activeMode == TPPaySettings::MODE_OFF) {
+
+			$storage = new TPStorage();
+			$ps = $storage->getPaywall($form['resource_id']);
+			$ps->setMode(TPPaySettings::MODE_OFF);
+			return $ps;
+
+		} else if ($activeMode != TPPaySettings::MODE_OFF) {
 
 			$form['tags'] = array_unique($form['tags']);
 
 			$tags = array();
 			foreach ($form['tags'] as $tag) {
-				if (is_term($tag))
+				if (term_exists($tag))
 					$tags[] = $tag;
 				else
 					$errors['tags' . $tag] = "Invalid tag for '$tag'";
@@ -243,14 +245,13 @@ class TPSiteSettings {
 					if ($form['sub_page_ref'] == $form['sub_page_success_ref'])
 						$errors['sub_page_success'] = "Dedicated sign page and confirmation page must be different";
 			}
-		} else if ($activeMode == self::MODE_DONATION) {
+		} else if ($activeMode == TPPaySettings::MODE_DONATION) {
 			throw new Exception("Not implemented yet");
 		}
 
 		$ps = new TPPaySettings($form->toArray());
-		$this->addModeSettings($ps);
 
-		return $errors;
+		return $ps;
 	}
 
 }
