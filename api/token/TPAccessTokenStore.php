@@ -6,20 +6,19 @@ class TPAccessTokenStore {
 	protected $tokens;
 	protected $rawCookie;
 
-
 	public function __construct($config = null) {
 		$this->config = TinyPass::config();
-		if($config)
+		if ($config)
 			$this->config = $config;
 		$this->tokens = new TPAccessTokenList();
 	}
-
 
 	public function getAccessToken($rid) {
 
 		$token = $this->tokens->getAccessTokenByRID($rid);
 
-		if ($token != null) return $token;
+		if ($token != null)
+			return $token;
 
 		$token = new TPAccessToken(new TPRID($rid));
 		$token->getTokenData()->addField(TPTokenData::EX, -1);
@@ -35,17 +34,16 @@ class TPAccessTokenStore {
 		return $token;
 	}
 
-
 	public function loadTokensFromCookie($cookies, $cookieName = null) {
 
-		if($cookieName ==  null) {
+		if ($cookieName == null) {
 			$cookieName = TPConfig::getAppPrefix($this->config->AID) . TPConfig::$COOKIE_SUFFIX;
 		}
 
 		$unparsedTokenValue = '';
-		if(is_array($cookies)) {
-			foreach($cookies as $name => $value) {
-				if($name == $cookieName) {
+		if (is_array($cookies)) {
+			foreach ($cookies as $name => $value) {
+				if ($name == $cookieName) {
 					$unparsedTokenValue = $value;
 					break;
 				}
@@ -60,7 +58,6 @@ class TPAccessTokenStore {
 			$parser = new TPClientParser();
 			$this->tokens = $parser->parseAccessTokens(urldecode($unparsedTokenValue));
 		}
-
 	}
 
 	public function getTokens() {
@@ -78,17 +75,27 @@ class TPAccessTokenStore {
 	protected function _cleanExpiredTokens() {
 		$tokens = $this->tokens->getTokens();
 
-		foreach($tokens as $rid => $token) {
+		foreach ($tokens as $rid => $token) {
 
-			if($token->isMetered() && $token->_isTrialDead()) {
+			if ($token->isMetered() && $token->_isTrialDead()) {
 				$this->tokens->remove($rid);
-			} else if($token->isExpired()) {
+			} else if ($token->isExpired()) {
 				$this->tokens->remove($rid);
 			}
-
 		}
 	}
 
+	public function findToken($regexp) {
+		$tokens = $this->tokens->getTokens();
+
+		$found = array();
+		foreach ($tokens as $rid => $token) {
+			if (preg_match("/$regexp/", $rid))
+				$found[] = $token;
+		}
+		return $found;
+	}
 
 }
+
 ?>

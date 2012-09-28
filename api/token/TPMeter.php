@@ -19,11 +19,11 @@ class TPMeter {
 		$accessToken->getTokenData()->addField(TPTokenData::METER_TYPE, TPTokenData::METER_REMINDER);
 		$accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_MAX_ACCESS_ATTEMPTS, $maxViews);
 		$accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_ACCESS_ATTEMPTS, 0);
-		$accessToken->getTokenData()->addField(TPTokenData::METER_LOCKOUT_PERIOD, $trialPeriod);
 
 		$trialPeriodParsed = TPUtils::parseLoosePeriodInSecs($trialPeriod);
 		$trialEndTime = TPUtils::now() + $trialPeriodParsed;
 		$accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_ENDTIME, $trialEndTime);
+		$accessToken->getTokenData()->addField(TPTokenData::METER_LOCKOUT_ENDTIME, $trialEndTime);
 
 		return new TPMeter($accessToken);
 	}
@@ -48,15 +48,6 @@ class TPMeter {
 
 	public function increment() {
 		$value = $this->accessToken->getTokenData()->getFromMap(TPTokenData::METER_TRIAL_ACCESS_ATTEMPTS, 0) + 1;
-
-		if ($this->accessToken->getMeterType() != TPTokenData::METER_STRICT && $this->isMeterViewBased()) {
-			if ($this->getTrialViewCount() == $this->getTrialViewLimit()) {
-				$this->accessToken->getTokenData()->addField(
-								TPTokenData::METER_LOCKOUT_ENDTIME,
-								//TPUtils::now() + TPUtils::parseLoosePeriodInSecs($this->accessToken->getTokenData()->getField(TPTokenData::METER_LOCKOUT_PERIOD)));
-								$this->accessToken->getTokenData()->getField(TPTokenData::METER_TRIAL_ENDTIME));
-			}
-		}
 		$this->accessToken->getTokenData()->addField(TPTokenData::METER_TRIAL_ACCESS_ATTEMPTS, $this->getTrialViewCount() + 1);
 		return $value;
 	}

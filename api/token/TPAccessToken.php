@@ -105,7 +105,7 @@ class TPAccessToken {
 			} else {
 
 				if ($this->isMeterViewBased()) {
-					return $this->getTrialViewCount() <= $this->getTrialViewLimit();
+					return $this->getTrialViewCount() <= $this->getTrialViewLimit() && TPUtils::now() <= $this->getTrialEndTimeSecs();
 				} else {
 					$expires = $this->getTrialEndTimeSecs();
 					if ($expires == null || $expires == 0)
@@ -136,7 +136,7 @@ class TPAccessToken {
 			if ($expires == null || $expires == 0)
 				return false;
 
-			return time() <= $expires;
+			return TPUtils::now() <= $expires;
 		}
 		return false;
 	}

@@ -11,6 +11,7 @@ function tinypass_add_admin_pages() {
 	add_submenu_page('TinyPass', 'Paywall', 'Paywall', 'edit_plugins', 'TinyPass', 'tinypass_mode_settings');
 	add_submenu_page('TinyPass', 'Pay-per-view', 'Pay-per-view', 'edit_plugins', 'TinyPassPPVSettings', 'tinypass_ppv_settings');
 	add_submenu_page('TinyPass', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
+	add_submenu_page('TinyPass', 'Paywalls', 'Paywalls', 'edit_plugins', 'TinyPassPaywalls', 'tinypass_list_paywalls');
 
 	tinypass_include();
 
@@ -19,6 +20,7 @@ function tinypass_add_admin_pages() {
 	include_once (dirname(__FILE__) . '/tinypass-mode-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-ppv-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-site-settings.php');
+	include_once (dirname(__FILE__) . '/tinypass-list-paywalls.php');
 }
 
 /* Post/Page edit forms meta boxes */

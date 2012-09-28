@@ -62,6 +62,7 @@ class TPStrictMeteredPricing extends TPPolicy {
 		$meter->set(TPPolicy::POLICY_TYPE, TPPolicy::STRICT_METER_BY_TIME);
 		return $meter;
 	}
+
 }
  */
 

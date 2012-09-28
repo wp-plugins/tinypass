@@ -30,45 +30,52 @@ function tinypass_mode_settings() {
 			<h2><?php _e('TinyPass'); ?></h2>
 			<form action="" method="post">
 
-				<div class="inside">
-					<div id="tp_modes">
-						<input id="tp_mode" name="tinypass[mode]" type="hidden">
-						<div id="tp_mode1" class="choice" value="<?php echo TPSiteSettings::MODE_OFF ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_OFF) ?> >Off</div>
-						<div id="tp_mode2" class="choice" value="<?php echo TPSiteSettings::MODE_METERED ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_METERED) ?>>Metered</div>
-						<div id="tp_mode3" class="choice" value="<?php echo TPSiteSettings::MODE_STRICT ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_STRICT) ?>>Strict</div>
-						<div class="clear"></div>
-					</div>
+				<div id="tp_modes">
+					<input id="tp_mode" name="tinypass[mode]" type="hidden">
+					<div id="tp_mode1" class="choice" value="<?php echo TPSiteSettings::MODE_OFF ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_OFF) ?> >Off</div>
+					<div id="tp_mode2" class="choice" value="<?php echo TPSiteSettings::MODE_METERED ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_METERED) ?>>Metered</div>
+					<div id="tp_mode3" class="choice" value="<?php echo TPSiteSettings::MODE_STRICT ?>" <?php checked($ss->getMode(), TPSiteSettings::MODE_STRICT) ?>>Strict</div>
+					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
+				<div class="hr"></div>
 
 				<div id="tp_mode1_panel" class="tp_mode_panel">
-					TinyPass is disabled
-				</div>
-				<div id="tp_mode2_panel" class="tp_mode_panel">
 					<div class="heading">
-						<h3><?php _e("Metered Mode") ?></h3>
+						<h3><?php _e("Disabled") ?></h3>
 						<p>
-							Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
+							Tinypass is disabled.
 						</p>
 					</div>
+				</div>
 
-					<?php __tinypass_tag_display($modeMetered) ?>
-					<?php __tinypass_pricing_display($modeMetered) ?>
-					<?php __tinypass_metered_display($modeMetered) ?>
-					<?php __tinypass_payment_display($modeMetered) ?>
-					<?php __tinypass_purchase_page_display($modeMetered) ?>
-				</div>
-				<div id="tp_mode3_panel" class="tp_mode_panel">
-					<div class="heading">
-						<h3><?php _e("Strict Mode") ?></h3>
+				<div id="tp_mode2_panel" class="tp_mode_panel">
+					<div>
+						<h2><?php _e("Metered Mode") ?></h2>
 						<p>
 							Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
 						</p>
 					</div>
-					<?php __tinypass_tag_display($modeStrict) ?>
-					<?php __tinypass_pricing_display($modeStrict) ?>
-					<?php __tinypass_payment_display($modeStrict) ?>
-					<?php __tinypass_purchase_page_display($modeStrict) ?>
+					<?php $num = 0; ?>
+					<?php __tinypass_tag_display($modeMetered, ++$num) ?>
+					<?php __tinypass_metered_display($modeMetered, ++$num) ?>
+					<?php __tinypass_pricing_display($modeMetered, ++$num) ?>
+					<?php __tinypass_payment_display($modeMetered, ++$num) ?>
+					<?php __tinypass_purchase_page_display($modeMetered, ++$num) ?>
+				</div>
+
+				<div id="tp_mode3_panel" class="tp_mode_panel">
+					<div>
+						<h2><?php _e("Strict Mode") ?></h2>
+						<p>
+							Create a premium section on your site in minutes.  Select the tags you want to restrict, choose your price options, and we'll do the rest.
+						</p>
+					</div>
+					<?php $num = 0; ?>
+					<?php __tinypass_tag_display($modeStrict, ++$num) ?>
+					<?php __tinypass_pricing_display($modeStrict, ++$num)?>
+					<?php __tinypass_payment_display($modeStrict, ++$num)?>
+					<?php __tinypass_purchase_page_display($modeStrict, ++$num) ?>
 				</div>
 
 				<p>
@@ -100,7 +107,7 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-								
+										
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -140,7 +147,7 @@ function tinypass_mode_settings() {
 					return false;
 				}
 			});
-				
+						
 			//toggle access_period after recurring is changed
 			$('.recurring-opts').bind('change', function(){
 				var index = $(this).attr("opt");

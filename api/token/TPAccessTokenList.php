@@ -5,14 +5,12 @@ class TPAccessTokenList {
 	public static $MAX = 20;
 	private $tokens = array();
 
-
 	function __construct(array $tokens = null) {
-		if($tokens) {
-			foreach($tokens as $token) {
+		if ($tokens) {
+			foreach ($tokens as $token) {
 				$this->add($token, false);
 			}
 		}
-
 	}
 
 	public function getAccessTokens() {
@@ -41,11 +39,10 @@ class TPAccessTokenList {
 	}
 
 	public function addAll($tokens) {
-		foreach($tokens as $token) {
+		foreach ($tokens as $token) {
 			$this->add($token);
 		}
 	}
-
 
 	/**
 	 *
@@ -53,12 +50,11 @@ class TPAccessTokenList {
 	 */
 	public function getAccessTokenByRID($rid) {
 		$rid = TPRID::parse($rid);
-		if($this->contains($rid)) {
+		if ($this->contains($rid)) {
 			return $this->tokens[$rid->getID()];
 		}
 		return null;
 	}
-
 
 	public function isEmpty() {
 		return $this->tokens == null || count($this->tokens) == 0;
@@ -68,15 +64,11 @@ class TPAccessTokenList {
 		return count($this->tokens);
 	}
 
-	public function testGetAID() {
-		$list = new TPAccessToken(new TPTokenData());
-		$this->assertEquals("AID", $list->getAID());
-	}
-
-	public function testGetUID() {
-		$list = new TPAccessToken("AID", "UID");
-		$this->assertEquals("UID", $list->getUID());
+	public function first() {
+		foreach ($this->tokens as $key => $value)
+			return $value;
 	}
 
 }
+
 ?>
