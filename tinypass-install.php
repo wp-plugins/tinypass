@@ -33,9 +33,9 @@ function tinypass_activate() {
 
 	$old = get_option("tinypass_setting");
 	if ($old && count($old)) {
-
 		$message = "Upgrading from Tinypass version 1.x to 2.x is currently restricted.  <br><br>Please contact support@tinypass.com for migration instructions from 1.x to 2.x";
 		$message .= "<br><br>You can restore your previous version by manually downloading latest 1.4.x plugin at http://wordpress.org/extend/plugins/tinypass/developers";
+		$message .= "<br><br>You can manually upgrade by uninstalling the TinyPass plugin and then performing a brand new install.  All your existing settings will be lost!!";
 		die($message);
 	}
 
@@ -52,11 +52,6 @@ function tinypass_deactivate() {
 }
 
 function tinypass_uninstall() {
-	//global $wpdb;
-	//$table_name = $wpdb->prefix . 'tinypass_ref';
-	//$wpdb->query("drop table $table_name ");
-	//$wpdb->query("delete from $wpdb->postmeta where meta_key = 'tinypass'");
-	//$wpdb->query("delete from $wpdb->options where option_name like 'tinypass%'");
 }
 
 ?>

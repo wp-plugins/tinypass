@@ -140,6 +140,7 @@ TinyPass admin form sytles
 	margin: 0px;
 	border:1px solid #DFDFDF;
 	font-size:11px;
+  background-color:white;
 }
 .tinypass_price_options_form th{
 	background-color:#EDEDED;

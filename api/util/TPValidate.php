@@ -14,7 +14,7 @@ class TPValidate {
 		if (empty($price))
 			return false; // Price cannot be empty
 
-		if (preg_match('/^\d*[.,]?\d+$/', $price) || preg_match('/^\d*[.,]?\d+\s*[a-z]{3}$/i', $price))
+		if (preg_match('/^[>]?\d*[.,]?\d+$/', $price) || preg_match('/^[>]?\d*[.,]?\d+\s*[a-z]{3}$/i', $price))
 			return true;
 
 		return false;

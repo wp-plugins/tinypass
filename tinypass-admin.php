@@ -18,7 +18,7 @@ function tinypass_add_admin_pages() {
 	wp_enqueue_script('suggest');
 
 	include_once (dirname(__FILE__) . '/tinypass-mode-settings.php');
-	include_once (dirname(__FILE__) . '/tinypass-ppv-settings.php');
+	include_once (dirname(__FILE__) . '/tinypass-ppp-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-site-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-list-paywalls.php');
 }

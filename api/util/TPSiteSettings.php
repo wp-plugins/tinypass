@@ -21,7 +21,7 @@ class TPSiteSettings {
 
 	public static $PA_CHOICES = array(TPSiteSettings::PA_DEFAULT => 'Default', TPSiteSettings::PA_EXPANDED => 'Expanded');
 	public static $PERIOD_CHOICES = array('hour' => 'hour(s)', 'day' => 'day(s)', 'week' => 'week(s)', 'month' => 'month(s)');
-	public static $OFFER_ORDER_CHOICES = array('0' => 'This offer first', '1' => 'Post offer first');
+	public static $OFFER_ORDER_CHOICES = array('0' => 'This purchase option', '1' => 'Pay-per-Post purchase option');
 
 	const MSG_PD_EXPANDED = 'This option will be displayed when TinyPass is enabled at the pay-per-view level at at the tag leve.  The user will be presented with two purchase choices.';
 	const MSG_PD_DEFAULT = 'Default payment dispaly option.  Will show a single TinyPass button.';
@@ -172,6 +172,9 @@ class TPSiteSettings {
 			return $ps;
 
 		} else if ($activeMode != TPPaySettings::MODE_OFF) {
+
+      if(!is_array($form['tags']))
+        $form['tags'] = array();
 
 			$form['tags'] = array_unique($form['tags']);
 

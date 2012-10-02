@@ -287,16 +287,16 @@ class TPPaySettings {
 	/**
 	 * Messaging
 	 */
-	public function getDeniedMessage1() {
-		return $this->data->val(self::PD_DENIED_MSG1, self::DEFAULT_DENIED_MESSAGE);
+	public function getDeniedMessage1($msg = self::DEFAULT_DENIED_MESSAGE) {
+		return $this->data->val(self::PD_DENIED_MSG1, $msg);
 	}
 
 	public function getDeniedMessage2() {
 		return $this->data->val(self::PD_DENIED_MSG2, "");
 	}
 
-	public function getDeniedSub1() {
-		return $this->data->val(self::PD_DENIED_SUB1, self::DEFAULT_DENIED_MESSAGE);
+	public function getDeniedSub1($msg = self::DEFAULT_DENIED_MESSAGE) {
+		return $this->data->val(self::PD_DENIED_SUB1, "");
 	}
 
 	public function getDeniedSub2() {
