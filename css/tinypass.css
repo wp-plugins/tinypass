@@ -75,17 +75,41 @@ TinyPass admin form sytles
 .clear {
 	clear:both;
 }
+
+#tp-error {
+  color:red;
+}
+
+.tp-error {
+  border:1px solid red !important;
+}
+
 .tp-bg {
 	background-color:#F7F7F7;
 }
 
 .tp-section {
-	margin-top:30px;
+	margin-top:0px;
 }
 
-#poststuff .tp-section h3.heading{
-	padding-left:0px;
+#poststuff .tp-settings h3 {
+  font-weight:bold;
+  padding-left:0px;
+  font-size:14px;
 }
+
+#poststuff .tp-settings .postbox h3 {
+  font-size:12px;
+  font-weight:bold;
+  padding-left:7px;
+}
+
+.tp-settings h2 {
+  font-weight:bold;
+  padding-left:0px;
+}
+
+
 
 .tp-simple-table div.label, .tp-simple-table label{
 	display:block;
@@ -103,6 +127,7 @@ TinyPass admin form sytles
 }
 
 #tp_modes {
+  margin-top:10px;
 	background-color:#FDFDFD;
 	border:1px solid #EAEAEA;
 	padding:7px 20px 5px 20px;

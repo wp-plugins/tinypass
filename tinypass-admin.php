@@ -6,12 +6,10 @@ define('TINYPASS_FAVICON', 'http://www.tinypass.com/favicon.ico');
 add_action("admin_menu", 'tinypass_add_admin_pages');
 
 function tinypass_add_admin_pages() {
-	add_menu_page('TinyPass', 'TinyPass', 'manage_options', 'TinyPass', 'tinypass_mode_settings', TINYPASS_FAVICON);
-	//add_submenu_page('TinyPass', 'TinyPass Tag Options', 'Tag Options', 'edit_plugins', 'TinyPassTagOptions', 'tinypass_admin_tags');
-	add_submenu_page('TinyPass', 'Paywall Settings', 'Paywall Settings', 'edit_plugins', 'TinyPass', 'tinypass_mode_settings');
-	add_submenu_page('TinyPass', 'Pay per Post', 'Pay per Post', 'edit_plugins', 'TinyPassPPVSettings', 'tinypass_ppv_settings');
-	add_submenu_page('TinyPass', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
-//	add_submenu_page('TinyPass', 'Paywalls', 'Paywalls', 'edit_plugins', 'TinyPassPaywalls', 'tinypass_list_paywalls');
+	add_menu_page('Tinypass', 'Tinypass', 'manage_options', 'Tinypass', 'tinypass_mode_settings', TINYPASS_FAVICON);
+	add_submenu_page('Tinypass', 'Paywall Settings', 'Paywall Settings', 'edit_plugins', 'Tinypass', 'tinypass_mode_settings');
+	add_submenu_page('Tinypass', 'Pay per Post', 'Pay per Post', 'edit_plugins', 'TinyPassPPVSettings', 'tinypass_ppv_settings');
+	add_submenu_page('Tinypass', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
 
 	tinypass_include();
 
@@ -28,7 +26,6 @@ add_action('add_meta_boxes', 'tinypass_add_meta_boxes');
 
 function tinypass_add_meta_boxes() {
 
-
 	$storage = new TPStorage();
 	$ss = $storage->getSiteSettings();
 
@@ -37,10 +34,10 @@ function tinypass_add_meta_boxes() {
 	}
 
 	add_meta_box(
-					'tinypass_post_options', '<img src="' . TINYPASS_FAVICON . '">&nbsp;' . __('TinyPass Post Options'), 'tinypass_meta_box_display', 'post', 'side'
+					'tinypass_post_options', '<img src="' . TINYPASS_FAVICON . '">&nbsp;' . __('Tinypass Options'), 'tinypass_meta_box_display', 'post', 'side'
 	);
 	add_meta_box(
-					'tinypass_post_options', '<img src="' . TINYPASS_FAVICON . '">&nbsp;' . __('TinyPass Page Options'), 'tinypass_meta_box_display', 'page', 'side'
+					'tinypass_post_options', '<img src="' . TINYPASS_FAVICON . '">&nbsp;' . __('Tinypass Options'), 'tinypass_meta_box_display', 'page', 'side'
 	);
 }
 

@@ -9,15 +9,15 @@
 /**
  * Available variables
  * 	
- * 	$button1 - the TinyPass button that must be embedded so users can make a purchase
- *  $message1 - header message provided in TinyPass settings
- * 	$sub1 - sub header message provided in TinyPass settings
+ * 	$button1 - the Tinypass button that must be embedded so users can make a purchase
+ *  $message1 - header message provided in Tinypass settings
+ * 	$sub1 - sub header message provided in Tinypass settings
  *  $resource1 - name of post/tag the user is buying
  *
  *  The following will only be present on Upsells PerPost + Tag 
- * 	$button2 - the TinyPass button that must be embedded so users can make a purchase
- *  $message2 - header message provided in TinyPass settings
- * 	$sub2 - sub header message provided in TinyPass settings
+ * 	$button2 - the Tinypass button that must be embedded so users can make a purchase
+ *  $message2 - header message provided in Tinypass settings
+ * 	$sub2 - sub header message provided in Tinypass settings
  *  $resource2 - name of post/tag the user is buying
  * 
  */

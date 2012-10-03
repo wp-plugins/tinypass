@@ -3,8 +3,8 @@
 /*
   Plugin Name: TinyPass
   Plugin URI: http://www.tinypass.com
-  Description: TinyPass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free TinyPass publisher account and configure the TinyPass plugin for your WordPress site
-  Author: TinyPass
+  Description: Tinypass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free Tinypass publisher account and configure the Tinypass plugin for your WordPress site
+  Author: Tinypass
   Version: 2.0.1
   Author URI: http://www.tinypass.com
  */
@@ -17,6 +17,7 @@ define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FIL
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
+
 //setup
 if (is_admin()) {
   require_once dirname(__FILE__) . '/tinypass-install.php';
@@ -32,7 +33,7 @@ wp_enqueue_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
 wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
 
 function tinypass_init() {
-  //ob_start();
+  ob_start();
 }
 
 /**
@@ -45,7 +46,7 @@ function tinypass_load_settings() {
 }
 
 /**
- * Main function for displaying TinyPass button on restricted post/pages
+ * Main function for displaying Tinypass button on restricted post/pages
  */
 function tinypass_intercept_content($content) {
 
@@ -68,7 +69,7 @@ function tinypass_intercept_content($content) {
 
   $ss = tinypass_load_settings();
 
-  //break out if TinyPass is disabled
+  //break out if Tinypass is disabled
   if ($ss->isEnabled() == false)
     return $content;
 
@@ -77,6 +78,9 @@ function tinypass_intercept_content($content) {
   $ppvOptions = $storage->getPostSettings($post->ID);
 
   $tagOptions = $storage->getPaywallByTag($ss, $post->ID);
+
+  if($tagOptions->isEnabled() == false) 
+    $tagOptions = $storage->getPaywallSubRefID($ss, $post->ID);
 
   TinyPass::$AID = $ss->getAID();
   TinyPass::$PRIVATE_KEY = $ss->getSecretKey();
@@ -101,7 +105,6 @@ function tinypass_intercept_content($content) {
     $req = new TPPurchaseRequest($siteOffer);
     $req->setCallback('tinypass_redirect');
     $button1 = $req->generateTag();
-    $tinypass_ppp_req = array('req' => $req);
 
     return $content . "<div id='tinypass_subscription_holder'>$button1</div>"
             . "<script>"
@@ -127,6 +130,8 @@ function tinypass_intercept_content($content) {
   //exit if everything is disabled 
   if ($ppvOptions->isEnabled() == false && $tagOptions->isEnabled() == false)
     return $content;
+
+  $post->comment_status = "closed";
 
   define('DONOTCACHEPAGE', true);
   define('DONOTCACHEDB', true);
@@ -365,7 +370,7 @@ function tinypass_trim_excerpt($text) {
 }
 
 /**
- * Wrap the TinyPass options in our Options class
+ * Wrap the Tinypass options in our Options class
  */
 function meta_to_tp_options($meta) {
   $options = new TPPaySettings($meta);

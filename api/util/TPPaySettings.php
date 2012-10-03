@@ -182,6 +182,10 @@ class TPPaySettings {
 		return $this->data->val(self::PO_RECUR . $i, '');
 	}
 
+	public function isRecurring($i) {
+		return $this->data->val(self::PO_RECUR . $i, '') != 0;
+	}
+
 	public function getStartDateSec($i) {
 		return strtotime($this->data[self::PO_START . $i]);
 	}
@@ -330,7 +334,7 @@ class TPPaySettings {
 		if ($rname == '' || $rname == null)
 			$rname = $ps->getResourceName();
 
-		$resource = new TPResource($rid, $rname);
+		$resource = new TPResource($rid, stripslashes($rname));
 
 		$pos = array();
 
@@ -342,10 +346,11 @@ class TPPaySettings {
 				$po->setAccessPeriod($ps->getAccess($i));
 
 			if ($ps->getCaption($i) != '')
-				$po->setCaption($ps->getCaption($i));
+				$po->setCaption(stripslashes($ps->getCaption($i)));
 
-			if ($ps->getRecurring($i) != '')
+			if ($ps->isRecurring($i)) {
 				$po->setRecurringBilling($ps->getRecurring($i));
+      }
 
 			$pos[] = $po;
 		}

@@ -16,6 +16,9 @@ class TPJsonMsgBuilder {
 			$accessToken = new TPAccessToken($token);
 			$accessTokenList[] = $accessToken;
 		}else {
+      //1.0 tokens cannot be parsed in this version
+      if(isset($json['tokens']))
+		    return new TPAccessTokenList($accessTokenList);
 			foreach($json as $tokenMap) {
 				$tokenMap = (array)$tokenMap;
 				$rid = TPRID::parse($tokenMap[TPTokenData::RID]);

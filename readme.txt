@@ -148,7 +148,7 @@ Upgrading is still possible but it does requires manual steps.  Please contact s
 specific instructions will be provided to complete the upgrade.
 
 If you currently have 1.4.x installed you can upgrade by deactivating and uninstalling the 1.4.x version
-AND then installing the latest TinyPass plugin.  When you completely remove the 1.4.x version all settings and configuration
+AND then installing the latest Tinypass plugin.  When you completely remove the 1.4.x version all settings and configuration
 will be lost.
 
 
