@@ -17,7 +17,6 @@ function tinypass_add_admin_pages() {
 	include_once (dirname(__FILE__) . '/tinypass-mode-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-ppp-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-site-settings.php');
-	include_once (dirname(__FILE__) . '/tinypass-list-paywalls.php');
 }
 
 /* Post/Page edit forms meta boxes */
@@ -25,8 +24,7 @@ add_action('add_meta_boxes', 'tinypass_add_meta_boxes');
 
 function tinypass_add_meta_boxes() {
 
-	$storage = new TPStorage();
-	$ss = $storage->getSiteSettings();
+  $ss = tinypass_load_settings();
 
 	if (!$ss->isPPVEnabled()) {
 		return;
@@ -52,19 +50,9 @@ add_action('admin_enqueue_scripts', 'tinypass_add_admin_scripts');
 function tinypass_add_admin_scripts() {
 	global $wp_version;
 
-
 	wp_enqueue_script("jquery-core");
 	wp_enqueue_script("jquery-ui");
 	wp_enqueue_script('jquery-ui-dialog');
-
-	if (version_compare($wp_version, '3.1', '<')) {
-		wp_enqueue_script('jquery-ui-slider', TINYPASSS_PLUGIN_PATH . 'js/ui.slider.min-1.7.3.js', array('jquery-ui-core'), false, false);
-		wp_enqueue_script('jquery-ui-datepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.datepicker.min-1.7.3.js', array('jquery-ui-core'), false, false);
-	} else {
-		wp_enqueue_script('jquery-ui-slider', TINYPASSS_PLUGIN_PATH . 'js/ui.slider.min-1.8.10.js', array('jquery-ui-core'), false, true);
-		wp_enqueue_script('jquery-ui-datepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.datepicker.min-1.8.10.js', array('jquery-ui-core'), false, false);
-	}
-	wp_enqueue_script('jquery-ui-timepicker', TINYPASSS_PLUGIN_PATH . 'js/ui.timepicker.min.js', array('jquery-ui-datepicker'), false, false);
 	wp_enqueue_script('tinypass_admin', TINYPASSS_PLUGIN_PATH . 'js/tinypass_admin.js', array('jquery'), false, false);
 	wp_enqueue_style('jquery-ui-1.8.2.custom.css', TINYPASSS_PLUGIN_PATH . 'css/jquery-ui-1.8.2.custom.css');
 }

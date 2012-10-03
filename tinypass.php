@@ -28,21 +28,9 @@ if (is_admin()) {
 add_filter('the_content', 'tinypass_intercept_content', 5);
 add_filter('the_content', 'tinypass_append_ticket', 200);
 add_action('init', 'tinypass_init');
+
 wp_enqueue_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
 wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
-
-function tinypass_init() {
-  ob_start();
-}
-
-/**
- * Load and init global tinypass settings
- */
-function tinypass_load_settings() {
-  $storage = new TPStorage();
-  $ss = $storage->getSiteSettings();
-  return $ss;
-}
 
 /**
  * Main function for displaying Tinypass button on restricted post/pages
@@ -78,7 +66,7 @@ function tinypass_intercept_content($content) {
 
   $tagOptions = $storage->getPaywallByTag($ss, $post->ID);
 
-  if($tagOptions->isEnabled() == false) 
+  if ($tagOptions->isEnabled() == false)
     $tagOptions = $storage->getPaywallSubRefID($ss, $post->ID);
 
   TinyPass::$AID = $ss->getAID();
@@ -239,12 +227,12 @@ function tinypass_intercept_content($content) {
     $tinypass_site_req = $temp;
   }
 
-
-
-
   return $content .= " [TP_HOOK]";
 }
 
+/**
+ * 
+ */
 function get_extended_with_tpmore($post) {
 
   $regex = '/<!--more(.*?)?-->/';
@@ -376,14 +364,36 @@ function meta_to_tp_options($meta) {
   return $options;
 }
 
+/**
+ * Include the TP api files
+ */
 function tinypass_include() {
   include_once dirname(__FILE__) . '/api/TinyPass.php';
 }
 
+/**
+ * Debug helper
+ */
 function tinypass_debug($obj) {
   echo "<pre>";
   print_r($obj);
   echo "</pre>";
+}
+
+/**
+ *  Init buffer so that we can send out a cookie in the rsp header
+ */
+function tinypass_init() {
+  ob_start();
+}
+
+/**
+ * Load and init global tinypass settings
+ */
+function tinypass_load_settings() {
+  $storage = new TPStorage();
+  $ss = $storage->getSiteSettings();
+  return $ss;
 }
 
 ?>
