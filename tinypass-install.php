@@ -38,10 +38,10 @@ function tinypass_activate() {
 }
 
 function tinypass_deactivate() {
-  $storage = new TPStorage();
-  $ss = $storage->getSiteSettings();
-  $ss->setEnabled(0);
-  $storage->saveSiteSettings($ss);
+  //$storage = new TPStorage();
+  //$ss = $storage->getSiteSettings();
+  //$ss->setEnabled(0);
+  //$storage->saveSiteSettings($ss);
 }
 
 function tinypass_uninstall() {

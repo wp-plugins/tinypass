@@ -46,7 +46,7 @@ function tinypass_mode_settings() {
         <form action="" method="post" autocomplete="off">
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
           <div style="float:right">
-            RID:<input type="text" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+            <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
           </div>
           <div class="heading">
             <p>
@@ -80,7 +80,7 @@ function tinypass_mode_settings() {
         <form action="" method="post" autocomplete="off">
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
           <div style="float:right">
-            RID:<input type="text" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+            <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
           </div>
           <?php $num = 1; ?>
           <?php __tinypass_tag_display($ps, ++$num) ?>
@@ -106,7 +106,7 @@ function tinypass_mode_settings() {
         <form action="" method="post" autocomplete="off">
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
           <div style="float:right">
-            RID:<input type="text" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+            <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
           </div>
           <?php __tinypass_tag_display($ps, ++$num) ?>
           <?php __tinypass_pricing_display($ps, ++$num) ?>
@@ -141,7 +141,7 @@ function tinypass_mode_settings() {
 
         $(this).addClass("choice-selected");
         $(this).attr("checked", "checked");
-                                    													
+                                      													
         var elem = $(".choice[checked=checked]");
         var id = elem.attr("id");
 
@@ -183,9 +183,9 @@ function tinypass_mode_settings() {
           return false;
         }
       });
-                                    									
+                                      									
       //toggle access_period after recurring is changed
-                      
+                        
       $('.recurring-opts-off').bind('change', function(){
         var index = $(this).attr("opt");
         if($(this).is(":checked")){
