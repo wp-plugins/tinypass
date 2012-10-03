@@ -118,8 +118,6 @@ function tinypass_mode_settings() {
           </p>
         </form>
       </div>
-
-
     </div>
   </div>
 
