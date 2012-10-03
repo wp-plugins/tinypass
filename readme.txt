@@ -122,6 +122,7 @@ Additional custom messages at the post level and tag level
 Offer order can be configured
 Pay-what-you-want supported
 Monthly subscription supported
+TP API Version 2.0 integrated
 Bug: Meter logic corrected
 
 Upgrading from 1.4.x will most likely delete existing TP settings.  You will
