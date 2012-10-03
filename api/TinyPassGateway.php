@@ -28,7 +28,7 @@ class TinyPassGateway {
 		$gw = new TinyPassGateway();
 		$config = $gw->config;
 		try {
-			return $gw->call("GET", $config::$REST_CONTEXT . "/subscription/search", $params);
+			return $gw->call("GET", TPConfig::$REST_CONTEXT . "/subscription/search", $params);
 		} catch (Exception $e) {
 			throw $e;
 		}
