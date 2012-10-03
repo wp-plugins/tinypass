@@ -1,10 +1,9 @@
 === Tinypass ===
 Contributors: wordpress@tinypass.com
-Tags: tinypass, premium content, paywall, paid content, content monetization,
-monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view
+Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe
 Requires at least: 3.1.0
-Tested up to: 3.3.0
-Stable tag: 1.4.18
+Tested up to: 3.4.2
+Stable tag: 2.0.1
 
 
 Tinypass is the best way to charge for access to content on your WordPress site.
@@ -21,11 +20,11 @@ Selling content is **easy** with Tinypass. Just create a free publisher account 
 
 And for your visitors, buying access to content through Tinypass couldn't be easier. We offer a **wide choice of payment methods**, we don't require your visitors to create an account before making a purchase, and all transactions happen in a quick, secure environment. Gone are the days of clunky shopping carts and confusing checkouts! 
 
-For more on Tinypass, visit [www.tinypass.com](http://www.tinypass.com "Tinypass - Access control & payment platform")
+For more on Tinypass, visit [tinypass.com](http://www.tinypass.com "Tinypass - Access control & payment platform")
 
 **For a complete set of instructions for working with the Tinypass plugin for WordPress, please visit [our developer site](http://developer.tinypass.com/main/wordpress "Tinypass developer site")**
 
-Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Micropayments, Price Windowing, Upsell, Multiple Payment Options, Currencies, Languages (English / Spanish)
+Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Metered Access, Micropayments, Pay what you want (custom pricing), Price Windowing, Upsell, Multiple Payment Options, Currencies, Languages (English / Spanish)
 
 == Installation ==
 
@@ -44,6 +43,11 @@ Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Micropayme
 5. Make sure to switch from "Sandbox" to "Production" in Tinypass->Settings when you're ready to start accepting payments.
 
 **For complete instructions for working with Tinypass on your WordPress site, please visit [our developer site](http://developer.tinypass.com/main/wordpress "Tinypass WordPress Plugin For Developer")**
+
+= Requirements =
+PHP 5.2.X or more
+PHP mbstring module
+PHP mcrypt module
 
 == Frequently Asked Questions ==
 
@@ -83,7 +87,7 @@ Yep. With Tinypass, you can setup ongoing subscriptions to whatever content you'
 
 = What makes Tinypass unique? =
 
-Unlike other approaches to paid-content, Tinypass allows anyone publishing digital content to design a pay-to-access plan that won't alienate their audience. Charge at price points from 10¿ to $200, charge for as much or as little content as you want, and charge in a way that allows your audience to make quick, simple and secure payments.
+Unlike other approaches to paid-content, Tinypass allows anyone publishing digital content to design a pay-to-access plan that won't alienate their audience. Charge at price points from 10Â¿ to $200, charge for as much or as little content as you want, and charge in a way that allows your audience to make quick, simple and secure payments.
 
 = What features does Tinypass offer for WordPress users? =
 
@@ -111,7 +115,21 @@ We love questions! Just email support@tinypass.com and we'll get right back to y
 
 == Changelog ==
 
-1.4.17
+2.0.1
+Provides a clearer interface to restricted and controlling access to content
+Added dedicated subscription page
+Additional custom messages at the post level and tag level
+Offer order can be configured
+Pay-what-you-want supported
+Monthly subscription supported
+TP API Version 2.0 integrated
+Bug: Meter logic corrected
+
+Upgrading from 1.4.x will most likely delete existing TP settings.  You will
+need to reconfigure your settings at the post level and tag level
+Upgrade questions: email us at support@tinypass.com
+
+1.4.18
 Documentation updates
 
 1.4.16
@@ -120,58 +138,28 @@ Multiple currency support
 1.4.15
 Bug Fix: wordpress editor conflicted with TP
 
-1.4.14
-Don't reload page when access is denied
-
-1.4.13
-Trial Period was not returning access type
-Metered Policy was using millis instead of seconds
-Metered token lasts for 15 days
-
-1.4.12
-Bug fix price options time period
-
-1.4.11
-Bug fix on escaping slashes on htmlentities in captions and resource_name
-
-1.4.10
-Metering support adding for Tinypass enabled tags
-
-1.4.7
-Bug Fix ticket being loaded multiple times
-
-1.4.4
-Bug Fix for TP embed on post
-
-1.3
-Migrated to API 1.6 version.  See developer.tinypass.com docs.  Should not cause problems for module user
-
-1.0
-access template was being escaped
-
-0.9
-Changed the default sandbox app
-
-0.8
-Tinypass enabled tags, pages/posts, and inline.  Better configuration options and friendly Tinypass config popup
-
-0.6
-Changed default sandbox aid/key
-
-0.5
-Allows custom denied message error
-Fixed bad ticket HTML
-Added support for both sandbox/prod aid/keys
-
-
 == Screenshots ==
 
 1. Screenshot Tinypass configuration options on a post
 
+== Other Notes ==
 
+Previous version can be downloaded at http://wordpress.org/extend/plugins/tinypass/developers/
 
 == Upgrade Notice ==
 
-None
+Previous version can be downloaded at http://wordpress.org/extend/plugins/tinypass/developers/
+Due to new features of the plugin, publishers will not directly be able to upgrade from version 1.4.x to 2.0.x.  
+An upgrade from 1.4.x to 2.0.x will result in a failure and it will be necessary to manually restore
+the plugin to the previous version (1.4.x) which can be found here  http://wordpress.org/extend/plugins/tinypass/developers/
+
+Upgrading is still possible but it does requires manual steps.  Please contact support@tinypass.com where
+specific instructions will be provided to complete the upgrade.
+
+If you currently have 1.4.x installed you can upgrade by deactivating and uninstalling the 1.4.x version
+AND then installing the latest Tinypass plugin.  When you completely remove the 1.4.x version all settings and configuration
+will be lost.
+
+
 
 
