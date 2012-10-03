@@ -5,7 +5,7 @@ class TPUtils {
 
 	const EXPIRE_PARSER = '/(\d+)\s*(\w+)/';
 
-	public function isIpValid($ipAddress) {
+	public static function isIpValid($ipAddress) {
 		return $ipAddress && preg_match("/\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}/", $ipAddress);
 	}
 

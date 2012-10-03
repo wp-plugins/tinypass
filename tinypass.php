@@ -80,8 +80,8 @@ function tinypass_intercept_content($content) {
   //we want to dump the button on this page
   if ($tagOptions->getSubscriptionPageRef() == $post->ID) {
     $siteOffer = TPPaySettings::create_offer($tagOptions, "wp_bundle1");
-    $token = $store->getAccessToken("wp_bundle1");
 
+//    $token = $store->findActiveToken('/(^wp_bundle1)|(^wp_tag_\d+)/');
 //		if ($token->isAccessGranted()) {
     //wp_redirect(get_page_link($tagOptions->getSubscriptionPageSuccessRef()));
 //			$gotolink = get_page_link($tagOptions->getSubscriptionPageSuccessRef());
@@ -141,19 +141,7 @@ function tinypass_intercept_content($content) {
   if ($tagOptions->isEnabled()) {
     $siteOffer = TPPaySettings::create_offer($tagOptions, "wp_bundle1");
 
-    $siteToken = $store->getAccessToken($siteOffer->getResource()->getRID());
-
-    // Backward compatbility with 1.4.x plugin version
-    if ($siteToken == null && $store->getTokens() != null) {
-      foreach ($store->getTokens()->getTokens() as $token) {
-        if ($token->isExpired() == false) {
-          if (preg_match('/wp_tag_*/', $token->getRID()->getID())) {
-            $siteToken = $token;
-            break;
-          }
-        }
-      }
-    }
+    $siteToken = $store->findActiveToken('/(^wp_bundle1)|(^wp_tag_\d+)/');
 
     if ($tagOptions->isMetered()) {
 

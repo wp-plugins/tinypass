@@ -45,7 +45,7 @@ class TinyPass {
 	public static $READ_TIMEOUT = 10000;
 
 	public static function config($aid = null, $privateKey = null, $sandbox = null) {
-		if($aid)
+		if ($aid)
 			return new TPConfig($aid, $privateKey, $sandbox);
 		return new TPConfig(self::$AID, self::$PRIVATE_KEY, self::$SANDBOX);
 	}
@@ -64,6 +64,10 @@ class TinyPass {
 
 	public static function cancelSubscription($params) {
 		return TinyPassGateway::cancelSubscription($params);
+	}
+
+	public static function fetchSubscriptionDetails($params) {
+		return TinyPassGateway::fetchSubscriptionDetails($params);
 	}
 
 }
@@ -90,9 +94,9 @@ class TPConfig {
 	}
 
 	public function getEndPoint() {
-		if(TinyPass::$API_ENDPOINT_DEV != null && strlen(TinyPass::$API_ENDPOINT_DEV)>0) {
+		if (TinyPass::$API_ENDPOINT_DEV != null && strlen(TinyPass::$API_ENDPOINT_DEV) > 0) {
 			return TinyPass::$API_ENDPOINT_DEV;
-		} else if(TinyPass::$SANDBOX) {
+		} else if (TinyPass::$SANDBOX) {
 			return TinyPass::$API_ENDPOINT_SANDBOX;
 		} else {
 			return TinyPass::$API_ENDPOINT_PROD;

@@ -85,15 +85,16 @@ class TPAccessTokenStore {
 		}
 	}
 
-	public function findToken($regexp) {
+	public function findActiveToken($regexp) {
 		$tokens = $this->tokens->getTokens();
 
-		$found = array();
 		foreach ($tokens as $rid => $token) {
-			if (preg_match("/$regexp/", $rid))
-				$found[] = $token;
+			if (preg_match($regexp, $rid)) {
+				if ($token->isExpired() == false)
+					return $token;
+			}
 		}
-		return $found;
+		return null;
 	}
 
 }
