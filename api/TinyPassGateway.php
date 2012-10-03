@@ -26,7 +26,6 @@ class TinyPassGateway {
 
 	public static function fetchSubscriptionDetails($params) {
 		$gw = new TinyPassGateway();
-		$config = $gw->config;
 		try {
 			return $gw->call("GET", TPConfig::$REST_CONTEXT . "/subscription/search", $params);
 		} catch (Exception $e) {
