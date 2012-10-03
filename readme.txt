@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe
 Requires at least: 3.1.0
 Tested up to: 3.4.2
-Stable tag: 1.4.18
+Stable tag: 2.0.1
 
 
 Tinypass is the best way to charge for access to content on your WordPress site.
@@ -116,9 +116,17 @@ We love questions! Just email support@tinypass.com and we'll get right back to y
 == Changelog ==
 
 2.0.1
-Change the way site wide access is controlled.  
-Added custom subscription page
+Provides a clearer interface to restricted and controlling access to content
+Added dedicated subscription page
+Additional custom messages at the post level and tag level
+Offer order can be configured
+Pay-what-you-want supported
+Monthly subscription supported
+Bug: Meter logic corrected
 
+Upgrading from 1.4.x will most likely delete existing TP settings.  You will
+need to reconfigure your settings at the post level and tag level
+Upgrade questions: email us at support@tinypass.com
 
 1.4.18
 Documentation updates
