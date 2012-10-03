@@ -2,7 +2,6 @@
 
 define('TINYPASS_FAVICON', 'http://www.tinypass.com/favicon.ico');
 
-//add_action('delete_term', 'tinypass_term_deleted');
 add_action("admin_menu", 'tinypass_add_admin_pages');
 
 function tinypass_add_admin_pages() {
@@ -70,34 +69,4 @@ function tinypass_add_admin_scripts() {
 	wp_enqueue_style('jquery-ui-1.8.2.custom.css', TINYPASSS_PLUGIN_PATH . 'css/jquery-ui-1.8.2.custom.css');
 }
 
-function tinypass_fetch_tag_meta($termId = null) {
-	global $wpdb;
-
-	$query = " select t.name, r.term_id, type, data from $wpdb->tinypass_ref r, $wpdb->terms t
-							where t.term_id = r.term_id";
-
-	if ($termId)
-		$query .= " and t.term_id = $termId ";
-
-	$query .= " order by t.name asc ";
-
-	$results = $wpdb->get_results($query);
-
-	$terms = array();
-	foreach ($results as $row) {
-		$term = array();
-		$term['term_id'] = $row->term_id;
-		$term['name'] = $row->name;
-		$term['type'] = $row->type;
-		$term['meta'] = unserialize($row->data);
-		$term['meta']['term_id'] = $row->term_id;
-		$term['meta']['resource_id'] = $row->name;
-		$terms[] = $term;
-	}
-
-	if ($termId && count($terms))
-		return $terms[0]['meta'];
-
-	return $terms;
-}
 ?>

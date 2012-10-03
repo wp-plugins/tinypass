@@ -13,7 +13,6 @@ $tinypass_site_req = null;
 
 define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
 
-
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');

@@ -1,23 +1,11 @@
 <?php
 
-//register_activation_hook(__FILE__, 'tinypass_activate');
-//register_deactivation_hook(__FILE__, 'tinypass_deactivate');
-//register_uninstall_hook(__FILE__, 'tinypass_uninstall');
+register_activation_hook(__FILE__, 'tinypass_activate');
+register_deactivation_hook(__FILE__, 'tinypass_deactivate');
+register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 function tinypass_activate() {
-  /*
-    $table_name = $wpdb->prefix . 'tinypass_ref';
-
-    $sql = "CREATE TABLE $table_name (
-    `term_id` BIGINT(20) UNSIGNED NOT NULL,
-    `type` TINYINT UNSIGNED NOT NULL DEFAULT 0,
-    `data` LONGTEXT,
-    INDEX `tinypass_ref_index`(`term_id`)
-    )";
-   */
-  //require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-  //dbDelta($sql);
-
+  
   $error = '';
   if (!extension_loaded('mbstring'))
     $error .= "&nbsp;&nbsp;&nbsp;<a href=\"http://php.net/manual/en/ref.mbstring.php\">mbstring php module</a> is required for Tinypass<br>";
