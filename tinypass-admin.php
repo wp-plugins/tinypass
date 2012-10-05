@@ -48,9 +48,7 @@ function tinypass_meta_box_display($post) {
 add_action('admin_enqueue_scripts', 'tinypass_add_admin_scripts');
 
 function tinypass_add_admin_scripts() {
-	global $wp_version;
-
-	wp_enqueue_script("jquery-core");
+	wp_enqueue_script("jquery");
 	wp_enqueue_script("jquery-ui");
 	wp_enqueue_script('jquery-ui-dialog');
 	wp_enqueue_script('tinypass_admin', TINYPASSS_PLUGIN_PATH . 'js/tinypass_admin.js', array('jquery'), false, false);
