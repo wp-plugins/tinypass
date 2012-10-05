@@ -69,7 +69,8 @@ class TPPaySettings {
 	}
 
 	public function isEnabled() {
-		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) != TPPaySettings::MODE_OFF;
+		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) != TPPaySettings::MODE_OFF ||
+          $this->data->isValEnabled("en");
 	}
 
 	public function isMode($type) {

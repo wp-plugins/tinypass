@@ -43,6 +43,7 @@ class TPSiteSettings {
           TPSiteSettings::SECRET_KEY_PROD => 'Retreive your secret key from www.tinypass.com',
           TPSiteSettings::ENV => 0,
           TPSiteSettings::ENABLED => 1,
+          TPSiteSettings::PPV_ENABLED=> 1,
       ));
     }
   }
