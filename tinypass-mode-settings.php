@@ -33,9 +33,9 @@ function tinypass_mode_settings() {
         <h3><?php _e("1. " . 'Select your paywall settings'); ?> </h3>
 
         <div id="tp_modes">
-          <div id="tp_mode1" class="choice" value="<?php echo TPPaySettings::MODE_OFF ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_OFF) ?> >Off</div>
-          <div id="tp_mode2" class="choice" value="<?php echo TPPaySettings::MODE_METERED ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_METERED) ?>>Preview</div>
-          <div id="tp_mode3" class="choice" value="<?php echo TPPaySettings::MODE_STRICT ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_STRICT) ?>>No-Preview</div>
+          <div id="tp_mode1" class="choice" mode="<?php echo TPPaySettings::MODE_OFF ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_OFF) ?> >Off</div>
+          <div id="tp_mode2" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_METERED) ?>>Preview</div>
+          <div id="tp_mode3" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_STRICT) ?>>No-Preview</div>
           <div class="clear"></div>
         </div>
         <div class="clear"></div>
@@ -147,7 +147,7 @@ function tinypass_mode_settings() {
 
         scope = '#' + id + '_panel';
 
-        $(".tp_mode").val(elem.attr('value'));
+        $(".tp_mode").val(elem.attr('mode'));
 
         tinypass.fullHide('.tp_mode_panel');
         tinypass.fullShow(scope);

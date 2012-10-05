@@ -97,22 +97,6 @@ var tinypass = {
   },
 
   initPopup:function(){
-    jQuery(function(){
-      jQuery.datepicker.setDefaults();
-      jQuery.timepicker.setDefaults( {
-        timeOnlyTitle: 'Choose Time',
-        timeText: 'Time',
-        hourText: 'Hour',
-        minuteText: 'Minute',
-        secondText: 'Second',
-        currentText: 'Now',
-        closeText: 'Done'
-      }
-      );
-      jQuery('.tinypass-datetimepicker').datetimepicker({
-        dateFormat: 'yy-mm-dd'
-      });
-    });
   },
 
   log:function(msg){
