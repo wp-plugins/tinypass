@@ -8,7 +8,7 @@ class TPAccessTokenStore {
 
 	public function __construct($config = null) {
 		$this->config = TinyPass::config();
-		if ($config)
+		if($config)
 			$this->config = $config;
 		$this->tokens = new TPAccessTokenList();
 	}
@@ -17,14 +17,14 @@ class TPAccessTokenStore {
 
 		$token = $this->tokens->getAccessTokenByRID($rid);
 
-		if ($token != null)
+		if($token != null)
 			return $token;
 
 		$token = new TPAccessToken(new TPRID($rid));
 		$token->getTokenData()->addField(TPTokenData::EX, -1);
 
-		if ($token->getAccessState() == null) {
-			if ($tokens->size() == 0) {
+		if($token->getAccessState() == null) {
+			if($tokens->size() == 0) {
 				$token->setAccessState(TPAccessState::NO_TOKENS_FOUND);
 			} else {
 				$token->setAccessState(AccessState::RID_NOT_FOUND);
@@ -36,14 +36,14 @@ class TPAccessTokenStore {
 
 	public function loadTokensFromCookie($cookies, $cookieName = null) {
 
-		if ($cookieName == null) {
+		if($cookieName == null) {
 			$cookieName = TPConfig::getAppPrefix($this->config->AID) . TPConfig::$COOKIE_SUFFIX;
 		}
 
 		$unparsedTokenValue = '';
-		if (is_array($cookies)) {
-			foreach ($cookies as $name => $value) {
-				if ($name == $cookieName) {
+		if(is_array($cookies)) {
+			foreach($cookies as $name => $value) {
+				if($name == $cookieName) {
 					$unparsedTokenValue = $value;
 					break;
 				}
@@ -54,7 +54,7 @@ class TPAccessTokenStore {
 
 		$this->rawCookie = $unparsedTokenValue;
 
-		if ($unparsedTokenValue != null) {
+		if($unparsedTokenValue != null) {
 			$parser = new TPClientParser();
 			$this->tokens = $parser->parseAccessTokens(urldecode($unparsedTokenValue));
 		}
@@ -75,11 +75,11 @@ class TPAccessTokenStore {
 	protected function _cleanExpiredTokens() {
 		$tokens = $this->tokens->getTokens();
 
-		foreach ($tokens as $rid => $token) {
+		foreach($tokens as $rid => $token) {
 
-			if ($token->isMetered() && $token->_isTrialDead()) {
+			if($token->isMetered() && $token->_isTrialDead()) {
 				$this->tokens->remove($rid);
-			} else if ($token->isExpired()) {
+			} else if($token->isExpired()) {
 				$this->tokens->remove($rid);
 			}
 		}
@@ -88,9 +88,9 @@ class TPAccessTokenStore {
 	public function findActiveToken($regexp) {
 		$tokens = $this->tokens->getTokens();
 
-		foreach ($tokens as $rid => $token) {
-			if (preg_match($regexp, $rid)) {
-				if ($token->isExpired() == false)
+		foreach($tokens as $rid => $token) {
+			if(preg_match($regexp, $rid)) {
+				if($token->isExpired() == false)
 					return $token;
 			}
 		}
