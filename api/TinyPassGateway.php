@@ -8,11 +8,10 @@ class TinyPassGateway {
 	private $config;
 
 	public function __construct($config = null) {
-		if (!$config)
+		if(!$config)
 			$config = TinyPass::config();
 
 		$this->config = $config;
-
 	}
 
 	public static function cancelSubscription($params) {
@@ -28,7 +27,7 @@ class TinyPassGateway {
 		$gw = new TinyPassGateway();
 		try {
 			return $gw->call("GET", TPConfig::$REST_CONTEXT . "/subscription/search", $params);
-		} catch (Exception $e) {
+		} catch(Exception $e) {
 			throw $e;
 		}
 	}
@@ -37,7 +36,7 @@ class TinyPassGateway {
 		$gw = new TinyPassGateway();
 		try {
 			return $gw->call("POST", TPConfig::$REST_CONTEXT . "/access/revoke", $params);
-		} catch (Exception $e) {
+		} catch(Exception $e) {
 			throw $e;
 		}
 	}
@@ -46,8 +45,8 @@ class TinyPassGateway {
 		$gw = new TinyPassGateway();
 		try {
 			return $gw->call("GET", TPConfig::$REST_CONTEXT . "/access", $params);
-		} catch (Exception $e) {
-			if ($e->getCode() == 404)
+		} catch(Exception $e) {
+			if($e->getCode() == 404)
 				return null;
 			throw $e;
 		}
@@ -55,7 +54,7 @@ class TinyPassGateway {
 
 	public static function fetchAccessDetails($params, $page = 0, $pagesize = 500) {
 		$gw = new TinyPassGateway();
-		if (is_array($params)) {
+		if(is_array($params)) {
 			$params['page'] = $page;
 			$params['pagesize'] = $pagesize;
 		}
@@ -77,7 +76,7 @@ class TinyPassGateway {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-		if (strtolower($method) == "get") {
+		if(strtolower($method) == "get") {
 			curl_setopt($ch, CURLOPT_URL, $url);
 		} else {
 			curl_setopt($ch, CURLOPT_URL, $url);
@@ -90,8 +89,8 @@ class TinyPassGateway {
 
 		$json = json_decode($response, 1);
 
-		if ($httpcode != 200) {
-			if (isset($json["error"])) {
+		if($httpcode != 200) {
+			if(isset($json["error"])) {
 				$message = $json["error"]['message'];
 				throw new Exception("API error($httpcode):" . $message, $httpcode);
 			} else {
@@ -100,11 +99,10 @@ class TinyPassGateway {
 		} else {
 			return $json;
 		}
-
 	}
 
 	public function buildURL($method, $action, $query) {
-		if (is_array($query))
+		if(is_array($query))
 			$query = http_build_query($query);
 
 		return $action . (($query != null && strlen($query) > 0) ? "?" . $query : "");
@@ -115,8 +113,6 @@ class TinyPassGateway {
 		$signStr = ($this->config->AID . ":" . TPSecurityUtils::hashHmacSha($this->config->PRIVATE_KEY, $method . " " . $aq));
 		return $signStr;
 	}
-
-
 
 }
 
