@@ -173,7 +173,7 @@ class TPPaySettings {
 	}
 
 	public function getAccessPeriodType($i, $def = null) {
-    if($this->data[self::PO_PERIOD_TYPE])
+    if($this->data[self::PO_PERIOD_TYPE] . $i)
       return $this->data->val(self::PO_PERIOD_TYPE . $i, $def);
     return $this->data->val(self::PO_PERIOD_TYPE_V1 . $i, $def);
 	}
