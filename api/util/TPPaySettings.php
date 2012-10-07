@@ -19,6 +19,7 @@ class TPPaySettings {
 	const PO_PRICE = 'po_p';
 	const PO_PERIOD = 'po_ap';
 	const PO_PERIOD_TYPE = 'po_ap_type';
+	const PO_PERIOD_TYPE_V1 = 'po_type';
 	const PO_CAPTION = 'po_cap';
 	const PO_START = 'po_st';
 	const PO_END = 'po_et';
@@ -172,7 +173,9 @@ class TPPaySettings {
 	}
 
 	public function getAccessPeriodType($i, $def = null) {
-		return $this->data->val(self::PO_PERIOD_TYPE . $i, $def);
+    if($this->data[self::PO_PERIOD_TYPE])
+      return $this->data->val(self::PO_PERIOD_TYPE . $i, $def);
+    return $this->data->val(self::PO_PERIOD_TYPE_V1 . $i, $def);
 	}
 
 	public function getCaption($i) {
