@@ -45,15 +45,6 @@ function tinypass_intercept_content($content) {
 
   tinypass_include();
 
-  //don't process if we aren't on a full single page/post
-  if (is_singular() == false)
-    return $content;
-
-  //Not a full page
-  if (is_page() == false && is_single() == false) {
-    return $content;
-  }
-
   $ss = tinypass_load_settings();
 
   //break out if Tinypass is disabled
@@ -117,6 +108,18 @@ function tinypass_intercept_content($content) {
   //exit if everything is disabled 
   if ($ppvOptions->isEnabled() == false && $tagOptions->isEnabled() == false)
     return $content;
+
+  //When content is shown in list form, i.e. categories we still need to truncate content
+  //At this point in the execution we know that TP is enabled so we have to protect
+  if(is_singular() == false){
+    $c = get_extended_with_tpmore($content);
+    if($c['extended'] == '') {
+      $content = tinypass_trim_excerpt ($content);
+    } else {
+      $content = $c['main'];
+    }
+    return $content;
+  }
 
   $post->comment_status = "closed";
 
@@ -317,7 +320,7 @@ function __tinypass_render_template($template, $vars = array()) {
   }
 
   ob_start();
-  require_once dirname(__FILE__) . $template;
+  require dirname(__FILE__) . $template;
   $tout = ob_get_contents();
   ob_end_clean();
   return $tout;
