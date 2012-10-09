@@ -52,6 +52,7 @@ function tinypass_add_admin_scripts() {
 	wp_enqueue_script("jquery-ui");
 	wp_enqueue_script('jquery-ui-dialog');
 	wp_enqueue_script('tinypass_admin', TINYPASSS_PLUGIN_PATH . 'js/tinypass_admin.js', array('jquery'), false, false);
+  wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
 	wp_enqueue_style('jquery-ui-1.8.2.custom.css', TINYPASSS_PLUGIN_PATH . 'css/jquery-ui-1.8.2.custom.css');
 }
 
