@@ -7,22 +7,22 @@ class TPPriceOption {
 
 	protected $price;
 	protected $accessPeriod;
-	protected $initAccessPeriod;
 	protected $startDateInSecs;
 	protected $endDateInSecs;
 	protected $caption;
+	protected $trialPeriod;
+	protected $recurring = false;
 
 	protected $splitPay = array();
 
-	private static $EXPIRE_PARSER = '/(\d+)\s*(\w+)/';
 
 	public function __construct($price = null, $acessPeriod = null, $startDateInSecs = null, $endDateInSecs = null) {
 		$this->setPrice($price);
 		$this->accessPeriod = $acessPeriod;
 		if($startDateInSecs)
-			$this->startDateInSecs = TPToken::convertToEpochSeconds($startDateInSecs);
+			$this->startDateInSecs = TPTokenData::convertToEpochSeconds($startDateInSecs);
 		if($endDateInSecs)
-			$this->endDateInSecs = TPToken::convertToEpochSeconds($endDateInSecs);
+			$this->endDateInSecs = TPTokenData::convertToEpochSeconds($endDateInSecs);
 	}
 
 	public function getPrice() {
@@ -39,47 +39,11 @@ class TPPriceOption {
 	}
 
 	public function getAccessPeriodInMsecs() {
-		if ($this->initAccessPeriod != null) return $this->initAccessPeriod;
-
-		if ($this->accessPeriod == null) return null;
-
-		return $this->initAccessPeriod = $this->parseLoosePeriod($this->accessPeriod);
+		return TPUtils::parseLoosePeriodInMsecs($this->accessPeriod);
 	}
 
 	public function getAccessPeriodInSecs() {
 		return $this->getAccessPeriodInMsecs() / 1000;
-	}
-
-	public static function parseLoosePeriod($period) {
-		if (preg_match("/^-?\d+$/", $period)) {
-			return (int)$period;
-		}
-		$matches = array();
-		if (preg_match(TPPriceOption::$EXPIRE_PARSER, $period, $matches)) {
-			$num = $matches[1];
-			$str = $matches[2];
-			switch ($str[0]) {
-				case 's':
-					return $num * 1000;
-				case 'm':
-
-					if (strlen($str) > 1 && $str[1] == 'i')
-						return $num * 60 * 1000;
-					else if (strlen($str) > 1 && $str[1] == 's')
-						return $num * 60;
-					else if (strlen($str) == 1 || $str[1] == 'o')
-						return $num * 30 * 24 * 60 * 60 * 1000;
-
-				case 'h':
-					return $num * 60 * 60 * 1000;
-				case 'd':
-					return $num * 24 * 60 * 60 * 1000;
-			 case 'w':
-					return $num * 7 * 24 * 60 * 60 * 1000;
-			}
-		}
-
-		throw new TinyPassException("Cannot parse the specified period: " . $period);
 	}
 
 	public function setAccessPeriod($expires) {
@@ -123,41 +87,67 @@ class TPPriceOption {
 	}
 
 	public function setCaption($caption) {
-		if($caption!=null && strlen($caption) > 23)
-			$caption = substr($caption, 0, 23);
+		if($caption!=null && strlen($caption) > 50)
+			$caption = substr($caption, 0, 50);
 		$this->caption = $caption;
 		return $this;
 	}
 
 	public function isActive($timestampSecs) {
-		$timestampSecs = TPToken::convertToEpochSeconds($timestampSecs);
+		$timestampSecs = TPTokenData::convertToEpochSeconds($timestampSecs);
 		if ($this->getStartDateInSecs() != null && $this->getStartDateInSecs() > $timestampSecs) return false;
 		if ($this->getEndDateInSecs() != null && $this->getEndDateInSecs() < $timestampSecs) return false;
 		return true;
 	}
 
+	public function isRecurring() {
+		return $this->recurring;
+	}
+
+	public function getTrialPeriod() {
+		return $this->trialPeriod;
+	}
+
+	public function getBillingPeriod() {
+		return $this->accessPeriod;
+	}
+
+	public function setRecurringBilling($billingPeriod, $trialPeriod = null) {
+		$this->recurring = true;
+		$this->accessPeriod = $billingPeriod;
+		if ($trialPeriod)
+			$this->trialPeriod = $trialPeriod;
+		return $this;
+	}
 
 	public function __toString() {
 		$sb = "";
-		sb.("Price:").($this->getPrice());
-		sb.("\tPeriod:").($this->getAccessPeriod());
+		$sb.("Price:").($this->getPrice());
+		$sb.("\tPeriod:").($this->getAccessPeriod());
+		$sb.("\tTrial Period:").($this->getAccessPeriod());
 
 		if ($this->getStartDateInSecs() != null) {
-			sb.("\tStart:").($this->getStartDateInSecs()).(":").( date('D, d M Y H:i:s' , $this->getStartDateInSecs()));
+			$sb.("\tStart:").($this->getStartDateInSecs()).(":").( date('D, d M Y H:i:s' , $this->getStartDateInSecs()));
 		}
 
 		if ($this->getEndDateInSecs() != null) {
-			sb.("\tEnd:").($this->getEndDateInSecs()).(":").(date('D, d M Y H:i:s', $this->getEndDateInSecs()));
+			$sb.("\tEnd:").($this->getEndDateInSecs()).(":").(date('D, d M Y H:i:s', $this->getEndDateInSecs()));
 		}
 
 		if ($this->getCaption() != null) {
-			sb.("\tCaption:").($this->getCaption());
+			$sb.("\tCaption:").($this->getCaption());
 		}
 
 		if ($this->splitPay != null) {
 			foreach ($this->splitPay as $key => $value)
-				sb.("\tSplit:").($key).(":").($value);
+				$sb.("\tSplit:").($key).(":").($value);
 		}
+
+		if($this->isRecurring()) {
+			$sb.("\n\tBilling Period:").($this->getBillingPeriod());
+			$sb.("\tTrial Period:").($this->getTrialPeriod());
+		}
+	
 		return $sb;
 	}
 

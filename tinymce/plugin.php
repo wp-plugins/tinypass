@@ -3,7 +3,7 @@
 /**
  * add_tinypass_button
  *
- * @package TinyPass Buttong
+ * @package Tinypass Button
  * @title TinyMCE V3 Button Integration (for WP2.5 and higher)
  * @access public
  */

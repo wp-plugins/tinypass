@@ -3,273 +3,114 @@
 require_once "policies/TPPolicy.php";
 require_once "policies/Policies.php";
 require_once "TPRIDHash.php";
+require_once "TinyPassGateway.php";
 require_once "TPResource.php";
 require_once "TPOffer.php";
 require_once "TinyPassException.php";
-require_once "TPVersion.php";
 require_once "TPPriceOption.php";
-require_once "ui/TPTicket.php";
-require_once "ui/TPWebWidget.php";
-require_once "ui/TPWebRequest.php";
+require_once "TPUtils.php";
+require_once "ui/TPPurchaseRequest.php";
+require_once "ui/TPHtmlWidget.php";
 require_once "TPClientMsgBuilder.php";
 require_once "builder/TPClientBuilder.php";
 require_once "builder/TPClientParser.php";
+require_once "builder/TPCookieParser.php";
 require_once "builder/TPSecureEncoder.php";
 require_once "builder/TPOpenEncoder.php";
 require_once "builder/TPJsonMsgBuilder.php";
 require_once "builder/TPSecurityUtils.php";
-require_once "token/TPTokenWrapper.php";
-require_once "token/TPMeterDetails.php";
+require_once "token/TPAccessTokenStore.php";
+require_once "token/TPMeterStore.php";
+require_once "token/TPMeter.php";
 require_once "token/TPAccessToken.php";
 require_once "token/TPAccessTokenList.php";
-require_once "token/TPToken.php";
+require_once "token/TPTokenData.php";
+require_once "util/TPSiteSettings.php";
+require_once "util/TPPaySettings.php";
+require_once "util/TPStorage.php";
+require_once "util/TPValidate.php";
 
 
 class TinyPass {
 
-	public static $API_PREPARE = "/jsapi/prepare.js";
-	public static $API_DATA = "/jsapi/data";
-	public static $API_AUTH = "/jsapi/auth.js";
+	public static $API_ENDPOINT_PROD = "https://api.tinypass.com";
+	public static $API_ENDPOINT_SANDBOX = "https://sandbox.tinypass.com";
+	public static $API_ENDPOINT_DEV = "";
 
-	protected $accessTokenList;
-	protected $localAccessTokenList;
-	protected $localBindList;
+	public static $AID = "";
+	public static $PRIVATE_KEY = "";
+	public static $SANDBOX = false;
 
-	protected $aid;
-	protected $privateKey;
-	protected $apiEndpoint;
-	protected $msgbuilder;
+	public static $CONNECTION_TIMEOUT = 5000;
+	public static $READ_TIMEOUT = 10000;
 
-	private $clientIP;
-	private $lastState;
-
-	private $webRequest;
-
-	static $LOCAL_COOKIE_SUFFIX = "_TR";
-	static $COOKIE_SUFFIX = "_TOKEN";
-	static $COOKIE_PREFIX = "__TP_";
-
-	public function __construct($apiEndpoint, $aid, $privateKey) {
-		$this->apiEndpoint = $apiEndpoint;
-		$this->aid = $aid;
-		$this->privateKey = $privateKey;
-		$this->localBindList = new TPAccessTokenList();
-
-		$this->msgbuilder = new TPClientMsgBuilder($privateKey);
-		$this->setClientCookies($_COOKIE);
-
-		if($this->localAccessTokenList == null)
-			$this->localAccessTokenList = new TPAccessTokenList();
-
-		if($this->accessTokenList == null)
-			$this->accessTokenList = new TPAccessTokenList();
+	public static function config($aid = null, $privateKey = null, $sandbox = null) {
+		if($aid)
+			return new TPConfig($aid, $privateKey, $sandbox);
+		return new TPConfig(self::$AID, self::$PRIVATE_KEY, self::$SANDBOX);
 	}
 
-	public function setClientCookies(array $cookies) {
-		if(count($cookies) == 0)
-			return;
-
-		try {
-			$this->accessTokenList = $this->msgbuilder->parseAccessTokenList($this->aid, $cookies);
-			$this->accessTokenList->setAID($this->aid);
-		} catch (Exception $e) {
-		}
-		try {
-			$this->localAccessTokenList = $this->msgbuilder->parseLocalTokenList($this->aid, $cookies);
-			$this->localAccessTokenList->setAID($this->aid);
-		} catch (Exception $e) {
-			$this->localAccessTokenList = new TPAccessTokenList();
-			$this->localAccessTokenList->setAID($this->aid);
-		}
-		$this->_cleanLocalTokens();
-
+	public static function fetchAccessDetails($params, $page = 0, $pagesize = 500) {
+		return TinyPassGateway::fetchAccessDetails($params);
 	}
 
+	public static function fetchAccessDetail($params) {
+		return TinyPassGateway::fetchAccessDetail($params);
+	}
 
-	private function isAccessGrantedForRID($rid) {
-		$this->lastState = TPAccessState::ACCESS_GRANTED;
+	public static function revokeAccess($params) {
+		return TinyPassGateway::revokeAccess($params);
+	}
 
-		if ($this->accessTokenList == null) {
-			$this->lastState = TPAccessState::NO_TOKENS_FOUND;
-			return false;
-		}
+	public static function cancelSubscription($params) {
+		return TinyPassGateway::cancelSubscription($params);
+	}
 
-		if ($this->accessTokenList->hasIPs() && $this->isClientIPValid() && $this->accessTokenList->containsIP($this->clientIP) == false) {
-			$this->lastState = TPAccessState::CLIENT_IP_DOES_NOT_MATCH_TOKEN;
-			return false;
-		}
+	public static function fetchSubscriptionDetails($params) {
+		return TinyPassGateway::fetchSubscriptionDetails($params);
+	}
 
-		if ($this->accessTokenList->isAccessGranted($rid)) {
-			return true;
+}
+
+class TPConfig {
+
+	public static $VERSION = "2.0.4";
+	public static $MSG_VERSION = "2.0p";
+
+	public static $CONTEXT = "/v2";
+	public static $REST_CONTEXT = "/r2";
+
+	public static $COOKIE_SUFFIX = "_TOKEN";
+	public static $COOKIE_PREFIX = "__TP_";
+
+	public $AID;
+	public $PRIVATE_KEY;
+	public $SANDBOX;
+
+	public function __construct($aid, $privateKey, $sandbox) {
+		$this->AID = $aid;
+		$this->PRIVATE_KEY = $privateKey;
+		$this->SANDBOX = $sandbox;
+	}
+
+	public function getEndPoint() {
+		if(TinyPass::$API_ENDPOINT_DEV != null && strlen(TinyPass::$API_ENDPOINT_DEV) > 0) {
+			return TinyPass::$API_ENDPOINT_DEV;
+		} else if(TinyPass::$SANDBOX) {
+			return TinyPass::$API_ENDPOINT_SANDBOX;
 		} else {
-			$this->lastState = $this->accessTokenList->getLastError();
-			return false;
-		}
-
-	}
-
-	public function isAccessGranted($obj) {
-		if(is_string($obj)) {
-			return $this->isAccessGrantedForRID($obj);
-		}
-
-		if($obj instanceof TPResource) {
-			return $this->isAccessGrantedForRID($obj->getRID());
-		}
-
-		if($obj instanceof TPOffer) {
-			$granted = $this->isAccessGrantedForRID($obj->getResource()->getRID());
-
-			if ($granted) {
-				return true;
-			} else {
-				if ($obj->getPricing()->hasActiveOptions() == false) {
-					$this->lastState = TPAccessState::NO_ACTIVE_PRICES;
-					return true;
-				}
-			}
-			return false;
-
-		}
-
-	}
-
-
-	public function getMeterDetails($offer) {
-		$resource = $offer->getResource();
-		$meterDetails = null;
-
-		/*
-            Check for token in both places.  Because MeteredB from from the server we must check both places.
-		*/
-		if ($this->accessTokenList != null
-						&& $this->accessTokenList->getToken($resource->getRID()) != null
-						&& TPMeterDetails::is($this->accessTokenList->getToken($resource->getRID()))) {
-			$token = $this->accessTokenList->getToken($resource->getRID());
-			$meterDetails = TPMeterDetails::createWithToken($token);
-
-		} else if ($this->localAccessTokenList == null || $this->localAccessTokenList->getToken($resource->getRID()) == null) {
-
-			$meterDetails = TPMeterDetails::createWithValues($resource->getRIDHash(), $offer->getMeteredPolicy()->toMap());
-			$this->localBindList->add($resource->getRIDHash(), $meterDetails->getToken());
-
-		} else {
-
-			$token = $this->localAccessTokenList->getToken($resource->getRID());
-			$meterDetails = TPMeterDetails::createWithToken($token);
-			$this->localBindList->add($resource->getRIDHash(), $token);
-		}
-		try {
-			$meterDetails->touch();
-		} catch (Exception $tokenUnparseable) {
-			//tokenUnparseable.printStackTrace();
-		}
-
-		return $meterDetails;
-	}
-
-	public function __generateLocalCookie() {
-
-
-		foreach($this->localBindList->getTokens() as $key => $token) {
-			$this->localAccessTokenList->add($key, $token);
-		}
-
-		if ($this->localAccessTokenList->size() > 0)
-			return self::getAppPrefix($this->getAID()) . TinyPass::$LOCAL_COOKIE_SUFFIX  . "=" . urlencode($this->getMsgbuilder()->buildAccessTokenList($this->getLocalAccessTokenList()));
-
-		return "";
-	}
-
-	public function __hasLocalTokenChanges() {
-		return $this->localBindList->isEmpty() == false;
-	}
-
-	private function _cleanLocalTokens() {
-		$tokens = $this->localAccessTokenList->getTokens();
-
-		foreach($tokens as $rid => $token) {
-
-			if(TPMeterDetails::is($token)) {
-				$meterDetails = new TPMeterDetails($token);
-				if ($meterDetails->isDead())
-					$this->localAccessTokenList->remove($rid);
-
-			} else {
-				$accessToken = new TPAccessToken($token);
-				if($accessToken->isExpired())
-					$this->localAccessTokenList->remove($rid);
-			}
-
+			return TinyPass::$API_ENDPOINT_PROD;
 		}
 	}
 
-	public function isClientIPValid() {
-		return $this->clientIP && preg_match("/\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}/", $this->clientIP);
-	}
-
-	public function getAID() {
-		return $this->aid;
-	}
-
-	protected function getPrivateKey() {
-		return $this->privateKey;
+	public static function getTokenCookieName($aid) {
+		return self::$COOKIE_PREFIX . $aid . self::$COOKIE_SUFFIX;
 	}
 
 	public static function getAppPrefix($aid) {
 		return "__TP_" . $aid;
 	}
 
-	public function getApiEndPoint() {
-		return $this->apiEndpoint;
-	}
-
-	public function getMsgBuilder() {
-		return $this->msgbuilder;
-	}
-
-	public function getAccessTokenList() {
-		return $this->accessTokenList;
-	}
-
-	public function getWebRequest() {
-		if(!isset($this->webRequest))
-			$this->webRequest = new TPWebRequest($this);
-		return $this->webRequest;
-	}
-
-	public function setClientIP($s) {
-		$this->clientIP = $s;
-	}
-
-	public function getLocalAccessTokenList() {
-		return $this->localAccessTokenList;
-	}
-
-	public function __getLocalBindingList() {
-		return $this->localBindList;
-	}
-
-	public function getClientIP() {
-		return $this->clientIP;
-	}
-
-	public function getAccessError() {
-		return $this->lastState;
-	}
-
 }
 
-
-class TPAccessState {
-
-	const ACCESS_GRANTED = 100;
-	const CLIENT_IP_DOES_NOT_MATCH_TOKEN = 200;
-	const RID_NOT_FOUND = 201;
-	const NO_TOKENS_FOUND = 202;
-	const METERED_TOKEN_ALWAYS_DENIED = 203;
-	const EXPIRED = 204;
-	const NO_ACTIVE_PRICES = 205;
-
-}
 ?>
