@@ -5,10 +5,11 @@ define('TINYPASS_FAVICON', 'http://www.tinypass.com/favicon.ico');
 add_action("admin_menu", 'tinypass_add_admin_pages');
 
 function tinypass_add_admin_pages() {
-	add_menu_page('Tinypass', 'Tinypass', 'manage_options', 'Tinypass', 'tinypass_mode_settings', TINYPASS_FAVICON);
-	add_submenu_page('Tinypass', 'Paywall Settings', 'Paywall Settings', 'edit_plugins', 'Tinypass', 'tinypass_mode_settings');
-	add_submenu_page('Tinypass', 'Pay per Post', 'Pay per Post', 'edit_plugins', 'TinyPassPPVSettings', 'tinypass_ppv_settings');
-	add_submenu_page('Tinypass', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
+	add_menu_page('Tinypass', 'Tinypass', 'edit_plugins', 'TinypassSlug', 'tinypass_paywalls_list', TINYPASS_FAVICON);
+	add_submenu_page('TinypassSlug', 'Paywalls', 'Paywalls', 'edit_plugins', 'TinyPassSlug', 'tinypass_paywalls_list');
+//	add_submenu_page('Tinypass', 'Pay per Post', 'Pay per Post', 'edit_plugins', 'TinyPassPPVSettings', 'tinypass_ppv_settings');
+//	add_submenu_page('Tinypass', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
+	add_submenu_page('Tinypass', 'Edit Paywall', '', 'edit_plugins', 'TinyPassEditPaywall', 'tinypass_mode_settings');
 
 	tinypass_include();
 
@@ -17,6 +18,7 @@ function tinypass_add_admin_pages() {
 	include_once (dirname(__FILE__) . '/tinypass-mode-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-ppp-settings.php');
 	include_once (dirname(__FILE__) . '/tinypass-site-settings.php');
+	include_once (dirname(__FILE__) . '/tinypass-paywalls.php');
 }
 
 /* Post/Page edit forms meta boxes */

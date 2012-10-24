@@ -187,12 +187,176 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
   </div>
 
 <?php } ?>
+
+
 <?php
 
 /**
- * 
+ * show settings section head
  */
-function __tinypass_metered_display(TPPaySettings $ps, $num = '') {
+function __tinypass_section_head(TPPaySettings $ps, $num, $text = '') {
+  ?>
+  <div class="tp-section-header">
+    <div class="num"><?php echo $num ?></div>
+    <?php echo $text ?>
+  </div>
+<?php } ?>
+
+<?php
+
+/**
+ * Show the metered content section
+ */
+function __tinypass_counter_display(TPPaySettings $ps) {
+
+
+
+  ?>
+
+  <div class="tp-section">
+    <div class="info">
+      <div class="heading"><?php _e('Add a preview counter') ?></div>
+      <div class="slider">
+        <?php echo tinypass_slider('tinypass[ct_en]', array('Off' => '0', 'On' => '1'), $ps->getCounterEnabled()) ?>
+        <div class="clear"></div>
+        <br>
+      </div>
+      <div class="desc">
+        Show a small counter on the edge of the screen so users know how many free views they have left
+      </div>
+    </div>
+    <div class="body">
+
+
+      <div class="postbox">
+        <h3><?php _e('Where should clicking on the counter bring users?'); ?> </h3>
+        <div class="inside">
+          <div class="label">
+            <input type="radio" name="tinypass[ct_onclick]" value="0" <?php checked($ps->getCounterOnClick() == '0') ?>>
+            Open a page on your site in a new tab
+          </div>
+          <input name="tinypass[ct_page]" value="<?php echo $ps->getCounterPage() ?>" size="37" maxlength="80">
+          <br>
+          <div class="label">
+            <input type="radio" name="tinypass[ct_onclick]" value="1" <?php checked($ps->getCounterOnClick() == '1') ?> >
+            Open the pop-up reminder over the current page (reminder must be enabled first) 
+          </div>
+          <br>
+        </div>
+        <h3><?php _e('Customize it'); ?> </h3>
+        <div class="inside">
+          <div class="label">Where should the counter appear?
+          <?php echo __tinypass_dropdown("tinypass[ct_pos]", array('1' => 'Top right', '2' => 'Top left', '3' => 'Bottom left', '4' => 'Bottom right'), $ps->getCounterPosition()) ?>
+          </div>
+          <div class="label">Only show the counter to user after
+            <input type="text" name="tinypass[ct_delay]" size="2" value="<?php echo $ps->getCounterDelay('') ?>">
+          views
+          </div>
+        </div>
+        <br> <br>
+        <h3><?php _e('Create a custom preview counter'); ?> </h3>
+        <div class="inside"> 
+          <div class="">
+            Override the default appeal design by creating a custom template file
+            <br> <br>
+            <ul>
+              <li>
+                For all paywalls: <br><?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
+              </li>
+              <li>
+                This paywall only: <br><?php echo get_template_directory() ?>/<b>tinypass_counter_<?php echo $ps->getResourceId() ?>_display.php</b>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+
+<?php } ?>
+
+
+
+<?php
+
+/**
+ * Show the metered content section
+ */
+function __tinypass_appeal_display(TPPaySettings $ps) {
+
+  $num_views = $ps->getAppealNumViews();
+  $freq = $ps->getAppealFrequency();
+  $msg1 = esc_attr(stripslashes($ps->getAppealMessage1()));
+  $msg2 = esc_attr(stripslashes($ps->getAppealMessage2()));
+  ?>
+
+  <div class="tp-section">
+    <div class="info">
+      <div class="heading">Add an appear pop-up</div>
+      <div class="slider">
+        <?php echo tinypass_slider('tinypass[app_en]', array('Off' => '0', 'On' => '1'), $ps->getAppealEnabled()) ?>
+        <div class="clear"></div>
+        <br>
+      </div>
+      <div class="desc">During the preview periods, you can trigger a lightbox overlay that asks users to purchase or subscribe.
+        Pick what it says, how it looks, and when it appears
+      </div>
+    </div>
+    <div class="body">
+
+
+      <div class="postbox">
+        <h3><?php _e('When it appears'); ?> </h3>
+        <div class="inside">
+          <div id="" class="tp-appeal-config">
+            <div class="inline-label">Pop-up the appeal after </div>
+            <input type="text" size="3" maxlength="3" name="tinypass[app_views]" value="<?php echo $num_views ?>">
+            <div class="inline-label">views, then continue to show it every </div>
+            <input type="text" size="3" maxlength="3" name="tinypass[app_freq]" value="<?php echo $freq ?>">
+            <div class="inline-label"> views until the preview period ends</div>
+          </div>
+        </div>
+        <h3><?php _e('Add some messaging'); ?> </h3>
+        <div class="inside">
+          <div class="label">Enter a header</div>
+          <input id="tp_pd_denied_msg1" name="tinypass[app_msg1]" value="<?php echo $msg1 ?>" size="60" maxlength="80">
+          <br>
+
+          <div class="label">Enter a description</div>
+          <textarea id="tp_pd_denied_sub1" rows="3" cols="59" name="tinypass[app_msg2]"><?php echo $msg2 ?></textarea>
+        </div>
+        <h3><?php _e('Create a custom appeal design'); ?> </h3>
+        <div class="inside"> 
+          <div class="">
+            Override the default appeal design by creating a custom template file
+            <br> <br>
+            <ul>
+              <li>
+                For all paywalls: <br><?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
+              </li>
+              <li>
+                This paywall only: <br><?php echo get_template_directory() ?>/<b>tinypass_appeal_<?php echo $ps->getResourceId() ?>_display.php</b>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+
+
+<?php } ?>
+
+
+<?php
+
+/**
+ * Show the metered content section
+ */
+function __tinypass_metered_display(TPPaySettings $ps) {
 
   $metered = $ps->getMetered('count');
 
@@ -208,105 +372,147 @@ function __tinypass_metered_display(TPPaySettings $ps, $num = '') {
   ?>
 
   <div class="tp-section">
+    <div class="info">
+      <div class="heading">How many previews?</div>
+      <div class="desc">After a user hits their preview count, they will be required
+        to pay for access until your timer resets</div>
+    </div>
+    <div class="body">
 
-    <h3><?php _e("$num. " . 'Configure your preview period'); ?> </h3>
-    <p class="info">Users can look at your content for a certain number of views, or for a certain time period. After the limit is reached, your user will be asked to pay until the meter opens again. 
-    </p>
-    <div class="postbox">
-      <h3><?php _e('Preview Options'); ?> </h3>
-      <div class="inside">
 
-        <table class="form-table">
-          <tr>
-            <td width="120" valign="middle">
-              <div>
-                <?php echo __tinypass_dropdown("tinypass[metered]", array('count' => 'View Based', 'time' => 'Time Based'), $metered, array("onchange" => "tinypass.showMeteredOptions(this)")) ?>
-              </div>
-            </td>
-            <td style="border-left:1px solid #DFDFDF">
+      <div class="postbox">
+        <h3><?php _e('Mode & Rules'); ?> </h3>
+        <div class="inside">
 
-              <div id="tp-metered-count" class="tp-metered-options">
-                <label>Users get</label>
-                <input type="text" size="5" maxlength="5" name="tinypass[m_maa]" value="<?php echo $meter_count ?>">
-                <label>views within</label>
-                <input type="text" size="5" maxlength="5" name="tinypass[m_lp]" value="<?php echo $lockout_period ?>">
-                <?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
-              </div>
+          <table class="form-table">
+            <tr>
+              <td width="120" valign="middle">
+                <div>
+                  <?php echo __tinypass_dropdown("tinypass[metered]", array('count' => 'Page views', 'time' => 'Time Based'), $metered, array("onchange" => "tinypass.showMeteredOptions(this)")) ?>
+                </div>
+              </td>
+              <td style="border-left:1px solid #DFDFDF">
 
-              <div id="tp-metered-time" class="tp-metered-options">
-                <label>Users will have access for</label>
-                <input type="text" size="5" maxlength="5" name="tinypass[m_tp]" value="<?php echo $trial_period ?>">
-                <?php echo __tinypass_dropdown("tinypass[m_tp_type]", $times, $trial_period_type) ?>
-                <label>then they will be locked out for</label>
-                <input type="text" size="5" maxlength="5" name="tinypass[m_lp]" value="<?php echo $lockout_period ?>">
-                <?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
-              </div>
+                <div id="tp-metered-count" class="tp-metered-options">
+                  <label>Users get</label>
+                  <input type="text" size="5" maxlength="5" name="tinypass[m_maa]" value="<?php echo $meter_count ?>">
+                  <label>free views within</label>
+                  <input type="text" size="5" maxlength="5" name="tinypass[m_lp]" value="<?php echo $lockout_period ?>">
+                  <?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
+                </div>
 
-            </td>
-          </tr>
-        </table>
+                <div id="tp-metered-time" class="tp-metered-options">
+                  <label>Users will have access for</label>
+                  <input type="text" size="5" maxlength="5" name="tinypass[m_tp]" value="<?php echo $trial_period ?>">
+                  <?php echo __tinypass_dropdown("tinypass[m_tp_type]", $times, $trial_period_type) ?>
+                  <label>then they will be locked out for</label>
+                  <input type="text" size="5" maxlength="5" name="tinypass[m_lp]" value="<?php echo $lockout_period ?>">
+                  <?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
+                </div>
+
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
+    <div class="clear"></div>
   </div>
 
 
 <?php } ?>
 <?php
 
-function __tinypass_purchase_page_display(TPPaySettings $ps, $num = "") { ?>
+function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
 
-  <div class="tp-section" id="">
-    <h3><?php _e("$num. " . 'Add an information page (optional)'); ?> </h3>
-    <p class="info">Does your site have a marketing page, with custom messaging about membership, 
-      subscriptions, or purchasing?  Enter its page name below and the Tinypass button will automatically
-      be added to it.
-    <div class="postbox">
-      <h3><?php echo _e("Dedicated selling page") ?></h3>
-      <div class="inside"> 
-        <input name="tinypass[sub_page]" size="40" value="<?php echo $ps->getSubscriptionPage() ?>" >
-        <p class="help">Path of existing page e.g. /signup, /join</p>
+  <div class="tp-section">
+
+    <div class="info">
+      <div class="heading">Add a 'Read More' landing page</div>
+      <div class="desc">Will you have a page on your site that talks about how great your content and why
+        your users should buy it?
+        <br><br>
+        Specify the page here and Tinypass will give you a shortcode that will put the purchase
+        options anywhere you place it on the page
       </div>
     </div>
+    <div class="body">
+      <div class="postbox">
+        <h3><?php echo _e("Link to your information page") ?></h3>
+        <div class="inside"> 
+          <div class="label">Information landing page</div>
+          <input name="tinypass[sub_page]" size="40" value="<?php echo $ps->getSubscriptionPage() ?>" >
+          <p class="help">Path of existing page e.g. /signup, /join</p>
 
-    <div class="postbox">
-      <h3><?php echo _e("Confirmation page (thank you page)") ?></h3>
-      <div class="inside"> 
-        <input name="tinypass[sub_page_success]" size="40" value="<?php echo $ps->getSubscriptionPageSuccess() ?>" >
-        <p class="help">Path of existing page e.g. /thankyou</p>
+          <div class="label"><?php echo _e("Confirmation page after purchase (required)") ?></div>
+          <input name="tinypass[sub_page_success]" size="40" value="<?php echo $ps->getSubscriptionPageSuccess() ?>" >
+          <p class="help">Path of existing page e.g. /thankyou</p>
+          <hr>
+          <div class="label"><?php echo _e("Paste this shortcut on your information page to position the Tinypass button") ?></div>
+          <input name="" readonly="true" size="40" value='<?php echo "[tinypass pw=\"" . $ps->getResourceId() . "\"]" ?>' >
+          <p class="help"></p>
+        </div>
       </div>
     </div>
+    <div class="clear"></div>
   </div>
 
 <?php } ?>
 <?php
 
 /**
- * 
+ * Tag display section
  */
-function __tinypass_tag_display(TPPaySettings $ps, $num = "") {
+function __tinypass_tag_display(TPPaySettings $ps) {
   ?>
-
   <div class="tp-section">
-    <h3><?php _e("$num. " . 'Select the tags you\'d like to restrict'); ?> </h3>
-    <p class="info">All posts associated with these tags wil automatically be restricted with Tinypass</p>
-    <div class="">
-      <div class=""> 
-        <div class="tag-holder">
-          <?php foreach ($ps->getPremiumTagsArray() as $tag): ?>
-            <div class="tag">
-              <div class="text"><?php echo $tag ?></div>
-              <div class="remove"></div>
-              <input type="hidden" name="tinypass[tags][]" value="<?php echo $tag ?>">
-            </div>
-          <?php endforeach; ?>
-        </div>
-        <div class="clear"></div>
-        <div class="tag-entry tp-bg">
-          <input type="text" class="premium_tags" autocomplete="off" >
-          <a class="add_tag button-secondary"><?php _e('Add') ?></a>
+    <div class="info">
+      <div class="heading">Name your content</div>
+      <div class="desc">What are you users buying?</div>
+    </div>
+    <div class="body">
+
+      <div class="postbox">
+        <h3><?php _e('Enter the name'); ?> </h3>
+        <div class="inside"> 
+
+          <div class="tp-simple-table">
+            <input name="tinypass[resource_name]" size="40" value="<?php echo $ps->getResourceName() ? stripslashes(esc_attr($ps->getResourceName())) : "" ?>" >
+          </div>
+
         </div>
       </div>
     </div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="tp-section">
+    <div class="info">
+      <div class="heading">Pick your content</div>
+      <div class="desc">All tagged posts will automatically be restricted with this paywall</div>
+    </div>
+    <div class="body">
+      <div class="postbox"> 
+        <h3><?php echo _e("Select the tags of the content you want restricted") ?></h3>
+        <div class=""> 
+          <div class="tag-holder">
+            <?php foreach ($ps->getPremiumTagsArray() as $tag): ?>
+              <div class="tag">
+                <div class="text"><?php echo $tag ?></div>
+                <div class="remove"></div>
+                <input type="hidden" name="tinypass[tags][]" value="<?php echo $tag ?>">
+              </div>
+            <?php endforeach; ?>
+          </div>
+          <div class="clear"></div>
+          <div class="tag-entry tp-bg">
+            <input type="text" class="premium_tags" autocomplete="off" >
+            <a class="add_tag button-secondary"><?php _e('Add') ?></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
   </div>
 
 
@@ -316,44 +522,48 @@ function __tinypass_tag_display(TPPaySettings $ps, $num = "") {
 /**
  * Display pricing options section
  */
-function __tinypass_pricing_display(TPPaySettings $ps, $num = "") {
+function __tinypass_pricing_display(TPPaySettings $ps) {
   ?>
 
   <div class="tp-section">
-    <h3><?php _e("$num. " . 'Set your price options'); ?> </h3>
+    <div class="info">
+      <div class="heading"><?php _e("Set your price options") ?></div>
+      <div class="desc">
+        Set access perios of housrs, days, weeks, months, unliminted time, or
+        even monthly subscriptions.
+        <br> <br>
+        Check out our <a target="_blank" href="http://developer.tinypass.com">documentation</a> for cool stuff like foreign currency, pay-what-you-want,
+        and more
+      </div>
+    </div>
+    <div class="body">
+      <div class="">
+        <div class=""> 
 
-    <p class="info">
-      Set the price for access to your content, and the length of the access period (up to 3 options total). You can offer access periods by hours, days, weeks, months, unlimited time, or even monthly subscriptions. For handling foreign currency, pay-what-you-want, and other cool stuff, 
-      <a target="_blank" href="http://developer.tinypass.com/main/price_formats">check out the documentation</a>.
-    </p>
-    <p>Billing reoccurs automatically every month for subscriptions</p>
+          <table class="tinypass_price_options_form">
+            <tr>
+              <th width="100"><?php _e('Price') ?></th>
+              <th width="380"><?php _e('Length of access') ?></th>
+              <th width="270"><?php _e('Caption (optional)') ?></th>
+            </tr>
+          </table>
 
+          <?php echo __tinypass_price_option_display(1, $ps) ?>
+          <?php echo __tinypass_price_option_display(2, $ps) ?>
+          <?php echo __tinypass_price_option_display(3, $ps) ?>
 
-    <div class="">
-      <div class=""> 
-
-        <table class="tinypass_price_options_form">
-          <tr>
-            <th width="100"><?php _e('Price') ?></th>
-            <th width="380"><?php _e('Length of access') ?></th>
-            <th width="270"><?php _e('Caption (optional)') ?></th>
-          </tr>
-        </table>
-
-        <?php echo __tinypass_price_option_display(1, $ps) ?>
-        <?php echo __tinypass_price_option_display(2, $ps) ?>
-        <?php echo __tinypass_price_option_display(3, $ps) ?>
-
-        <br>
-        <div id="pricing_add_more_buttons">
-          <strong>
-            <a class="add_option_link button-secondary" href="#" onclick="tinypass.addPriceOption();return false;"><?php _e('Add') ?></a>
-            <a class="add_option_link button-secondary" href="#" onclick="tinypass.removePriceOption();return false;"><?php _e('Remove') ?></a>
-          </strong>
           <br>
+          <div id="pricing_add_more_buttons">
+            <strong>
+              <a class="add_option_link button-secondary" href="#" onclick="tinypass.addPriceOption();return false;"><?php _e('Add') ?></a>
+              <a class="add_option_link button-secondary" href="#" onclick="tinypass.removePriceOption();return false;"><?php _e('Remove') ?></a>
+            </strong>
+            <br>
+          </div>
         </div>
       </div>
     </div>
+    <div class="clear"></div>
   </div>
 
 <?php } ?>
@@ -406,18 +616,6 @@ function __tinypass_payment_messaging_post_display(TPPaySettings $ps) { ?>
         </div>
       </div>
     </div>
-
-    <div class="postbox">
-      <h3><?php _e('Purchase pop-up window'); ?> </h3>
-      <div class="inside"> 
-
-        <div class="tp-simple-table">
-          <label><?php _e('Offer title (optional)') ?></label>
-          <input name="tinypass[resource_name]" size="40" value="<?php echo $ps->getResourceName() ? stripslashes(esc_attr($ps->getResourceName())) : "" ?>" >
-        </div>
-
-      </div>
-    </div>
   </div>
 
 <?php } ?>
@@ -426,62 +624,59 @@ function __tinypass_payment_messaging_post_display(TPPaySettings $ps) { ?>
 /**
  * Display payment display options 
  */
-function __tinypass_payment_messaging_display(TPPaySettings $ps, $num = "") {
+function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
   ?>
 
-  <div class="tp-section" id="">
-    <h3><?php _e(($num ? "$num. " : "") . 'Customize your messaging'); ?> </h3>
-    <p class="info">When users reach any restricted post, they will see an 
-      <!--<a target="_blank" href="http://developer.tinypass.com">inline purchase section</a>--> 
-      inline purchase section
-      with your header,
-      description, and the Tinypass purchase button
-    </p>
+  <div class="tp-section">
+    <div class="info">
+      <div class="heading"><?php _e("Purchase option table") ?></div>
+      <div class="desc">
+        This contains the purchase buttons for users on restricted pages.
+      </div>
+    </div>
+    <div class="body">
 
-    <div class="postbox">
-      <h3><?php _e('Purchase section'); ?> </h3>
-      <div class="inside"> 
-        <div class="tp_pd_type_panel">
 
-          <div class="tp-simple-table">
-
-            <div class="label">Header</div>
-            <input id="tp_pd_denied_msg1" name="tinypass[pd_denied_msg1]" value="<?php echo esc_attr(stripslashes($ps->getDeniedMessage1())) ?>" size="80" maxlength="80">
+      <div class="postbox">
+        <h3><?php _e('Add some messaging'); ?> </h3>
+        <div class="inside"> 
+          <div class="">
+            <div class="label">Enter a header</div>
+            <input id="tp_pd_denied_msg1" name="tinypass[pd_denied_msg1]" value="<?php echo esc_attr(stripslashes($ps->getDeniedMessage1())) ?>" size="60" maxlength="80">
             <br>
 
-            <div class="label">Description</div>
-            <textarea id="tp_pd_denied_sub1" rows="3" cols="79" name="tinypass[pd_denied_sub1]"><?php echo stripslashes($ps->getDeniedSub1()) ?></textarea>
+            <div class="label">Enter a description</div>
+            <textarea id="tp_pd_denied_sub1" rows="3" cols="59" name="tinypass[pd_denied_sub1]"><?php echo stripslashes($ps->getDeniedSub1()) ?></textarea>
           </div>
-        </div>
-
-
-        <br>
-        <div class="tp-simple-table">
-          <div class="label">&nbsp;</div>
-          <div>
-            <input type="checkbox" name="tinypass[pd_order]" value="1" <?php echo checked($ps->isPostFirstInOrder()) ?>>
-            <span class="info">Always display Pay-per-Post option first on restricted pages</span>
+          <br>
+          <div class="">
+            <div>
+              <input type="checkbox" name="tinypass[pd_order]" value="1" <?php echo checked($ps->isPostFirstInOrder()) ?>>
+              <span class="">Always display per post price settings first on restricted pages</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <p class="info">Choose the default offer title for your 
-      <!--<a target="_blank" href="http://developer.tinypass.com">purchase pop-up window</a>-->
-      purchase pop-up window
-      This title re-affirms what your users are buying in the pop-up.  Remember, you can override this offer name with a custom title
-      inside each post on your site.
-    </p>
-    <div class="postbox">
-      <h3><?php _e('Purchase pop-up window'); ?> </h3>
-      <div class="inside"> 
-        <div class="tp-simple-table">
-          <label><?php _e('Offer title') ?></label>
-          <input name="tinypass[resource_name]" size="40" value="<?php echo $ps->getResourceName() ? stripslashes(esc_attr($ps->getResourceName())) : stripslashes(bloginfo("name")) . " - Premium Access" ?>" >
+      <div class="postbox">
+        <h3><?php _e('Create a custom purchase layout'); ?> </h3>
+        <div class="inside"> 
+          <div class="">
+            Override the default purchase layout by creating a custom template file
+            <br> <br>
+            <ul>
+              <li>
+                For all paywalls: <br><?php echo get_template_directory() ?>/<b>tinypass_purchase_display.php</b>
+              </li>
+              <li>
+                This paywall only: <br><?php echo get_template_directory() ?>/<b>tinypass_purchase_<?php echo $ps->getResourceId()?>_display.php</b>
+              </li>
+            </ul>
+          </div>
         </div>
+
       </div>
     </div>
-
+    <div class="clear"></div>
   </div>
 
 <?php } ?>
@@ -538,6 +733,26 @@ function __tinypass_price_option_display($opt, TPPaySettings $ps, $sub = true, $
     </tr>
   </table>
   <?php
+}
+
+function tinypass_slider($field_name, $options, $selected_value) {
+
+  $output = "<div class='tp-slider'>";
+
+  foreach ($options as $name => $value) {
+
+    if ($value == $selected_value) {
+      $output .= "<div class='choice' val='$value'><div class='choice-selected'>$name</div></div>";
+    } else {
+      $output .= "<div class='choice' val='$value'><div class=''>$name</div></div>";
+    }
+  }
+
+  $output .= "<input name='$field_name' type='hidden' value='$selected_value'>";
+
+  $output .= "<div class='clear'></div></div>";
+
+  return $output;
 }
 
 function __tinypass_dropdown($name, $values, $selected, $attrs = null) {

@@ -282,7 +282,7 @@ class TPSiteSettings {
           if ($form['sub_page_ref'] == $form['sub_page_success_ref'])
             $errors['sub_page_success'] = "Dedicated sign page and confirmation page must be different";
       }
-    } else if ($activeMode == TPPaySettings::MODE_DONATION) {
+    } else if ($activeMode == TPPaySettings::MODE_PPV) {
       throw new Exception("Not implemented yet");
     }
 

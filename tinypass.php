@@ -25,12 +25,18 @@ if (is_admin()) {
   include_once dirname(__FILE__) . '/tinymce/plugin.php';
 }
 
+add_filter('the_posts', 'tinypass_the_posts', 5);
 add_filter('the_content', 'tinypass_intercept_content', 5);
 add_filter('the_content', 'tinypass_append_ticket', 200);
 add_action('init', 'tinypass_init');
 
-wp_enqueue_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
-wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+
+
+function tinypass_the_posts($posts){
+  wp_enqueue_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
+  wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+  return $posts;
+}
 
 /**
  * Main function for displaying Tinypass button on restricted post/pages

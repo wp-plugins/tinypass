@@ -10,32 +10,70 @@ function tinypass_mode_settings() {
     $errors = array();
     $ps = $ss->validatePaySettings($_POST['tinypass'], $errors);
     $storage->savePaywallSettings($ss, $ps);
+    $location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Options saved.'));
+    wp_redirect($location);
   }
 
-  $ps = $storage->getPaywall("wp_bundle1", true);
+  $rid = 'wp_bundle1';
+  $pws = $storage->getPaywalls();
+
+  if (isset($_GET['rid']) && $_GET['rid'] != '') {
+    $rid = $_GET['rid'];
+  } else if ($pws != null || count($pws) > 1) {
+    $rid = 'wp_bundle' . time();
+  }
+
+//  $class = 'tp-hide';
+  if (count($pws) == 0) {
+    $class = '';
+  }
+
+  $ps = $storage->getPaywall($rid, true);
   ?>
 
   <div id="poststuff">
-
-    <?php if (!count($errors)): ?>
-      <?php if (!empty($_POST['_Submit'])) : ?>
-        <div class="updated fade"><p><strong><?php _e('Options saved.') ?></strong></p></div>
-      <?php endif; ?>
-    <?php else: ?>
-      <div id="tp-error" class="error fade"></div>
-    <?php endif; ?>
-
     <div class="tp-settings">
-      <h2><?php _e('Paywall settings'); ?></h2>
-      <hr>
+
+      <?php if (!count($errors)): ?>
+        <?php if (!empty($_REQUEST['msg'])) : ?>
+          <div class="updated fade"><p><strong><?php echo $_REQUEST['msg'] ?></strong></p></div>
+        <?php endif; ?>
+      <?php else: ?>
+        <div id="tp-error" class="error fade"></div>
+      <?php endif; ?>
 
       <div class="tp-section">
-        <h3><?php _e("1. " . 'Select your paywall settings'); ?> </h3>
+        <?php __tinypass_section_head($ps, ++$num, __("Paywall mode")) ?>
 
+        <div id="tp-show-paywalls"><span>Hide paywall details</span>
+              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">
+        </div>
+        <div id="tp_mode_details" class="<?php echo $class ?>">
+          <div id="tp_mode1_details" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" >
+            <div class="inner">
+              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/mode_ppv_info.png">
+              <div class="picker"></div>
+            </div>
+          </div>
+          <div id="tp_mode2_details" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" >
+            <div class="inner">
+              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/mode_preview_info.png">
+              <div class="picker"></div>
+            </div>
+          </div>
+          <div id="tp_mode3_details" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" >
+            <div class="inner">
+              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/mode_strict_info.png">
+              <div class="picker"></div>
+            </div>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
         <div id="tp_modes">
-          <div id="tp_mode1" class="choice" mode="<?php echo TPPaySettings::MODE_OFF ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_OFF) ?> >Off</div>
-          <div id="tp_mode2" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_METERED) ?>>Preview</div>
-          <div id="tp_mode3" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_STRICT) ?>>No-Preview</div>
+          <div id="tp_mode1" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_PPV) ?> ><?php echo TPPaySettings::MODE_PPV_NAME ?></div>
+          <div id="tp_mode2" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_METERED) ?>><?php echo TPPaySettings::MODE_METERED_NAME ?></div>
+          <div id="tp_mode3" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_STRICT) ?>><?php echo TPPaySettings::MODE_STRICT_NAME ?></div>
           <div class="clear"></div>
         </div>
         <div class="clear"></div>
@@ -48,34 +86,15 @@ function tinypass_mode_settings() {
           <div style="float:right">
             <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
           </div>
-          <div class="heading">
-            <p>
-              Create a premium section on your site in minutes.  Select the tags you want to
-              restrict, choose your price options, and we'll do the rest. 
-              <br>
-              Our plugin supports
-              two settings: metered browsing or a strict paywall.  Take a look at how each works
-              and decide which works best for your content.
-            </p>
-          </div>
-          <div>
-            <img src="http://developer.tinypass.com/_media/cmsimages/wp_off_copy.png">
-          </div>
-
-          <p>
-            <input type="submit" name="_Submit" id="publish" value="Save Changes" tabindex="4" class="button-primary" />
-          </p>
+          <?php $num = 1; ?>
+          <?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
+          <?php __tinypass_tag_display($ps) ?>
+          <?php __tinypass_pricing_display($ps) ?>
         </form>
       </div>
 
 
       <div id="tp_mode2_panel" class="tp_mode_panel">
-        <div>
-          <p>
-            Users can look at your content for a certain number of views, or for a certain time period.  After the limit is reached, your
-            users will have to pay to continue
-          </p>
-        </div>
 
         <form action="" method="post" autocomplete="off">
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
@@ -83,38 +102,41 @@ function tinypass_mode_settings() {
             <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
           </div>
           <?php $num = 1; ?>
-          <?php __tinypass_tag_display($ps, ++$num) ?>
-          <?php __tinypass_metered_display($ps, ++$num) ?>
-          <?php __tinypass_pricing_display($ps, ++$num) ?>
-          <?php __tinypass_payment_messaging_display($ps, ++$num) ?>
-          <?php __tinypass_purchase_page_display($ps, ++$num) ?>
+          <?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
+          <?php __tinypass_tag_display($ps) ?>
+          <?php __tinypass_pricing_display($ps) ?>
+
+          <?php __tinypass_section_head($ps, ++$num, __("Customize your preview period")) ?>
+          <?php __tinypass_metered_display($ps) ?>
+          <?php __tinypass_appeal_display($ps) ?>
+          <?php __tinypass_counter_display($ps) ?>
+          <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
+          <?php __tinypass_purchase_option_table_display($ps, $rid) ?>
+          <?php __tinypass_purchase_page_display($ps) ?>
 
           <p>
-            <input type="submit" name="_Submit" id="publish" value="Save Changes" tabindex="4" class="button-primary" />
+            <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
           </p>
         </form>
 
       </div>
 
       <div id="tp_mode3_panel" class="tp_mode_panel">
-        <div>
-          <p>
-            All of your content is locked down from the start.  When users click on any locked post, they'll be asked to pay for access immediately
-          </p>
-        </div>
-        <?php $num = 1; ?>
         <form action="" method="post" autocomplete="off">
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
           <div style="float:right">
             <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
           </div>
-          <?php __tinypass_tag_display($ps, ++$num) ?>
-          <?php __tinypass_pricing_display($ps, ++$num) ?>
-          <?php __tinypass_payment_messaging_display($ps, ++$num) ?>
-          <?php __tinypass_purchase_page_display($ps, ++$num) ?>
+          <?php $num = 1; ?>
+          <?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
+          <?php __tinypass_tag_display($ps) ?>
+          <?php __tinypass_pricing_display($ps) ?>
+          <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
+          <?php __tinypass_purchase_option_table_display($ps) ?>
+          <?php __tinypass_purchase_page_display($ps) ?>
 
           <p>
-            <input type="submit" name="_Submit" id="publish" value="Save Changes" tabindex="4" class="button-primary" />
+            <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
           </p>
         </form>
       </div>
@@ -135,19 +157,28 @@ function tinypass_mode_settings() {
         $(this).removeClass("choice-on");
       });
 
+      $('#tp_mode_details .choice').click(function(){
+        var index = $(this).index();
+        var elem = $('#tp_modes .choice').get(index);
+        $(elem).trigger('click');
+      })
+
       $('#tp_modes .choice').click(function(){
+        $('#tp_mode_details .choice').removeClass("choice-selected");
         $('#tp_modes .choice').removeClass("choice-selected");
         $('#tp_modes .choice').removeAttr("checked");
 
         $(this).addClass("choice-selected");
         $(this).attr("checked", "checked");
-                                      													
+                                                  													
         var elem = $(".choice[checked=checked]");
         var id = elem.attr("id");
 
         scope = '#' + id + '_panel';
 
         $(".tp_mode").val(elem.attr('mode'));
+
+        $('#tp_mode_details #' + id + "_details").addClass("choice-selected");
 
         tinypass.fullHide('.tp_mode_panel');
         tinypass.fullShow(scope);
@@ -183,9 +214,8 @@ function tinypass_mode_settings() {
           return false;
         }
       });
-                                      									
+                                                  									
       //toggle access_period after recurring is changed
-                        
       $('.recurring-opts-off').bind('change', function(){
         var index = $(this).attr("opt");
         if($(this).is(":checked")){
@@ -204,6 +234,14 @@ function tinypass_mode_settings() {
       $('.recurring-opts-on').trigger('change');
 
       $('.premium_tags').suggest("admin-ajax.php?action=ajax-tag-search&tax=post_tag",{minchars:2,multiple:false,multipleSep:""})
+
+
+      $('.tp-slider').bind('click', function(event){
+        $('.choice-selected', this).removeClass("choice-selected");
+        var choice = $(event.target);
+        choice.addClass('choice-selected');
+        $("input", this).val(choice.parent().attr('val'));
+      })
 
       tinypass.showMeteredOptions(document.getElementsByName("tinypass[metered]")[0])
 

@@ -21,7 +21,6 @@
 }
 
 #tp-inner {
-
 	border:  1px solid #d8dadd;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -76,6 +75,10 @@ TinyPass admin form sytles
 	clear:both;
 }
 
+.tp-hide {
+	display:none;
+}
+
 #tp-error {
   color:red;
 }
@@ -88,19 +91,82 @@ TinyPass admin form sytles
 	background-color:#F7F7F7;
 }
 
-.tp-section {
-	margin-top:40px;
+.tp-section-header {
+  margin-top:50px;
+  height:40px;
+  line-height:38px;
+  font-size:26px;
+}
+.tp-section-header div.num{
+  float:left;
+  background: url('images/section-header-point.png') no-repeat top left;
+  height:40px;
+  width:40px;
+  color:white;
+  text-align:center;
+  line-height:38px;
+  margin-right:10px;
 }
 
-#poststuff .tp-settings h3 {
+#tp-show-paywalls {
+  width:1055px;
+  text-align: right;
+  color:#b7b7b7;
   font-weight:bold;
-  padding-left:0px;
-  font-size:14px;
+  font-family: Arial;
+  font-size:13px;
+}
+#tp-show-paywalls img {
+  vertical-align: middle;
+}
+
+.tp-section {
+	margin-top:40px;
+  font-size:12px;
+}
+
+.tp-section input, .tp-section select, .tp-section textarea{
+  font-size:12px;
+}
+
+.tp-section .info {
+  float:left;
+  width:200px;
+}
+
+.tp-section .body {
+  margin-left:70px;
+  float:left;
+  width:900px;
+}
+
+.tp-section div.inline-label {
+  display:inline;
+}
+
+.tp-section .info .heading {
+  font-size:18px;
+  margin-bottom:20px;
+}
+
+.tp-section .info .desc {
+  color:#777;
+}
+
+.tp-section .postbox .inside div.label {
+  font-size:12px;
+  margin-top:20px;
+  margin-bottom:8px;
+  padding-left:3px;
+}
+
+#poststuff .tp-section .postbox .inside p.help {
+  margin:0px 0px 0px 3px;
 }
 
 #poststuff .tp-settings .postbox h3 {
   font-size:12px;
-  font-weight:bold;
+  font-weight:100;
   padding-left:7px;
 }
 
@@ -109,37 +175,60 @@ TinyPass admin form sytles
   padding-left:0px;
 }
 
-
-
-.tp-simple-table div.label, .tp-simple-table label{
-	display:block;
-	float:left;
-	width:120px;
-	text-align:left;
-	vertical-align: top;
-	padding-top:7px;
+#tp_mode_details { 
+  margin-top:45px;
+  padding-left:25px;
+}
+#tp_mode_details .choice {
+  /*border:1px solid red;*/
+  margin-right:8px;
+	width:340px;
+  float:left;
+  text-align: center;
 }
 
-#poststuff .inside .tp-simple-table p.help {
-	margin-left:125px;
-	margin-top:4px;
-	margin-bottom:20px;
+#tp_mode_details .choice .inner {
+  width:310px;
+}
+
+#tp_mode_details .choice .inner img {
+  width:310px;
+  z-index: 1;
+}
+
+#tp_mode_details .choice-selected .inner img {
+  z-index: 1;
+  border:1px solid #b8b8b8;
+  border-radius: 3px;
+  background-color: #F4F4F4;
+}
+
+#tp_mode_details .choice-selected .picker {
+  height:13px;
+  background-image: url('./images/details-arrow.png');
+  background-repeat: no-repeat;
+  background-position: center -3px;
+  z-index: 2;
 }
 
 #tp_modes {
   margin-top:10px;
 	background-color:#FDFDFD;
 	border:1px solid #EAEAEA;
-	padding:7px 20px 5px 20px;
+	padding:0px 3px 0px 3px;
 	border-radius: 30px;
 	float:left;
+  height:50px;
 }
 #tp_modes .choice{
+  margin-top:7px; 
+  margin-left:5px;
+  margin-right:5px;
 	float:left;
-	width:124px;
-	height:41px;
+	width:340px;
+	height:35px;
 	font-size:14px;
-	line-height: 36px;
+	line-height: 35px;
 	text-align:center;
 	text-transform: uppercase;
 	color:#D0D0D0;
@@ -148,9 +237,12 @@ TinyPass admin form sytles
 }
 
 #tp_modes .choice-on, #tp_modes .choice-selected{
-	background-image: url('./images/choice-bg.png');
-	background-repeat:no-repeat;
-	color:inherit;
+  background-color:#4985dc;
+  border-radius: 20px;
+  color:white;
+	/*background-image: url('./images/choice-bg.png');*/
+	/*background-repeat:no-repeat;*/
+	/*color:inherit;*/
 }
 
 #tinypass_post_options_form h4{
@@ -203,8 +295,8 @@ TinyPass admin form sytles
 
 .tag-holder div.tag .text {
 	float:left;
-	height:30px;
-	background-color:#6e72ad;
+	height:29px;
+	background-color:#4182DC;
 	color:white;
 	line-height:30px;
 	padding-left:10px;
@@ -222,9 +314,41 @@ TinyPass admin form sytles
 	cursor:pointer;
 }
 
-.options {
+
+.tp-slider {
+  position: relative;
+  float:left;
+	height:2.5em;
+  border:1px solid #EAEAEA;
+  border-radius: 20px;
+  background-color:#FAFAFA;
 }
-.options, .options td {
+
+.tp-slider .choice {
+  color:#ccc;
+	height:2.5em;
+  float:left;
+  line-height:2.14em;
+  text-transform: uppercase;
+  font-size:1.16em;
+  font-weight:bold;
+  width:4.64em;
+  text-align:center;
 }
-.add_option_link {
+
+.tp-slider .choice-selected {
+  border:1px solid #b7b7b7;
+  background-color:white;
+  border-radius: 30px;
+  position:absolute;
+  top:-5px;
+  color:#333;
+	height:38px;
+  line-height:38px;
+  text-transform: uppercase;
+  font-size:14px;
+  font-weight:bold;
+  width:75px;
+  float:left;
+  text-align:center;
 }

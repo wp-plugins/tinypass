@@ -9,12 +9,18 @@ class TPPaySettings {
 	const RESOURCE_ID = 'resource_id';
 	//MODES
 	const MODE = 'mode';
+	const MODE_DONATION_KEY = 'tinypass_mode_donation';
 	const MODE_STRICT_KEY = 'tinypass_mode_strict';
 	const MODE_METERED_KEY = 'tinypass_mode_metered';
 	const MODE_OFF = 0;
-	const MODE_DONATION = 1;
+	const MODE_PPV = 1;
 	const MODE_METERED = 2;
 	const MODE_STRICT = 3;
+	const MODE_OFF_NAME = 'Off';
+	const MODE_PPV_NAME = 'Pay-Per-View';
+	const MODE_METERED_NAME = 'New York';
+	const MODE_STRICT_NAME = 'Boston';
+
 	//PRICE OPTIONS
 	const PO_PRICE = 'po_p';
 	const PO_PERIOD = 'po_ap';
@@ -42,8 +48,23 @@ class TPPaySettings {
 	const PD_DENIED_SUB1 = 'pd_denied_sub1';
 	const PD_DENIED_SUB2 = 'pd_denied_sub2';
 	const PD_TYPE = 'pd_type';
-	const OFFER_ORDER  = 'pd_order';
+	const OFFER_ORDER = 'pd_order';
 	const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with TinyPass';
+
+  //Appeal fields
+  const APP_ENABLED = 'app_en';
+  const APP_NUM_VIEWS = 'app_views';
+  const APP_FREQUENCY = 'app_freq';
+  const APP_MSG1 = 'app_msg1';
+  const APP_MSG2 = 'app_msg2';
+
+  //counter
+  const CT_ENABLED = 'ct_en';
+  const CT_ONCLICK = 'ct_onclick';
+  const CT_PAGE = 'ct_page';
+  const CT_PAGE_REF = 'ct_page_ref';
+  const CT_POSTION = 'ct_pos';
+  const CT_DELAY = 'ct_delay';
 
 	//settings
 	const TINYPASS_PAYWALL_SETTINGS = 'tinypass_paywall_settings';
@@ -71,7 +92,7 @@ class TPPaySettings {
 
 	public function isEnabled() {
 		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) != TPPaySettings::MODE_OFF ||
-          $this->data->isValEnabled("en");
+						$this->data->isValEnabled("en");
 	}
 
 	public function isMode($type) {
@@ -80,6 +101,22 @@ class TPPaySettings {
 
 	public function getMode() {
 		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+	}
+
+	public function getModeName() {
+		$mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+		switch ($mode) {
+			case TPPaySettings::MODE_OFF:
+				return TPPaySettings::MODE_OFF_NAME;
+			case TPPaySettings::MODE_PPV:
+				return TPPaySettings::MODE_PPV_NAME;
+			case TPPaySettings::MODE_METERED:
+				return TPPaySettings::MODE_METERED_NAME;
+			case TPPaySettings::MODE_STRICT:
+				return TPPaySettings::MODE_STRICT_NAME;
+			default:
+				return "NA";
+		}
 	}
 
 	public function setMode($i) {
@@ -173,9 +210,9 @@ class TPPaySettings {
 	}
 
 	public function getAccessPeriodType($i, $def = null) {
-    if($this->data[self::PO_PERIOD_TYPE] . $i)
-      return $this->data->val(self::PO_PERIOD_TYPE . $i, $def);
-    return $this->data->val(self::PO_PERIOD_TYPE_V1 . $i, $def);
+		if ($this->data[self::PO_PERIOD_TYPE] . $i)
+			return $this->data->val(self::PO_PERIOD_TYPE . $i, $def);
+		return $this->data->val(self::PO_PERIOD_TYPE_V1 . $i, $def);
 	}
 
 	public function getCaption($i) {
@@ -264,6 +301,16 @@ class TPPaySettings {
 		return $this->getMeterTrialPeriod() . " " . $this->getMeterTrialPeriodType();
 	}
 
+	public function getMeterSummary() {
+		if ($this->isCountMetered()) {
+			return $this->getMeterMaxAccessAttempts() . " views in " . $this->getMeterLockoutPeriodFull();
+		} else if ($this->isTimeMetered()) {
+			return $this->getMeterTrialPeriodFull();
+		} else {
+			return 'off';
+		}
+	}
+
 	/*
 	 * Subscription releated fields
 	 */
@@ -319,6 +366,101 @@ class TPPaySettings {
 		return $this->data->val(self::OFFER_ORDER, 0) == 1;
 	}
 
+  /**
+   * Appeal Configuration
+   */
+	public function isAppealEnabled(){
+		return $this->data->isValEnabled(self::APP_ENABLED);
+	}
+
+	public function getAppealEnabled(){
+		return $this->data->val(self::APP_ENABLED, 0);
+	}
+
+	public function getAppealMessage1($msg = self::DEFAULT_DENIED_MESSAGE) {
+		return $this->data->val(self::APP_MSG1, $msg);
+	}
+
+	public function getAppealMessage2($msg = self::DEFAULT_DENIED_MESSAGE) {
+		return $this->data->val(self::APP_MSG2, $msg);
+	}
+
+	public function getAppealNumViews() {
+		return $this->data->val(self::APP_NUM_VIEWS, "");
+	}
+
+	public function getAppealFrequency() {
+		return $this->data->val(self::APP_FREQUENCY, "");
+	}
+
+  /**
+   * Counter Configuration
+   */
+	public function isCounterEnabled(){
+		return $this->data->isValEnabled(self::CT_ENABLED);
+	}
+
+	public function getCounterEnabled(){
+		return $this->data->val(self::CT_ENABLED, 0);
+	}
+
+	public function getCounterPage() {
+		return $this->data->val(self::CT_PAGE, '');
+	}
+
+	public function getCounterPageRef() {
+		return $this->data->val(self::CT_PAGE_REF, '');
+	}
+
+	public function getCounterOnClick() {
+		return $this->data->val(self::CT_ONCLICK, '');
+  }
+
+	public function getCounterPosition() {
+		return $this->data->val(self::CT_POSTION, 1);
+  }
+
+	public function getCounterDelay($def = -1) {
+		return $this->data->val(self::CT_DELAY, $def);
+  }
+
+
+
+
+	public function getSummaryFields() {
+		$output = array();
+
+		$output['mode'] = $this->getModeName();
+
+		$resource_name = htmlspecialchars(stripslashes($this->getResourceName()));
+
+		$output['rname'] = $resource_name;
+
+		$output['enabled'] = $this->isEnabled() ? __('Yes') : __('No');
+
+		$output['prices'] = array();
+
+		for ($i = 1; $i <= 3; $i++) {
+
+			if ($this->hasPriceConfig($i) == false)
+				continue;
+
+			$caption = $this->getCaption($i);
+
+			$line = $this->getAccessFullFormat($i);
+
+			if ($this->getCaption($i)) {
+				$line .= " - '" . htmlspecialchars(stripslashes($caption)) . "'";
+			}
+
+			$output['prices'][] = $line;
+		}
+
+		$output['meter'] = $this->getMeterSummary();
+
+		return $output;
+	}
+
 	public function toArray() {
 		if (isset($this->data))
 			return $this->data->toArray();
@@ -354,7 +496,7 @@ class TPPaySettings {
 
 			if ($ps->isRecurring($i)) {
 				$po->setRecurringBilling($ps->getRecurring($i));
-      }
+			}
 
 			$pos[] = $po;
 		}
