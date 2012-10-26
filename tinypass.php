@@ -154,11 +154,11 @@ function tinypass_intercept_content($content) {
   if ($tagOptions->isEnabled()) {
     $siteOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
 
-    $siteToken = $store->findActiveToken('/(^wp_bundle\d+)|(^wp_tag_\d+)/');
+    $siteToken = $store->findActiveToken($tagOptions->getResourceId());
 
     if ($tagOptions->isMetered()) {
 
-      $cookieName = "TR_S";
+      $cookieName = "TR_" . preg_replace('/[^0-9]*/', '', $tagOptions->getResourceId());
       $meter = TPMeterHelper::loadMeterFromCookie($cookieName, $_COOKIE);
 
       if ($meter == null) {
@@ -168,19 +168,34 @@ function tinypass_intercept_content($content) {
         } elseif ($tagOptions->isCountMetered()) {
           $meter = TPMeterHelper::createViewBased($cookieName, $tagOptions->getMeterMaxAccessAttempts(), $tagOptions->getMeterLockoutPeriodFull());
         }
-
-      } else {
-
-        $meter->increment();
-
       }
+
+      $meter->increment();
 
       setcookie($cookieName, TPMeterHelper::__generateLocalToken($cookieName, $meter), time() + 60 * 60 * 24 * 30, '/');
 
       if ($meter->isTrialPeriodActive()) {
-        $content .= '[TP_COUNTER]';
-        $tinypass_meter = __tinypass_render_template(TINYPASS_COUNTER_TEMPLATE, array('count' => $meter->getTrialViewCount(), 'max' => $meter->getTrialViewLimit()));
         $siteOfferTrialActive = TRUE;
+
+        if ($tagOptions->isCounterEnabled() && $meter->getTrialViewCount() > $tagOptions->getCounterDelay(PHP_INT_MAX)) {
+          $content .= '[TP_COUNTER]';
+
+          $onclick = 'onclick="return false"';
+          if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_PAGE)) {
+            $gotolink = get_page_link($tagOptions->getSubscriptionPageRef());
+            $onclick = 'href="' . $gotolink . '"';
+          } else if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_APPEAL)) {
+            $onclick = 'onclick="console.log(\'should open\');return false"';
+          }
+
+          $tinypass_meter = __tinypass_render_template(TINYPASS_COUNTER_TEMPLATE, array(
+              'count' => $meter->getTrialViewCount(),
+              'max' => $meter->getTrialViewLimit(),
+              'remaining' => $meter->getTrialViewLimit() - $meter->getTrialViewCount(),
+              'class' => 'position-' . $tagOptions->getCounterPosition(),
+              'on_click' => $onclick,
+                  ));
+        }
       }
     }
   }

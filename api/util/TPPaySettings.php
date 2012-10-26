@@ -21,7 +21,6 @@ class TPPaySettings {
   const MODE_PPV_NAME = 'Pay-Per-View';
   const MODE_METERED_NAME = 'New York';
   const MODE_STRICT_NAME = 'Boston';
-
   const MODE_PPV_NAME_REAL = 'Pay-Per-View';
   const MODE_METERED_NAME_REAL = 'Preview';
   const MODE_STRICT_NAME_REAL = 'Strict';
@@ -75,13 +74,14 @@ class TPPaySettings {
   const APP_MSG1 = 'app_msg1';
   const APP_MSG2 = 'app_msg2';
 
-  //counter
+  //Counter
   const CT_ENABLED = 'ct_en';
   const CT_ONCLICK = 'ct_onclick';
-  const CT_PAGE = 'ct_page';
-  const CT_PAGE_REF = 'ct_page_ref';
   const CT_POSTION = 'ct_pos';
   const CT_DELAY = 'ct_delay';
+  const CT_ONCLICK_NOTHING = 0;
+  const CT_ONCLICK_PAGE = 1;
+  const CT_ONCLICK_APPEAL = 2;
 
   //settings
   const TINYPASS_PAYWALL_SETTINGS = 'tinypass_paywall_settings';
@@ -422,16 +422,12 @@ class TPPaySettings {
     return $this->data->val(self::CT_ENABLED, 0);
   }
 
-  public function getCounterPage() {
-    return $this->data->val(self::CT_PAGE, '');
+  public function getCounterOnClick($d = self::CT_ONCLICK_NOTHING) {
+    return $this->data->val(self::CT_ONCLICK, $d);
   }
 
-  public function getCounterPageRef() {
-    return $this->data->val(self::CT_PAGE_REF, '');
-  }
-
-  public function getCounterOnClick() {
-    return $this->data->val(self::CT_ONCLICK, '');
+  public function isCounterOnClick($i) {
+    return $this->getCounterOnClick() == $i;
   }
 
   public function getCounterPosition() {

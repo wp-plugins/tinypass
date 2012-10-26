@@ -228,14 +228,16 @@ function __tinypass_counter_display(TPPaySettings $ps) {
         <h3><?php _e('Where should clicking on the counter bring users?'); ?> </h3>
         <div class="inside">
           <div class="label">
-            <input type="radio" name="tinypass[ct_onclick]" value="0" <?php checked($ps->getCounterOnClick() == '0') ?>>
-            Open a page on your site in a new tab
+            <input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_NOTHING ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_NOTHING)) ?>>
+            Counter is not clickable
           </div>
-          <input name="tinypass[ct_page]" value="<?php echo $ps->getCounterPage() ?>" size="37" maxlength="80">
-          <br>
           <div class="label">
-            <input type="radio" name="tinypass[ct_onclick]" value="1" <?php checked($ps->getCounterOnClick() == '1') ?> >
-            Open the pop-up reminder over the current page (reminder must be enabled first) 
+            <input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_PAGE ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_PAGE)) ?>>
+            Open the dedicated information page on your site in a new tab ( defined below )
+          </div>
+          <div class="label">
+            <input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_APPEAL ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_APPEAL)) ?> >
+            Open the pop-up appeal over the current page (appeal must be enabled first) 
           </div>
           <br>
         </div>
@@ -370,7 +372,7 @@ function __tinypass_metered_display(TPPaySettings $ps) {
             <tr>
               <td width="120" valign="middle">
                 <div>
-                  <?php echo __tinypass_dropdown("tinypass[metered]", array('count' => 'Page views', 'time' => 'Time Based'), $metered, array("onchange" => "tinypass.showMeteredOptions(this)")) ?>
+                  <?php echo __tinypass_dropdown("tinypass[metered]", array('count' => 'Page views'), $metered, array("onchange" => "tinypass.showMeteredOptions(this)")) ?>
                 </div>
               </td>
               <td style="border-left:1px solid #DFDFDF">
