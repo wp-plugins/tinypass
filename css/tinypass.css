@@ -194,6 +194,7 @@ TinyPass admin form sytles
 #tp_mode_details .choice .inner img {
   width:310px;
   z-index: 1;
+  border:1px solid transparent;
 }
 
 #tp_mode_details .choice-selected .inner img {
@@ -341,14 +342,94 @@ TinyPass admin form sytles
   background-color:white;
   border-radius: 30px;
   position:absolute;
-  top:-5px;
+  top:-.4em;
   color:#333;
-	height:38px;
-  line-height:38px;
+	height:2.88em;
+	line-height:2.88em;
   text-transform: uppercase;
-  font-size:14px;
   font-weight:bold;
-  width:75px;
+  width:5em;
   float:left;
   text-align:center;
+}
+.paywall-card .slider {
+  float:right;
+  font-size:8px;
+}
+
+.paywall-card {
+  margin-top:30px;
+  width:800px;
+  border-radius: 5px;
+  background-color:white;
+  border: 1px solid #BABABA;
+  padding:15px 15px 0px 0px;
+  font-family: Helvetica;
+  background: url('images/card-bg.png') repeat-x top left;
+}
+
+.paywall-card .type {
+  padding-left:15px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.paywall-card .title {
+  padding-left:15px;
+  margin-top:10px;
+  font-size:20px;
+}
+
+.paywall-card .footer {
+  margin-top:40px;
+}
+
+.paywall-card .footer .leftcol {
+  padding-left:15px;
+  float:left;
+  border-top: 1px solid #BABABA;
+  width:70%;
+}
+
+.paywall-card .footer .section {
+  float:left;
+  padding:10px;
+  margin-right:40px;
+}
+
+.paywall-card .footer .section div.value {
+  font-size:1.0em;
+}
+
+.paywall-card .footer .section div.label{
+  text-transform: uppercase;
+  font-weight:bold;
+  font-size:.8em;
+}
+
+.paywall-card .footer .action {
+  float:right;
+  padding:10px;
+}
+
+.paywall-card .footer .action a {
+  width:54px;
+  float:right;
+  background-color: #4985DC;
+  color:white;
+  padding:10px;
+  background-image: none;
+  border: 1px solid #3978d5;
+  text-align: center;
+  border-radius: 20px;
+  -moz-box-shadow: 1px 1px 5px #888;
+  -webkit-box-shadow: 1px 1px 5px #888;
+  box-shadow: 1px 1px 5px #888;
+}
+
+#tinypass-meter-counter {
+  border-radius: 20px;
+}
+
+#tinypass-meter-counter div.inner {
 }

@@ -15,17 +15,16 @@ function tinypass_mode_settings() {
   }
 
   $rid = 'wp_bundle1';
-  $pws = $storage->getPaywalls();
+  $pws = $storage->getPaywalls(true);
 
   if (isset($_GET['rid']) && $_GET['rid'] != '') {
     $rid = $_GET['rid'];
   } else if ($pws != null || count($pws) > 1) {
-    $rid = 'wp_bundle' . time();
-  }
-
-//  $class = 'tp-hide';
-  if (count($pws) == 0) {
-    $class = '';
+    $last = 0;
+    foreach ($pws as $ps) {
+      $last = max($last, preg_replace('/[^0-9]*/', '', $ps->getResourceId()));
+    }
+    $rid = 'wp_bundle' . ($last + 1);
   }
 
   $ps = $storage->getPaywall($rid, true);
@@ -45,10 +44,10 @@ function tinypass_mode_settings() {
       <div class="tp-section">
         <?php __tinypass_section_head($ps, ++$num, __("Paywall mode")) ?>
 
-        <div id="tp-show-paywalls"><span>Hide paywall details</span>
-              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">
-        </div>
-        <div id="tp_mode_details" class="<?php echo $class ?>">
+          <!--<div id="tp-show-paywalls"><span>Hide paywall details</span>-->
+                <!-- <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">-->
+        <!--</div>-->
+        <div id="tp_mode_details">
           <div id="tp_mode1_details" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" >
             <div class="inner">
               <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/mode_ppv_info.png">
@@ -85,21 +84,27 @@ function tinypass_mode_settings() {
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
           <div style="float:right">
             <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+            <input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
           </div>
           <?php $num = 1; ?>
           <?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
           <?php __tinypass_tag_display($ps) ?>
           <?php __tinypass_pricing_display($ps) ?>
+          <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
+          <?php __tinypass_purchase_option_table_display($ps, $rid) ?>
+          <p>
+            <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
+          </p>
         </form>
       </div>
 
 
       <div id="tp_mode2_panel" class="tp_mode_panel">
-
         <form action="" method="post" autocomplete="off">
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
           <div style="float:right">
             <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+            <input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
           </div>
           <?php $num = 1; ?>
           <?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
@@ -113,12 +118,10 @@ function tinypass_mode_settings() {
           <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
           <?php __tinypass_purchase_option_table_display($ps, $rid) ?>
           <?php __tinypass_purchase_page_display($ps) ?>
-
           <p>
             <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
           </p>
         </form>
-
       </div>
 
       <div id="tp_mode3_panel" class="tp_mode_panel">
@@ -126,6 +129,7 @@ function tinypass_mode_settings() {
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
           <div style="float:right">
             <input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+            <input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
           </div>
           <?php $num = 1; ?>
           <?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
@@ -134,7 +138,6 @@ function tinypass_mode_settings() {
           <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
           <?php __tinypass_purchase_option_table_display($ps) ?>
           <?php __tinypass_purchase_page_display($ps) ?>
-
           <p>
             <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
           </p>
@@ -170,7 +173,7 @@ function tinypass_mode_settings() {
 
         $(this).addClass("choice-selected");
         $(this).attr("checked", "checked");
-                                                  													
+                                                    													
         var elem = $(".choice[checked=checked]");
         var id = elem.attr("id");
 
@@ -214,7 +217,7 @@ function tinypass_mode_settings() {
           return false;
         }
       });
-                                                  									
+                                                    									
       //toggle access_period after recurring is changed
       $('.recurring-opts-off').bind('change', function(){
         var index = $(this).attr("opt");

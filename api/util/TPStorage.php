@@ -37,6 +37,8 @@ class TPStorage {
 
     $ps = new TPPaySettings(array());
     $ps->setResourceId($name);
+    $ps->setEnabled(true);
+    $ps->setMode(TPPaySettings::MODE_STRICT);
     return $ps;
   }
 

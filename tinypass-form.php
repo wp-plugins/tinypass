@@ -148,31 +148,30 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
         <input type="hidden" name="post_ID" value="<?php echo $postID ?>"/>
 
         <div style="float:right">
-          <strong>Enabled?</strong>: <input type="checkbox" autocomplete=off name="tinypass[mode]" value="1" <?php echo checked($ps->isEnabled()) ?>>
+          <strong>Enabled for this post?</strong>: <input type="checkbox" autocomplete=off name="tinypass[mode]" value="1" <?php echo checked($ps->isEnabled()) ?>>
         </div>
         <br>
 
         <div class="postbox">
-          <h3><?php _e("Pricing Options - enter up to 3 options") ?></h3>
+          <h3><?php _e("Setup your pricing for this post") ?></h3>
           <div class="inside">
+            <br> <br>
+            <table class="tinypass_price_options_form">
+              <tr>
+                <th width="100"><?php _e('Price') ?></th>
+                <th width="180"><?php _e('Length of access') ?></th>
+                <th width="270"><?php _e('Caption (optional)') ?></th>
+              </tr>
+            </table>
 
-            <center>
-              <table class="tinypass_price_options_form">
-                <tr>
-                  <th width="100"><?php _e('Price') ?></th>
-                  <th width="180"><?php _e('Length of access') ?></th>
-                  <th width="270"><?php _e('Caption (optional)') ?></th>
-                </tr>
-              </table>
+            <?php echo __tinypass_price_option_display('1', $ps, false, 180) ?>
+            <?php echo __tinypass_price_option_display('2', $ps, false, 180) ?>
+            <?php echo __tinypass_price_option_display('3', $ps, false, 180) ?>
 
-              <?php echo __tinypass_price_option_display('1', $ps, false, 180) ?>
-              <?php echo __tinypass_price_option_display('2', $ps, false, 180) ?>
-              <?php echo __tinypass_price_option_display('3', $ps, false, 180) ?>
-
-              <br>
-              <a class="add_option_link button" href="#" onclick="tinypass.addPriceOption();return false;">Add</a>
-              <a class="add_option_link button" href="#" onclick="tinypass.removePriceOption();return false;">Remove</a>
-            </center>
+            <br> <br>
+            <a class="add_option_link button" href="#" onclick="tinypass.addPriceOption();return false;">Add</a>
+            <a class="add_option_link button" href="#" onclick="tinypass.removePriceOption();return false;">Remove</a>
+            <br> <br>
           </div>
         </div>
         <?php echo __tinypass_payment_messaging_post_display($ps) ?>
@@ -208,9 +207,6 @@ function __tinypass_section_head(TPPaySettings $ps, $num, $text = '') {
  * Show the metered content section
  */
 function __tinypass_counter_display(TPPaySettings $ps) {
-
-
-
   ?>
 
   <div class="tp-section">
@@ -246,11 +242,11 @@ function __tinypass_counter_display(TPPaySettings $ps) {
         <h3><?php _e('Customize it'); ?> </h3>
         <div class="inside">
           <div class="label">Where should the counter appear?
-          <?php echo __tinypass_dropdown("tinypass[ct_pos]", array('1' => 'Top right', '2' => 'Top left', '3' => 'Bottom left', '4' => 'Bottom right'), $ps->getCounterPosition()) ?>
+            <?php echo __tinypass_dropdown("tinypass[ct_pos]", array('1' => 'Top right', '2' => 'Top left', '3' => 'Bottom left', '4' => 'Bottom right'), $ps->getCounterPosition()) ?>
           </div>
           <div class="label">Only show the counter to user after
             <input type="text" name="tinypass[ct_delay]" size="2" value="<?php echo $ps->getCounterDelay('') ?>">
-          views
+            views
           </div>
         </div>
         <br> <br>
@@ -259,14 +255,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
           <div class="">
             Override the default appeal design by creating a custom template file
             <br> <br>
-            <ul>
-              <li>
-                For all paywalls: <br><?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
-              </li>
-              <li>
-                This paywall only: <br><?php echo get_template_directory() ?>/<b>tinypass_counter_<?php echo $ps->getResourceId() ?>_display.php</b>
-              </li>
-            </ul>
+            <?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
           </div>
         </div>
       </div>
@@ -294,7 +283,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
 
   <div class="tp-section">
     <div class="info">
-      <div class="heading">Add an appear pop-up</div>
+      <div class="heading">Add an appeal pop-up</div>
       <div class="slider">
         <?php echo tinypass_slider('tinypass[app_en]', array('Off' => '0', 'On' => '1'), $ps->getAppealEnabled()) ?>
         <div class="clear"></div>
@@ -332,14 +321,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
           <div class="">
             Override the default appeal design by creating a custom template file
             <br> <br>
-            <ul>
-              <li>
-                For all paywalls: <br><?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
-              </li>
-              <li>
-                This paywall only: <br><?php echo get_template_directory() ?>/<b>tinypass_appeal_<?php echo $ps->getResourceId() ?>_display.php</b>
-              </li>
-            </ul>
+            <?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
           </div>
         </div>
       </div>
@@ -449,7 +431,7 @@ function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
           <p class="help">Path of existing page e.g. /thankyou</p>
           <hr>
           <div class="label"><?php echo _e("Paste this shortcut on your information page to position the Tinypass button") ?></div>
-          <input name="" readonly="true" size="40" value='<?php echo "[tinypass pw=\"" . $ps->getResourceId() . "\"]" ?>' >
+          <input name="" readonly="true" size="40" value='<?php echo "[tinypass rid=\"" . $ps->getResourceId() . "\"]" ?>' >
           <p class="help"></p>
         </div>
       </div>
@@ -600,7 +582,7 @@ function __tinypass_payment_messaging_post_display(TPPaySettings $ps) { ?>
   <div class="tp-section" id="">
 
     <div class="postbox">
-      <h3><?php _e('Purchase section'); ?> </h3>
+      <h3><?php _e('Customize your messaging'); ?> </h3>
       <div class="inside"> 
         <div class="tp_pd_type_panel">
 
@@ -663,14 +645,7 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
           <div class="">
             Override the default purchase layout by creating a custom template file
             <br> <br>
-            <ul>
-              <li>
-                For all paywalls: <br><?php echo get_template_directory() ?>/<b>tinypass_purchase_display.php</b>
-              </li>
-              <li>
-                This paywall only: <br><?php echo get_template_directory() ?>/<b>tinypass_purchase_<?php echo $ps->getResourceId()?>_display.php</b>
-              </li>
-            </ul>
+            <?php echo get_template_directory() ?>/<b><?php echo TINYPASS_PURCHASE_TEMPLATE ?></b>
           </div>
         </div>
 

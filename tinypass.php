@@ -10,14 +10,19 @@
  */
 $tinypass_ppp_req = null;
 $tinypass_site_req = null;
+$tinypass_meter = null;
 
 define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
+
+define('TINYPASS_PURCHASE_TEMPLATE', 'tinypass_purchase_display.php');
+define('TINYPASS_COUNTER_TEMPLATE', 'tinypass_counter_display.php');
 
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 //setup
+
 if (is_admin()) {
   require_once dirname(__FILE__) . '/tinypass-install.php';
   require_once dirname(__FILE__) . '/tinypass-admin.php';
@@ -30,9 +35,7 @@ add_filter('the_content', 'tinypass_intercept_content', 5);
 add_filter('the_content', 'tinypass_append_ticket', 200);
 add_action('init', 'tinypass_init');
 
-
-
-function tinypass_the_posts($posts){
+function tinypass_the_posts($posts) {
   wp_enqueue_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
   wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
   return $posts;
@@ -45,9 +48,11 @@ function tinypass_intercept_content($content) {
 
   global $tinypass_ppp_req;
   global $tinypass_site_req;
+  global $tinypass_meter;
   global $post;
   $tinypass_ppp_req = null;
   $tinypass_site_req = null;
+  $tinypass_meter = null;
 
   tinypass_include();
 
@@ -56,7 +61,6 @@ function tinypass_intercept_content($content) {
   //break out if Tinypass is disabled
   if ($ss->isEnabled() == false)
     return $content;
-
 
   $storage = new TPStorage();
   $ppvOptions = $storage->getPostSettings($post->ID);
@@ -76,7 +80,7 @@ function tinypass_intercept_content($content) {
 
   //we want to dump the button on this page
   if ($tagOptions->getSubscriptionPageRef() == $post->ID) {
-    $siteOffer = TPPaySettings::create_offer($tagOptions, "wp_bundle1");
+    $siteOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
 
 //    $token = $store->findActiveToken('/(^wp_bundle1)|(^wp_tag_\d+)/');
 //		if ($token->isAccessGranted()) {
@@ -117,10 +121,10 @@ function tinypass_intercept_content($content) {
 
   //When content is shown in list form, i.e. categories we still need to truncate content
   //At this point in the execution we know that TP is enabled so we have to protect
-  if(is_singular() == false){
+  if (is_singular() == false) {
     $c = get_extended_with_tpmore($content);
-    if($c['extended'] == '') {
-      $content = tinypass_trim_excerpt ($content);
+    if ($c['extended'] == '') {
+      $content = tinypass_trim_excerpt($content);
     } else {
       $content = $c['main'];
     }
@@ -148,9 +152,9 @@ function tinypass_intercept_content($content) {
   $siteOfferTrialActive = FALSE;
 
   if ($tagOptions->isEnabled()) {
-    $siteOffer = TPPaySettings::create_offer($tagOptions, "wp_bundle1");
+    $siteOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
 
-    $siteToken = $store->findActiveToken('/(^wp_bundle1)|(^wp_tag_\d+)/');
+    $siteToken = $store->findActiveToken('/(^wp_bundle\d+)|(^wp_tag_\d+)/');
 
     if ($tagOptions->isMetered()) {
 
@@ -164,13 +168,18 @@ function tinypass_intercept_content($content) {
         } elseif ($tagOptions->isCountMetered()) {
           $meter = TPMeterHelper::createViewBased($cookieName, $tagOptions->getMeterMaxAccessAttempts(), $tagOptions->getMeterLockoutPeriodFull());
         }
+
       } else {
+
         $meter->increment();
+
       }
 
       setcookie($cookieName, TPMeterHelper::__generateLocalToken($cookieName, $meter), time() + 60 * 60 * 24 * 30, '/');
 
       if ($meter->isTrialPeriodActive()) {
+        $content .= '[TP_COUNTER]';
+        $tinypass_meter = __tinypass_render_template(TINYPASS_COUNTER_TEMPLATE, array('count' => $meter->getTrialViewCount(), 'max' => $meter->getTrialViewLimit()));
         $siteOfferTrialActive = TRUE;
       }
     }
@@ -228,36 +237,18 @@ function tinypass_intercept_content($content) {
 }
 
 /**
- * 
+ * Append ticket to the end of the post content
  */
-function get_extended_with_tpmore($post) {
-
-  $regex = '/<!--more(.*?)?-->/';
-  $tpmore_regex = '/<!--tpmore(.*?)?-->/';
-
-  if (preg_match($tpmore_regex, $post)) {
-    $regex = $tpmore_regex;
-  }
-
-  //Match the new style more links
-  if (preg_match($regex, $post, $matches)) {
-    list($main, $extended) = explode($matches[0], $post, 2);
-  } else {
-    $main = $post;
-    $extended = '';
-  }
-
-  // Strip leading and trailing whitespace
-  $main = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $main);
-  $extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $extended);
-
-  return array('main' => $main, 'extended' => $extended);
-}
-
 function tinypass_append_ticket($content) {
 
   global $tinypass_ppp_req;
   global $tinypass_site_req;
+  global $tinypass_meter;
+
+  //Add the counter
+  if (preg_match('/\[TP_COUNTER\]/', $content)) {
+    $content = preg_replace('/\[TP_COUNTER\]/', $tinypass_meter, $content);
+  }
 
   if ($tinypass_ppp_req == null && $tinypass_site_req == null)
     return $content;
@@ -281,7 +272,7 @@ function tinypass_append_ticket($content) {
     $sub1 = stripslashes($tinypass_ppp_req['sub1']);
     $sub2 = stripslashes($tinypass_site_req['sub1']);
 
-    $tout = __tinypass_render_template('/view/tinypass_display_default.php', array(
+    $tout = __tinypass_render_template(TINYPASS_PURCHASE_TEMPLATE, array(
         "button1" => $button1,
         "button2" => $button2,
         "message1" => $message1,
@@ -304,7 +295,7 @@ function tinypass_append_ticket($content) {
 
     $resource1 = $request['req']->getPrimaryOffer()->getResource()->getName();
 
-    $tout = __tinypass_render_template('/view/tinypass_display_default.php', array(
+    $tout = __tinypass_render_template(TINYPASS_PURCHASE_TEMPLATE, array(
         "button1" => $button1,
         "button2" => '',
         "message1" => $message1,
@@ -317,16 +308,27 @@ function tinypass_append_ticket($content) {
     $content = preg_replace('/\[TP_HOOK\]/', $tout, $content);
   }
 
+
   return $content;
 }
 
+/**
+ * Internal function for rendering templates
+ */
 function __tinypass_render_template($template, $vars = array()) {
+
+  if (file_exists(get_template_directory() . '/' . $template)) {
+    $filename = get_template_directory() . '/' . $template;
+  } else {
+    $filename = dirname(__FILE__) . '/view/' . $template;
+  }
+
   foreach ($vars as $name => $value) {
     $$name = $value;
   }
 
   ob_start();
-  require dirname(__FILE__) . $template;
+  require $filename;
   $tout = ob_get_contents();
   ob_end_clean();
   return $tout;
@@ -353,14 +355,6 @@ function tinypass_trim_excerpt($text) {
     $text = implode(' ', $words);
   }
   return $text;
-}
-
-/**
- * Wrap the Tinypass options in our Options class
- */
-function meta_to_tp_options($meta) {
-  $options = new TPPaySettings($meta);
-  return $options;
 }
 
 /**
@@ -393,6 +387,33 @@ function tinypass_load_settings() {
   $storage = new TPStorage();
   $ss = $storage->getSiteSettings();
   return $ss;
+}
+
+/**
+ * Split the content by more or tp more
+ */
+function get_extended_with_tpmore($post) {
+
+  $regex = '/<!--more(.*?)?-->/';
+  $tpmore_regex = '/<!--tpmore(.*?)?-->/';
+
+  if (preg_match($tpmore_regex, $post)) {
+    $regex = $tpmore_regex;
+  }
+
+  //Match the new style more links
+  if (preg_match($regex, $post, $matches)) {
+    list($main, $extended) = explode($matches[0], $post, 2);
+  } else {
+    $main = $post;
+    $extended = '';
+  }
+
+  // Strip leading and trailing whitespace
+  $main = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $main);
+  $extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $extended);
+
+  return array('main' => $main, 'extended' => $extended);
 }
 
 ?>

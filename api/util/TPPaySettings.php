@@ -5,53 +5,70 @@
  */
 class TPPaySettings {
 
-	const RESOURCE_NAME = 'resource_name';
-	const RESOURCE_ID = 'resource_id';
-	//MODES
-	const MODE = 'mode';
-	const MODE_DONATION_KEY = 'tinypass_mode_donation';
-	const MODE_STRICT_KEY = 'tinypass_mode_strict';
-	const MODE_METERED_KEY = 'tinypass_mode_metered';
-	const MODE_OFF = 0;
-	const MODE_PPV = 1;
-	const MODE_METERED = 2;
-	const MODE_STRICT = 3;
-	const MODE_OFF_NAME = 'Off';
-	const MODE_PPV_NAME = 'Pay-Per-View';
-	const MODE_METERED_NAME = 'New York';
-	const MODE_STRICT_NAME = 'Boston';
+  const RESOURCE_NAME = 'resource_name';
+  const RESOURCE_ID = 'resource_id';
+  //MODES
+  const ENABLED = 'en';
+  const MODE = 'mode';
+  const MODE_DONATION_KEY = 'tinypass_mode_donation';
+  const MODE_STRICT_KEY = 'tinypass_mode_strict';
+  const MODE_METERED_KEY = 'tinypass_mode_metered';
+  const MODE_OFF = 0;
+  const MODE_PPV = 1;
+  const MODE_METERED = 2;
+  const MODE_STRICT = 3;
+  const MODE_OFF_NAME = 'Off';
+  const MODE_PPV_NAME = 'Pay-Per-View';
+  const MODE_METERED_NAME = 'New York';
+  const MODE_STRICT_NAME = 'Boston';
 
-	//PRICE OPTIONS
-	const PO_PRICE = 'po_p';
-	const PO_PERIOD = 'po_ap';
-	const PO_PERIOD_TYPE = 'po_ap_type';
-	const PO_PERIOD_TYPE_V1 = 'po_type';
-	const PO_CAPTION = 'po_cap';
-	const PO_START = 'po_st';
-	const PO_END = 'po_et';
-	const PO_RECUR = 'po_recur';
-	const METERED = 'metered';
-	const HIDE_TEASER = 'ht';
-	const METER_LOCKOUT_PERIOD = 'm_lp';
-	const METER_LOCKOUT_PERIOD_TYPE = 'm_lp_type';
-	const METER_MAX_ACCESS_ATTEMPTS = 'm_maa';
-	const METER_TRIAL_PERIOD = 'm_tp';
-	const METER_TRIAL_PERIOD_TYPE = 'm_tp_type';
-	const PREMIUM_TAGS = 'tags';
-	const ENABLE_PER_TAG = 'per_tag';
-	const SUBSCRIPTION_PAGE = 'sub_page';
-	const SUBSCRIPTION_PAGE_REF = 'sub_page_ref';
-	const SUBSCRIPTION_PAGE_SUCCESS = 'sub_page_success';
-	const SUBSCRIPTION_PAGE_SUCCESS_REF = 'sub_page_success_ref';
-	const PD_DENIED_MSG1 = 'pd_denied_msg1';
-	const PD_DENIED_MSG2 = 'pd_denied_msg2';
-	const PD_DENIED_SUB1 = 'pd_denied_sub1';
-	const PD_DENIED_SUB2 = 'pd_denied_sub2';
-	const PD_TYPE = 'pd_type';
-	const OFFER_ORDER = 'pd_order';
-	const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with TinyPass';
+  const MODE_PPV_NAME_REAL = 'Pay-Per-View';
+  const MODE_METERED_NAME_REAL = 'Preview';
+  const MODE_STRICT_NAME_REAL = 'Strict';
+
+  //PRICE OPTIONS
+  const PO_PRICE = 'po_p';
+  const PO_PERIOD = 'po_ap';
+  const PO_PERIOD_TYPE = 'po_ap_type';
+  const PO_PERIOD_TYPE_V1 = 'po_type';
+  const PO_CAPTION = 'po_cap';
+  const PO_START = 'po_st';
+  const PO_END = 'po_et';
+  const PO_RECUR = 'po_recur';
+  const METERED = 'metered';
+  const HIDE_TEASER = 'ht';
+  const METER_LOCKOUT_PERIOD = 'm_lp';
+  const METER_LOCKOUT_PERIOD_TYPE = 'm_lp_type';
+  const METER_MAX_ACCESS_ATTEMPTS = 'm_maa';
+  const METER_TRIAL_PERIOD = 'm_tp';
+  const METER_TRIAL_PERIOD_TYPE = 'm_tp_type';
+  const PREMIUM_TAGS = 'tags';
+  const ENABLE_PER_TAG = 'per_tag';
+  const SUBSCRIPTION_PAGE = 'sub_page';
+  const SUBSCRIPTION_PAGE_REF = 'sub_page_ref';
+  const SUBSCRIPTION_PAGE_SUCCESS = 'sub_page_success';
+  const SUBSCRIPTION_PAGE_SUCCESS_REF = 'sub_page_success_ref';
+  const PD_DENIED_MSG1 = 'pd_denied_msg1';
+  const PD_DENIED_MSG2 = 'pd_denied_msg2';
+  const PD_DENIED_SUB1 = 'pd_denied_sub1';
+  const PD_DENIED_SUB2 = 'pd_denied_sub2';
+  const PD_TYPE = 'pd_type';
+  const OFFER_ORDER = 'pd_order';
+  const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with TinyPass';
+
+  public static $MODE_NAMES = array(
+      self::MODE_PPV => self::MODE_PPV_NAME,
+      self::MODE_METERED => self::MODE_METERED_NAME,
+      self::MODE_STRICT => self::MODE_STRICT_NAME
+  );
+  public static $MODE_NAMES_REAL = array(
+      self::MODE_PPV => self::MODE_PPV_NAME_REAL,
+      self::MODE_METERED => self::MODE_METERED_NAME_REAL,
+      self::MODE_STRICT => self::MODE_STRICT_NAME_REAL
+  );
 
   //Appeal fields
+
   const APP_ENABLED = 'app_en';
   const APP_NUM_VIEWS = 'app_views';
   const APP_FREQUENCY = 'app_freq';
@@ -66,445 +83,443 @@ class TPPaySettings {
   const CT_POSTION = 'ct_pos';
   const CT_DELAY = 'ct_delay';
 
-	//settings
-	const TINYPASS_PAYWALL_SETTINGS = 'tinypass_paywall_settings';
+  //settings
+  const TINYPASS_PAYWALL_SETTINGS = 'tinypass_paywall_settings';
 
-	private $data;
+  private $data;
 
-	public function __construct($data = null) {
-		if ($data == null)
-			$data = new NiceArray();
+  public function __construct($data = null) {
+    if ($data == null)
+      $data = new NiceArray();
 
 
-		if ($data instanceof NiceArray)
-			$this->data = $data;
-		else
-			$this->data = new NiceArray($data);
+    if ($data instanceof NiceArray)
+      $this->data = $data;
+    else
+      $this->data = new NiceArray($data);
 
-		$count = 0;
-		for ($i = 1; $i <= 3; $i++) {
-			if ($this->_isset('po_en' . $i))
-				$count++;
-		}
+    $count = 0;
+    for ($i = 1; $i <= 3; $i++) {
+      if ($this->_isset('po_en' . $i))
+        $count++;
+    }
 
-		$this->num_prices = $count;
-	}
+    $this->num_prices = $count;
+  }
 
-	public function isEnabled() {
-		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) != TPPaySettings::MODE_OFF ||
-						$this->data->isValEnabled("en");
-	}
+  public function isEnabled() {
+    return $this->data->isValEnabled(TPPaySettings::ENABLED);
+  }
 
-	public function isMode($type) {
-		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) == $type;
-	}
+  public function setEnabled($b = 1) {
+    $this->data[TPPaySettings::ENABLED] = $b;
+  }
 
-	public function getMode() {
-		return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
-	}
+  public function getEnabled() {
+    return $this->data->val(TPPaySettings::ENABLED, 0);
+  }
 
-	public function getModeName() {
-		$mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
-		switch ($mode) {
-			case TPPaySettings::MODE_OFF:
-				return TPPaySettings::MODE_OFF_NAME;
-			case TPPaySettings::MODE_PPV:
-				return TPPaySettings::MODE_PPV_NAME;
-			case TPPaySettings::MODE_METERED:
-				return TPPaySettings::MODE_METERED_NAME;
-			case TPPaySettings::MODE_STRICT:
-				return TPPaySettings::MODE_STRICT_NAME;
-			default:
-				return "NA";
-		}
-	}
+  public function isMode($type) {
+    return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) == $type;
+  }
 
-	public function setMode($i) {
-		$this->data[TPPaySettings::MODE] = $i;
-	}
+  public function getMode() {
+    return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+  }
 
-	public function getPremiumTags($delimiter = null) {
-		$d = $this->data->val(self::PREMIUM_TAGS, array());
-		if ($delimiter && is_array($d))
-			return implode($delimiter, $d);
-		return $d;
-	}
+  public function getModeName() {
+    $mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+    return self::$MODE_NAMES[$mode];
+  }
 
-	public function getPremiumTagsArray() {
-		$d = $this->data->val(self::PREMIUM_TAGS, array());
-		if (is_array($d))
-			return $d;
-		return array_map('trim', explode(',', $d));
-	}
+  public function getModeNameReal() {
+    $mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+    return self::$MODE_NAMES_REAL[$mode];
+  }
 
-	public function tagMatches($name) {
-		return in_array($name, $this->getPremiumTagsArray());
-	}
+  public function setMode($i) {
+    $this->data[TPPaySettings::MODE] = $i;
+  }
 
-	public function isHideTeaser() {
-		return $this->data->isValEnabled(self::HIDE_TEASER);
-	}
+  public function getPremiumTags($delimiter = null) {
+    $d = $this->data->val(self::PREMIUM_TAGS, array());
+    if ($delimiter && is_array($d))
+      return implode($delimiter, $d);
+    return $d;
+  }
 
-	private function _isset($field) {
-		return isset($this->data[$field]) && ($this->data[$field] || $this->data[$field] == 'on');
-	}
+  public function getPremiumTagsArray() {
+    $d = $this->data->val(self::PREMIUM_TAGS, array());
+    if (is_array($d))
+      return $d;
+    return array_map('trim', explode(',', $d));
+  }
 
-	public function getResourceName() {
-		return $this->data->val(self::RESOURCE_NAME, '');
-	}
+  public function tagMatches($name) {
+    return in_array($name, $this->getPremiumTagsArray());
+  }
 
-	public function setResourceName($s) {
-		$this->data[self::RESOURCE_NAME] = $s;
-	}
+  public function isHideTeaser() {
+    return $this->data->isValEnabled(self::HIDE_TEASER);
+  }
 
-	public function getResourceId() {
-		return $this->data->val(self::RESOURCE_ID, '');
-	}
+  private function _isset($field) {
+    return isset($this->data[$field]) && ($this->data[$field] || $this->data[$field] == 'on');
+  }
 
-	public function setResourceId($s) {
-		$this->data[self::RESOURCE_ID] = $s;
-	}
+  public function getResourceName() {
+    return $this->data->val(self::RESOURCE_NAME, '');
+  }
 
-	public function getNumPrices() {
-		return $this->num_prices;
-	}
+  public function setResourceName($s) {
+    $this->data[self::RESOURCE_NAME] = $s;
+  }
 
-	public function hasPriceConfig($i) {
-		return $this->data->isValEnabled("po_en" . $i);
-	}
+  public function getResourceId() {
+    return $this->data->val(self::RESOURCE_ID, '');
+  }
 
-	public function getPrice($i, $def = null) {
-		$value = $this->data->val(self::PO_PRICE . $i);
-		if ($value == null)
-			return $def;
-		return $value;
-	}
+  public function setResourceId($s) {
+    $this->data[self::RESOURCE_ID] = $s;
+  }
 
-	public function getAccess($i) {
-		if ($this->getAccessPeriod($i) == null)
-			return '';
-		return $this->getAccessPeriod($i, '') . " " . $this->getAccessPeriodType($i, '');
-	}
+  public function getNumPrices() {
+    return $this->num_prices;
+  }
 
-	public function getAccessFullFormat($i) {
-		if ($this->getAccessPeriod($i) == null && $this->getAccessPeriodType($i) == null)
-			return '';
+  public function hasPriceConfig($i) {
+    return $this->data->isValEnabled("po_en" . $i);
+  }
 
-		$price = $this->getPrice($i);
-		$accessPeriod = $this->getAccessPeriod($i);
-		$accessPeriodType = $this->getAccessPeriodType($i);
+  public function getPrice($i, $def = null) {
+    $value = $this->data->val(self::PO_PRICE . $i);
+    if ($value == null)
+      return $def;
+    return $value;
+  }
 
-		if (is_numeric($price)) {
-			$price = '$' . $price;
-		}
+  public function getAccess($i) {
+    if ($this->getAccessPeriod($i) == null)
+      return '';
+    return $this->getAccessPeriod($i, '') . " " . $this->getAccessPeriodType($i, '');
+  }
 
-		if ($this->getAccessPeriod($i) != null) {
-			return "$price for $accessPeriod $accessPeriodType(s)";
-		} else {
-			return "$price for unlimited access";
-		}
-	}
+  public function getAccessFullFormat($i) {
+    if ($this->getAccessPeriod($i) == null && $this->getAccessPeriodType($i) == null)
+      return '';
 
-	public function getAccessPeriod($i, $def = null) {
-		return $this->data->val(self::PO_PERIOD . $i, $def);
-	}
+    $price = $this->getPrice($i);
+    $accessPeriod = $this->getAccessPeriod($i);
+    $accessPeriodType = $this->getAccessPeriodType($i);
 
-	public function getAccessPeriodType($i, $def = null) {
-		if ($this->data[self::PO_PERIOD_TYPE] . $i)
-			return $this->data->val(self::PO_PERIOD_TYPE . $i, $def);
-		return $this->data->val(self::PO_PERIOD_TYPE_V1 . $i, $def);
-	}
+    if (is_numeric($price)) {
+      $price = '$' . $price;
+    }
 
-	public function getCaption($i) {
-		return $this->data[self::PO_CAPTION . $i];
-	}
+    if ($this->getAccessPeriod($i) != null) {
+      return "$price for $accessPeriod $accessPeriodType(s)";
+    } else {
+      return "$price for unlimited access";
+    }
+  }
 
-	public function getRecurring($i) {
-		return $this->data->val(self::PO_RECUR . $i, '');
-	}
+  public function getAccessPeriod($i, $def = null) {
+    return $this->data->val(self::PO_PERIOD . $i, $def);
+  }
 
-	public function isRecurring($i) {
-		return $this->data->val(self::PO_RECUR . $i, '') != 0;
-	}
+  public function getAccessPeriodType($i, $def = null) {
+    if ($this->data[self::PO_PERIOD_TYPE] . $i)
+      return $this->data->val(self::PO_PERIOD_TYPE . $i, $def);
+    return $this->data->val(self::PO_PERIOD_TYPE_V1 . $i, $def);
+  }
 
-	public function getStartDateSec($i) {
-		return strtotime($this->data[self::PO_START . $i]);
-	}
+  public function getCaption($i) {
+    return $this->data[self::PO_CAPTION . $i];
+  }
 
-	public function getEndDateSec($i) {
-		return strtotime($this->data[self::PO_END . $i]);
-	}
+  public function getRecurring($i) {
+    return $this->data->val(self::PO_RECUR . $i, '');
+  }
 
-	public function isMetered() {
-		if ($this->_isset(self::METERED)) {
-			return in_array($this->data[self::METERED], array('count', 'time'));
-		}
-		return false;
-	}
+  public function isRecurring($i) {
+    return $this->data->val(self::PO_RECUR . $i, '') != 0;
+  }
 
-	public function getMetered($def = 'off') {
-		return $this->data->val(self::METERED, $def);
-	}
+  public function getStartDateSec($i) {
+    return strtotime($this->data[self::PO_START . $i]);
+  }
 
-	public function isTimeMetered() {
-		return $this->isMetered() && $this->data[self::METERED] == 'time';
-	}
+  public function getEndDateSec($i) {
+    return strtotime($this->data[self::PO_END . $i]);
+  }
 
-	public function isCountMetered() {
-		return $this->isMetered() && $this->data[self::METERED] == 'count';
-	}
+  public function isMetered() {
+    if ($this->_isset(self::METERED)) {
+      return in_array($this->data[self::METERED], array('count', 'time'));
+    }
+    return false;
+  }
 
-	public function isPaymentDisplayDefault() {
-		if ($this->data[self::PD_TYPE] == null)
-			return TPSiteSettings::PA_EXPANDED;
-		return $this->data->valEquals(self::PD_TYPE, TPSiteSettings::PA_DEFAULT);
-	}
+  public function getMetered($def = 'off') {
+    return $this->data->val(self::METERED, $def);
+  }
 
-	public function isPaymentDisplayExpanded() {
-		if ($this->data[self::PD_TYPE] == null)
-			return TPSiteSettings::PA_EXPANDED;
-		return $this->data->valEquals(self::PD_TYPE, TPSiteSettings::PA_EXPANDED);
-	}
+  public function isTimeMetered() {
+    return $this->isMetered() && $this->data[self::METERED] == 'time';
+  }
 
-	public function getPaymentDisplay() {
-		return $this->data->val(self::PD_TYPE, TPSiteSettings::PA_DEFAULT);
-	}
+  public function isCountMetered() {
+    return $this->isMetered() && $this->data[self::METERED] == 'count';
+  }
 
-	/**
-	 * Meter fields 
-	 */
-	public function getMeterMaxAccessAttempts($def = null) {
-		return $this->data->val(self::METER_MAX_ACCESS_ATTEMPTS, $def);
-	}
+  public function isPaymentDisplayDefault() {
+    if ($this->data[self::PD_TYPE] == null)
+      return TPSiteSettings::PA_EXPANDED;
+    return $this->data->valEquals(self::PD_TYPE, TPSiteSettings::PA_DEFAULT);
+  }
 
-	public function getMeterLockoutPeriod($def = null) {
-		return $this->data->val(self::METER_LOCKOUT_PERIOD, $def);
-	}
+  public function isPaymentDisplayExpanded() {
+    if ($this->data[self::PD_TYPE] == null)
+      return TPSiteSettings::PA_EXPANDED;
+    return $this->data->valEquals(self::PD_TYPE, TPSiteSettings::PA_EXPANDED);
+  }
 
-	public function getMeterLockoutPeriodType($def = null) {
-		return $this->data->val(self::METER_LOCKOUT_PERIOD_TYPE, $def);
-	}
+  public function getPaymentDisplay() {
+    return $this->data->val(self::PD_TYPE, TPSiteSettings::PA_DEFAULT);
+  }
 
-	public function getMeterLockoutPeriodFull() {
-		return $this->getMeterLockoutPeriod() . " " . $this->getMeterLockoutPeriodType();
-	}
+  /**
+   * Meter fields 
+   */
+  public function getMeterMaxAccessAttempts($def = null) {
+    return $this->data->val(self::METER_MAX_ACCESS_ATTEMPTS, $def);
+  }
 
-	public function getMeterTrialPeriod($def = null) {
-		return $this->data->val(self::METER_TRIAL_PERIOD, $def);
-	}
+  public function getMeterLockoutPeriod($def = null) {
+    return $this->data->val(self::METER_LOCKOUT_PERIOD, $def);
+  }
 
-	public function getMeterTrialPeriodType($def = null) {
-		return $this->data->val(self::METER_TRIAL_PERIOD_TYPE, $def);
-	}
+  public function getMeterLockoutPeriodType($def = null) {
+    return $this->data->val(self::METER_LOCKOUT_PERIOD_TYPE, $def);
+  }
 
-	public function getMeterTrialPeriodFull() {
-		return $this->getMeterTrialPeriod() . " " . $this->getMeterTrialPeriodType();
-	}
+  public function getMeterLockoutPeriodFull() {
+    return $this->getMeterLockoutPeriod() . " " . $this->getMeterLockoutPeriodType();
+  }
 
-	public function getMeterSummary() {
-		if ($this->isCountMetered()) {
-			return $this->getMeterMaxAccessAttempts() . " views in " . $this->getMeterLockoutPeriodFull();
-		} else if ($this->isTimeMetered()) {
-			return $this->getMeterTrialPeriodFull();
-		} else {
-			return 'off';
-		}
-	}
+  public function getMeterTrialPeriod($def = null) {
+    return $this->data->val(self::METER_TRIAL_PERIOD, $def);
+  }
 
-	/*
-	 * Subscription releated fields
-	 */
+  public function getMeterTrialPeriodType($def = null) {
+    return $this->data->val(self::METER_TRIAL_PERIOD_TYPE, $def);
+  }
 
-	public function getSubscriptionPage() {
-		return $this->data->val(self::SUBSCRIPTION_PAGE, '');
-	}
+  public function getMeterTrialPeriodFull() {
+    return $this->getMeterTrialPeriod() . " " . $this->getMeterTrialPeriodType();
+  }
 
-	public function getSubscriptionPageRef() {
-		return $this->data->val(self::SUBSCRIPTION_PAGE_REF, '');
-	}
+  public function getMeterSummary() {
+    if ($this->isCountMetered()) {
+      return $this->getMeterMaxAccessAttempts() . " views in " . $this->getMeterLockoutPeriodFull();
+    } else if ($this->isTimeMetered()) {
+      return $this->getMeterTrialPeriodFull();
+    } else {
+      return 'off';
+    }
+  }
 
-	public function hasSubscriptionPage() {
-		return $this->getSubscriptionPage() != '';
-	}
+  /*
+   * Subscription releated fields
+   */
 
-	public function getSubscriptionPageSuccess() {
-		return $this->data->val(self::SUBSCRIPTION_PAGE_SUCCESS, '');
-	}
+  public function getSubscriptionPage() {
+    return $this->data->val(self::SUBSCRIPTION_PAGE, '');
+  }
 
-	public function getSubscriptionPageSuccessRef() {
-		return $this->data->val(self::SUBSCRIPTION_PAGE_SUCCESS_REF, '');
-	}
+  public function getSubscriptionPageRef() {
+    return $this->data->val(self::SUBSCRIPTION_PAGE_REF, '');
+  }
 
-	public function hasSubscriptionPageSuccess() {
-		return $this->getSubscriptionPageSuccess() != '';
-	}
+  public function hasSubscriptionPage() {
+    return $this->getSubscriptionPage() != '';
+  }
 
-	/**
-	 * Messaging
-	 */
-	public function getDeniedMessage1($msg = self::DEFAULT_DENIED_MESSAGE) {
-		return $this->data->val(self::PD_DENIED_MSG1, $msg);
-	}
+  public function getSubscriptionPageSuccess() {
+    return $this->data->val(self::SUBSCRIPTION_PAGE_SUCCESS, '');
+  }
 
-	public function getDeniedMessage2() {
-		return $this->data->val(self::PD_DENIED_MSG2, "");
-	}
+  public function getSubscriptionPageSuccessRef() {
+    return $this->data->val(self::SUBSCRIPTION_PAGE_SUCCESS_REF, '');
+  }
 
-	public function getDeniedSub1($msg = self::DEFAULT_DENIED_MESSAGE) {
-		return $this->data->val(self::PD_DENIED_SUB1, "");
-	}
+  public function hasSubscriptionPageSuccess() {
+    return $this->getSubscriptionPageSuccess() != '';
+  }
 
-	public function getDeniedSub2() {
-		return $this->data->val(self::PD_DENIED_SUB2, self::DEFAULT_DENIED_MESSAGE);
-	}
+  /**
+   * Messaging
+   */
+  public function getDeniedMessage1($msg = self::DEFAULT_DENIED_MESSAGE) {
+    return $this->data->val(self::PD_DENIED_MSG1, $msg);
+  }
 
-	public function getOfferOrder() {
-		return $this->data->val(self::OFFER_ORDER, 0);
-	}
+  public function getDeniedMessage2() {
+    return $this->data->val(self::PD_DENIED_MSG2, "");
+  }
 
-	public function isPostFirstInOrder() {
-		return $this->data->val(self::OFFER_ORDER, 0) == 1;
-	}
+  public function getDeniedSub1($msg = self::DEFAULT_DENIED_MESSAGE) {
+    return $this->data->val(self::PD_DENIED_SUB1, "");
+  }
+
+  public function getDeniedSub2() {
+    return $this->data->val(self::PD_DENIED_SUB2, self::DEFAULT_DENIED_MESSAGE);
+  }
+
+  public function getOfferOrder() {
+    return $this->data->val(self::OFFER_ORDER, 0);
+  }
+
+  public function isPostFirstInOrder() {
+    return $this->data->val(self::OFFER_ORDER, 0) == 1;
+  }
 
   /**
    * Appeal Configuration
    */
-	public function isAppealEnabled(){
-		return $this->data->isValEnabled(self::APP_ENABLED);
-	}
+  public function isAppealEnabled() {
+    return $this->data->isValEnabled(self::APP_ENABLED);
+  }
 
-	public function getAppealEnabled(){
-		return $this->data->val(self::APP_ENABLED, 0);
-	}
+  public function getAppealEnabled() {
+    return $this->data->val(self::APP_ENABLED, 0);
+  }
 
-	public function getAppealMessage1($msg = self::DEFAULT_DENIED_MESSAGE) {
-		return $this->data->val(self::APP_MSG1, $msg);
-	}
+  public function getAppealMessage1($msg = self::DEFAULT_DENIED_MESSAGE) {
+    return $this->data->val(self::APP_MSG1, $msg);
+  }
 
-	public function getAppealMessage2($msg = self::DEFAULT_DENIED_MESSAGE) {
-		return $this->data->val(self::APP_MSG2, $msg);
-	}
+  public function getAppealMessage2($msg = self::DEFAULT_DENIED_MESSAGE) {
+    return $this->data->val(self::APP_MSG2, $msg);
+  }
 
-	public function getAppealNumViews() {
-		return $this->data->val(self::APP_NUM_VIEWS, "");
-	}
+  public function getAppealNumViews() {
+    return $this->data->val(self::APP_NUM_VIEWS, "");
+  }
 
-	public function getAppealFrequency() {
-		return $this->data->val(self::APP_FREQUENCY, "");
-	}
+  public function getAppealFrequency() {
+    return $this->data->val(self::APP_FREQUENCY, "");
+  }
 
   /**
    * Counter Configuration
    */
-	public function isCounterEnabled(){
-		return $this->data->isValEnabled(self::CT_ENABLED);
-	}
-
-	public function getCounterEnabled(){
-		return $this->data->val(self::CT_ENABLED, 0);
-	}
-
-	public function getCounterPage() {
-		return $this->data->val(self::CT_PAGE, '');
-	}
-
-	public function getCounterPageRef() {
-		return $this->data->val(self::CT_PAGE_REF, '');
-	}
-
-	public function getCounterOnClick() {
-		return $this->data->val(self::CT_ONCLICK, '');
+  public function isCounterEnabled() {
+    return $this->data->isValEnabled(self::CT_ENABLED);
   }
 
-	public function getCounterPosition() {
-		return $this->data->val(self::CT_POSTION, 1);
+  public function getCounterEnabled() {
+    return $this->data->val(self::CT_ENABLED, 0);
   }
 
-	public function getCounterDelay($def = -1) {
-		return $this->data->val(self::CT_DELAY, $def);
+  public function getCounterPage() {
+    return $this->data->val(self::CT_PAGE, '');
   }
 
+  public function getCounterPageRef() {
+    return $this->data->val(self::CT_PAGE_REF, '');
+  }
 
+  public function getCounterOnClick() {
+    return $this->data->val(self::CT_ONCLICK, '');
+  }
 
+  public function getCounterPosition() {
+    return $this->data->val(self::CT_POSTION, 1);
+  }
 
-	public function getSummaryFields() {
-		$output = array();
+  public function getCounterDelay($def = -1) {
+    return $this->data->val(self::CT_DELAY, $def);
+  }
 
-		$output['mode'] = $this->getModeName();
+  public function getSummaryFields() {
+    $output = array();
 
-		$resource_name = htmlspecialchars(stripslashes($this->getResourceName()));
+    $output['mode'] = $this->getModeName();
 
-		$output['rname'] = $resource_name;
+    $resource_name = htmlspecialchars(stripslashes($this->getResourceName()));
 
-		$output['enabled'] = $this->isEnabled() ? __('Yes') : __('No');
+    $output['rname'] = $resource_name;
 
-		$output['prices'] = array();
+    $output['enabled'] = $this->isEnabled() ? __('Yes') : __('No');
 
-		for ($i = 1; $i <= 3; $i++) {
+    $output['prices'] = array();
 
-			if ($this->hasPriceConfig($i) == false)
-				continue;
+    for ($i = 1; $i <= 3; $i++) {
 
-			$caption = $this->getCaption($i);
+      if ($this->hasPriceConfig($i) == false)
+        continue;
 
-			$line = $this->getAccessFullFormat($i);
+      $caption = $this->getCaption($i);
 
-			if ($this->getCaption($i)) {
-				$line .= " - '" . htmlspecialchars(stripslashes($caption)) . "'";
-			}
+      $line = $this->getAccessFullFormat($i);
 
-			$output['prices'][] = $line;
-		}
+      if ($this->getCaption($i)) {
+        $line .= " - '" . htmlspecialchars(stripslashes($caption)) . "'";
+      }
 
-		$output['meter'] = $this->getMeterSummary();
+      $output['prices'][] = $line;
+    }
 
-		return $output;
-	}
+    $output['meter'] = $this->getMeterSummary();
 
-	public function toArray() {
-		if (isset($this->data))
-			return $this->data->toArray();
-		return array();
-	}
+    return $output;
+  }
 
-	/**
-	 * Create offer from settings data
-	 *  
-	 * @param TPPaySettings $ps
-	 * @return returns null or a valid TPOffer
-	 */
-	public static function create_offer(&$ps, $rid, $rname = null) {
-		if ($ps == null)
-			return null;
+  public function toArray() {
+    if (isset($this->data))
+      return $this->data->toArray();
+    return array();
+  }
 
-		if ($rname == '' || $rname == null)
-			$rname = $ps->getResourceName();
+  /**
+   * Create offer from settings data
+   *  
+   * @param TPPaySettings $ps
+   * @return returns null or a valid TPOffer
+   */
+  public static function create_offer(&$ps, $rid, $rname = null) {
+    if ($ps == null)
+      return null;
 
-		$resource = new TPResource($rid, stripslashes($rname));
+    if ($rname == '' || $rname == null)
+      $rname = $ps->getResourceName();
 
-		$pos = array();
+    $resource = new TPResource($rid, stripslashes($rname));
 
-		for ($i = 1; $i <= $ps->getNumPrices(); $i++) {
+    $pos = array();
 
-			$po = new TPPriceOption($ps->getPrice($i));
+    for ($i = 1; $i <= $ps->getNumPrices(); $i++) {
 
-			if ($ps->getAccess($i) != '')
-				$po->setAccessPeriod($ps->getAccess($i));
+      $po = new TPPriceOption($ps->getPrice($i));
 
-			if ($ps->getCaption($i) != '')
-				$po->setCaption(stripslashes($ps->getCaption($i)));
+      if ($ps->getAccess($i) != '')
+        $po->setAccessPeriod($ps->getAccess($i));
 
-			if ($ps->isRecurring($i)) {
-				$po->setRecurringBilling($ps->getRecurring($i));
-			}
+      if ($ps->getCaption($i) != '')
+        $po->setCaption(stripslashes($ps->getCaption($i)));
 
-			$pos[] = $po;
-		}
+      if ($ps->isRecurring($i)) {
+        $po->setRecurringBilling($ps->getRecurring($i));
+      }
 
-		$offer = new TPOffer($resource, $pos);
+      $pos[] = $po;
+    }
 
-		return $offer;
-	}
+    $offer = new TPOffer($resource, $pos);
+
+    return $offer;
+  }
 
 }
 

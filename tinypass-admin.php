@@ -2,23 +2,24 @@
 
 define('TINYPASS_FAVICON', 'http://www.tinypass.com/favicon.ico');
 
+tinypass_include();
+
 add_action("admin_menu", 'tinypass_add_admin_pages');
 
-function tinypass_add_admin_pages() {
-	add_menu_page('Tinypass', 'Tinypass', 'edit_plugins', 'TinypassSlug', 'tinypass_paywalls_list', TINYPASS_FAVICON);
-	add_submenu_page('TinypassSlug', 'Paywalls', 'Paywalls', 'edit_plugins', 'TinyPassSlug', 'tinypass_paywalls_list');
-//	add_submenu_page('Tinypass', 'Pay per Post', 'Pay per Post', 'edit_plugins', 'TinyPassPPVSettings', 'tinypass_ppv_settings');
-//	add_submenu_page('Tinypass', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
-	add_submenu_page('Tinypass', 'Edit Paywall', '', 'edit_plugins', 'TinyPassEditPaywall', 'tinypass_mode_settings');
+require_once (dirname(__FILE__) . '/tinypass-mode-settings.php');
+require_once (dirname(__FILE__) . '/tinypass-ppp-settings.php');
+require_once (dirname(__FILE__) . '/tinypass-site-settings.php');
+require_once (dirname(__FILE__) . '/tinypass-paywalls.php');
 
-	tinypass_include();
+function tinypass_add_admin_pages() {
+	add_menu_page('Tinypass', 'Tinypass', 'edit_plugins', 'tinypass.php', 'tinypass_paywalls_list', TINYPASS_FAVICON);
+	add_submenu_page('', 'Paywalls', 'Paywalls', 'edit_plugins', 'TinyPassPaywalls', 'tinypass_paywalls_list');
+	add_submenu_page('tinypass.php', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
+	add_submenu_page('tinypass.php', 'Guide', 'Guide', 'edit_plugins', 'TinyPassGuide', 'http://www.google.com');
+	add_submenu_page('', 'Edit Paywall', '', 'edit_plugins', 'TinyPassEditPaywall', 'tinypass_mode_settings');
 
 	wp_enqueue_script('suggest');
 
-	include_once (dirname(__FILE__) . '/tinypass-mode-settings.php');
-	include_once (dirname(__FILE__) . '/tinypass-ppp-settings.php');
-	include_once (dirname(__FILE__) . '/tinypass-site-settings.php');
-	include_once (dirname(__FILE__) . '/tinypass-paywalls.php');
 }
 
 /* Post/Page edit forms meta boxes */

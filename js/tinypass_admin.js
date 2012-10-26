@@ -78,8 +78,6 @@ var tinypass = {
         jQuery("#tp_dialog").dialog('close');
       }
     });
-
-
   },
 
   closeTinyPassPopup:function(){
@@ -110,7 +108,15 @@ var tinypass = {
   fullShow:function(selector){
     jQuery(selector).show();
   //jQuery("input, textarea, select", selector).removeAttr("disabled");
-  }	
+  },
+
+  enablePaywall:function(form){
+    var data = jQuery(form).serialize();
+    data += '&action=tp_enablePaywall';
+    jQuery.post(ajaxurl, data, function(response) {
+    });
+ 
+  }
 
 
 }
