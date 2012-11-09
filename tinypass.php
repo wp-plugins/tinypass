@@ -11,11 +11,15 @@
 $tinypass_ppp_req = null;
 $tinypass_site_req = null;
 $tinypass_meter = null;
+$tinypass_add_scripts = false;
+$tinypass_embed_appeal = null;
+$tinypass_show_appeal = null;
 
 define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
 
 define('TINYPASS_PURCHASE_TEMPLATE', 'tinypass_purchase_display.php');
 define('TINYPASS_COUNTER_TEMPLATE', 'tinypass_counter_display.php');
+define('TINYPASS_APPEAL_TEMPLATE', 'tinypass_appeal_display.php');
 
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
@@ -30,15 +34,39 @@ if (is_admin()) {
   include_once dirname(__FILE__) . '/tinymce/plugin.php';
 }
 
-add_filter('the_posts', 'tinypass_the_posts', 5);
+//add_filter('the_posts', 'tinypass_the_posts', 5);
 add_filter('the_content', 'tinypass_intercept_content', 5);
 add_filter('the_content', 'tinypass_append_ticket', 200);
 add_action('init', 'tinypass_init');
+add_action('wp_footer', 'tinypass_footer');
 
-function tinypass_the_posts($posts) {
+function tinypass_init() {
+  ob_start();
+  wp_register_script('tinypass_site', TINYPASSS_PLUGIN_PATH . 'js/tinypass_site.js', array('jquery-ui-dialog'), false, true);
   wp_enqueue_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
   wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
-  return $posts;
+  wp_enqueue_style('wp-jquery-ui-dialog', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+}
+
+/**
+ * Footer method to add scripts
+ */
+function tinypass_footer() {
+  global $tinypass_add_scripts;
+  global $tinypass_embed_appeal;
+  global $tinypass_show_appeal;
+
+  if (!$tinypass_add_scripts)
+    return;
+
+  wp_print_scripts('tinypass_site');
+
+  if ($tinypass_embed_appeal)
+    echo '<div id="tinypass-appeal-dialog">' . $tinypass_embed_appeal . '</div>';
+
+  if ($tinypass_show_appeal) {
+    echo '<script>jQuery(function(){tinypass.showAppeal();})</script>';
+  }
 }
 
 /**
@@ -49,10 +77,16 @@ function tinypass_intercept_content($content) {
   global $tinypass_ppp_req;
   global $tinypass_site_req;
   global $tinypass_meter;
+  global $tinypass_add_scripts;
+  global $tinypass_embed_appeal;
+  global $tinypass_show_appeal;
   global $post;
   $tinypass_ppp_req = null;
   $tinypass_site_req = null;
   $tinypass_meter = null;
+  $tinypass_add_scripts = false;
+  $tinypass_show_appeal = false;
+  $tinypass_embed_appeal = null;
 
   tinypass_include();
 
@@ -63,8 +97,8 @@ function tinypass_intercept_content($content) {
     return $content;
 
   $storage = new TPStorage();
-  $ppvOptions = $storage->getPostSettings($post->ID);
 
+  $postOptions = $storage->getPostSettings($post->ID);
   $tagOptions = $storage->getPaywallByTag($ss, $post->ID);
 
   if ($tagOptions->isEnabled() == false)
@@ -80,7 +114,8 @@ function tinypass_intercept_content($content) {
 
   //we want to dump the button on this page
   if ($tagOptions->getSubscriptionPageRef() == $post->ID) {
-    $siteOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
+    $tagOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
+
 
 //    $token = $store->findActiveToken('/(^wp_bundle1)|(^wp_tag_\d+)/');
 //		if ($token->isAccessGranted()) {
@@ -90,11 +125,18 @@ function tinypass_intercept_content($content) {
 //		}
     $gotolink = get_page_link($tagOptions->getSubscriptionPageSuccessRef());
 
-    $req = new TPPurchaseRequest($siteOffer);
+    $req = new TPPurchaseRequest($tagOffer);
     $req->setCallback('tinypass_redirect');
     $button1 = $req->generateTag();
 
-    return $content . "<div id='tinypass_subscription_holder'>$button1</div>"
+    if (preg_match('/\[tinypass\s+rid.*\]/', $content)) {
+      $content = preg_replace('/\[tinypass\srid+.*\]/', $button1, $content);
+      $button1 = '';
+    } else {
+      $button1 = "<div id='tinypass_subscription_holder'>$button1</div>";
+    }
+
+    return $content . $button1
             . "<script>"
             . "var tp_goto = '$gotolink';"
             . "if(typeof tinypass_redirect != 'function') {
@@ -116,8 +158,10 @@ function tinypass_intercept_content($content) {
 
 
   //exit if everything is disabled 
-  if ($ppvOptions->isEnabled() == false && $tagOptions->isEnabled() == false)
+  if ($postOptions->isEnabled() == false && $tagOptions->isEnabled() == false)
     return $content;
+
+  $tinypass_add_scripts = true;
 
   //When content is shown in list form, i.e. categories we still need to truncate content
   //At this point in the execution we know that TP is enabled so we have to protect
@@ -139,23 +183,29 @@ function tinypass_intercept_content($content) {
   define('DONOTCDN', true);
   define('DONOTCACHCEOBJECT', true);
 
-  $pppOffer = null;
-  $siteOffer = null;
-  $pppToken = null;
-  $siteToken = null;
+  $postOffer = null;
+  $tagOffer = null;
+  $postToken = null;
+  $tagToken = null;
 
-  if ($ppvOptions->isEnabled() && $ss->isPPVEnabled()) {
-    $pppOffer = TPPaySettings::create_offer($ppvOptions, "wp_post_" . strval($post->ID), $ppvOptions->getResourceName() == '' ? $post->post_title : $ppvOptions->getResourceName());
-    $pppToken = $store->getAccessToken($pppOffer->getResource()->getRID());
+  if ($postOptions->isEnabled() && $ss->isPPPEnabled()) {
+    $postOffer = TPPaySettings::create_offer($postOptions, "wp_post_" . strval($post->ID), $postOptions->getResourceName() == '' ? $post->post_title : $postOptions->getResourceName());
+    $postToken = $store->getAccessToken($postOffer->getResource()->getRID());
   }
 
-  $siteOfferTrialActive = FALSE;
 
-  if ($tagOptions->isEnabled()) {
-    $siteOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
+  $tagOfferTrialActive = FALSE;
 
-    $siteToken = $store->findActiveToken($tagOptions->getResourceId());
+  if($tagOptions != null && $tagOptions->isEnabled()){
+    $tagOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
+    $tagToken = $store->findActiveToken('/' . $tagOptions->getResourceId() . '/');
+  }
 
+  //Only check metered if the mode is metered and it is enabled
+  if ($tagOptions->isMode(TPPaySettings::MODE_METERED) && $tagOptions->isEnabled()) {
+
+
+    $meter = null;
     if ($tagOptions->isMetered()) {
 
       $cookieName = "TR_" . preg_replace('/[^0-9]*/', '', $tagOptions->getResourceId());
@@ -175,7 +225,7 @@ function tinypass_intercept_content($content) {
       setcookie($cookieName, TPMeterHelper::__generateLocalToken($cookieName, $meter), time() + 60 * 60 * 24 * 30, '/');
 
       if ($meter->isTrialPeriodActive()) {
-        $siteOfferTrialActive = TRUE;
+        $tagOfferTrialActive = TRUE;
 
         if ($tagOptions->isCounterEnabled() && $meter->getTrialViewCount() > $tagOptions->getCounterDelay(PHP_INT_MAX)) {
           $content .= '[TP_COUNTER]';
@@ -185,7 +235,8 @@ function tinypass_intercept_content($content) {
             $gotolink = get_page_link($tagOptions->getSubscriptionPageRef());
             $onclick = 'href="' . $gotolink . '"';
           } else if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_APPEAL)) {
-            $onclick = 'onclick="console.log(\'should open\');return false"';
+            $onclick = 'onclick="tinypass.showAppeal(); return false"';
+            $tinypass_embed_appeal = __tinypass_create_appeal($tagOptions);
           }
 
           $tinypass_meter = __tinypass_render_template(TINYPASS_COUNTER_TEMPLATE, array(
@@ -197,20 +248,30 @@ function tinypass_intercept_content($content) {
                   ));
         }
       }
+
+      if ($tagOptions->getAppealEnabled() && $meter != null) {
+        $count = $meter->getTrialViewCount();
+        if ($count == $tagOptions->getAppealNumViews() ||
+                ( $count > $tagOptions->getAppealNumViews() && $count % $tagOptions->getAppealFrequency() == 0 )) {
+          $tinypass_show_appeal = true;
+          $tinypass_embed_appeal = __tinypass_create_appeal($tagOptions);
+        }
+      }
     }
+
+    return $content;
   }
 
-
-  if ($pppOffer == null && $siteOffer == null)
+  if ($postOffer == null && $tagOffer == null)
     return $content;
 
   //check single offer1
-  if ($pppToken != null && $pppToken->isAccessGranted()) {
+  if ($postToken != null && $postToken->isAccessGranted()) {
     return $content;
   }
 
   //check offer2
-  if ($siteToken != null && $siteToken->isAccessGranted() || $siteOfferTrialActive) {
+  if ($tagToken != null && $tagToken->isAccessGranted() || $tagOfferTrialActive) {
     return $content;
   }
 
@@ -224,17 +285,17 @@ function tinypass_intercept_content($content) {
   }
 
   $ticketoptions = array();
-  if ($pppOffer) {
-    $req = new TPPurchaseRequest($pppOffer, $ticketoptions);
+  if ($postOffer) {
+    $req = new TPPurchaseRequest($postOffer, $ticketoptions);
     $tinypass_ppp_req = array('req' => $req,
-        'message1' => $ppvOptions->getDeniedMessage1("") != "" ? $ppvOptions->getDeniedMessage1() : $ss->getDeniedMessage1(),
-        'sub1' => $ppvOptions->getDeniedSub1("") != "" ? $ppvOptions->getDeniedSub1() : $ss->getDeniedSub1()
+        'message1' => $postOptions->getDeniedMessage1("") != "" ? $postOptions->getDeniedMessage1() : $ss->getDeniedMessage1(),
+        'sub1' => $postOptions->getDeniedSub1("") != "" ? $postOptions->getDeniedSub1() : $ss->getDeniedSub1()
     );
     $req->setCallback('tinypass_reloader');
   }
 
-  if ($siteOffer) {
-    $req2 = new TPPurchaseRequest($siteOffer, $ticketoptions);
+  if ($tagOffer) {
+    $req2 = new TPPurchaseRequest($tagOffer, $ticketoptions);
     $tinypass_site_req = array('req' => $req2,
         'message1' => $tagOptions->getDeniedMessage1(),
         'sub1' => $tagOptions->getDeniedSub1()
@@ -389,13 +450,6 @@ function tinypass_debug($obj) {
 }
 
 /**
- *  Init buffer so that we can send out a cookie in the rsp header
- */
-function tinypass_init() {
-  ob_start();
-}
-
-/**
  * Load and init global tinypass settings
  */
 function tinypass_load_settings() {
@@ -429,6 +483,15 @@ function get_extended_with_tpmore($post) {
   $extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $extended);
 
   return array('main' => $main, 'extended' => $extended);
+}
+
+function __tinypass_create_appeal($tagOptions) {
+  return __tinypass_render_template(TINYPASS_APPEAL_TEMPLATE, array(
+              'header' => $tagOptions->getAppealMessage1('Purchase to get full access to our great content'),
+              'body' => $tagOptions->getAppealMessage2('Pay in under a minute with Tinypass.  Use your credit card, Paypal, or Google Wallet'),
+              'link' => get_page_link($tagOptions->getSubscriptionPageRef())
+                  )
+  );
 }
 
 ?>

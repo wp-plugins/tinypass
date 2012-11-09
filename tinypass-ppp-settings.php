@@ -37,7 +37,7 @@ function tinypass_ppv_settings() {
 
 				<div class="postbox">
 					<div class="inside">
-            <input type="checkbox" id="ppv" name="tinypass[ppv]" value="1" <?php checked($ss->isPPVEnabled()) ?>>
+            <input type="checkbox" id="ppv" name="tinypass[ppv]" value="1" <?php checked($ss->isPPPEnabled()) ?>>
             <label for="ppv" >Enable the sale of purchase individual posts</label>
 					</div>
 				</div>

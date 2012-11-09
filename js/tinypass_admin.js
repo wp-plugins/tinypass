@@ -39,7 +39,6 @@ var tinypass = {
       jQuery("#tp_dialog").dialog({
         minWidth:700
       });
-      self.initPopup();
     });
 
   },
@@ -55,7 +54,7 @@ var tinypass = {
   },
 
   doError:function(fieldName, msg){
-    jQuery("#tp-error").append("<p>" + msg + "</p>");
+    jQuery("#tp-error").append("<p> &bull; " + msg + "</p>");
     jQuery('*[name*="'+fieldName+'"]').addClass("form-invalid tp-error");
   },
 
@@ -92,9 +91,6 @@ var tinypass = {
     jQuery(".tp-metered-options :input").attr('disabled', 'disabled')
     jQuery("#tp-metered-" + type).show();
     jQuery("#tp-metered-" + type + " :input").removeAttr('disabled');
-  },
-
-  initPopup:function(){
   },
 
   log:function(msg){

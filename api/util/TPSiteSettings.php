@@ -15,7 +15,7 @@ class TPSiteSettings {
   const PA_DEFAULT = 0;
   const PA_EXPANDED = 1;
   const ENABLED = 'en';
-  const PPV_ENABLED = 'ppv';
+  const PPP_ENABLED = 'ppv';
   const PD_DENIED_MSG1 = 'pd_denied_msg1';
   const PD_DENIED_SUB1 = 'pd_denied_sub1';
 
@@ -43,7 +43,7 @@ class TPSiteSettings {
           TPSiteSettings::SECRET_KEY_PROD => 'Retreive your secret key from www.tinypass.com',
           TPSiteSettings::ENV => 0,
           TPSiteSettings::ENABLED => 1,
-          TPSiteSettings::PPV_ENABLED=> 1,
+          TPSiteSettings::PPP_ENABLED=> 1,
       ));
     }
   }
@@ -142,8 +142,8 @@ class TPSiteSettings {
   /**
    * PPV Settings
    */
-  public function isPPVEnabled() {
-    return $this->data->isValEnabled(self::PPV_ENABLED);
+  public function isPPPEnabled() {
+    return $this->data->isValEnabled(self::PPP_ENABLED);
   }
 
   public function getDeniedMessage1() {
@@ -184,7 +184,9 @@ class TPSiteSettings {
 
     }
 
-    return new TPPaySettings($form->toArray());
+    $ps = new TPPaySettings($form->toArray());
+    $ps->setMode(TPPaySettings::MODE_PPV);
+    return $ps;
   }
 
   public function validatePaySettings($form, &$errors) {
@@ -282,8 +284,6 @@ class TPSiteSettings {
           if ($form['sub_page_ref'] == $form['sub_page_success_ref'])
             $errors['sub_page_success'] = "Dedicated sign page and confirmation page must be different";
       }
-    } else if ($activeMode == TPPaySettings::MODE_PPV) {
-      throw new Exception("Not implemented yet");
     }
 
     $ps = new TPPaySettings($form->toArray());

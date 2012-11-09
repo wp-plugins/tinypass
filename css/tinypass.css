@@ -39,6 +39,13 @@
   padding:  0;
 }
 
+.inside hr {
+  border: 0;
+  border-top: 1px solid #DFDFDF;
+  height: 0px;
+  margin-top: 20px;
+}
+
 .tp-row {
   padding:  30px;
   font-size:  13px;
@@ -97,15 +104,27 @@ TinyPass admin form sytles
   line-height:38px;
   font-size:26px;
 }
-.tp-section-header div.num{
-  float:left;
+
+.tp-section-header div.num {
+  float: left;
   background: url('images/section-header-point.png') no-repeat top left;
-  height:40px;
-  width:40px;
-  color:white;
-  text-align:center;
-  line-height:38px;
-  margin-right:10px;
+  height: 40px;
+  width: 40px;
+  color: white;
+  text-align: center;
+  line-height: 40px;
+  margin-right: 10px;
+}
+#tp-hide-paywalls {
+  width:1055px;
+  text-align: right;
+  color:#b7b7b7;
+  font-weight:bold;
+  font-family: Arial;
+  font-size:13px;
+}
+#tp-hide-paywalls img {
+  vertical-align: middle;
 }
 
 #tp-show-paywalls {
@@ -145,8 +164,9 @@ TinyPass admin form sytles
 }
 
 .tp-section .info .heading {
-  font-size:18px;
-  margin-bottom:20px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .tp-section .info .desc {
@@ -165,9 +185,23 @@ TinyPass admin form sytles
 }
 
 #poststuff .tp-settings .postbox h3 {
-  font-size:12px;
-  font-weight:100;
-  padding-left:7px;
+  border-top: 1px solid #DFDFDF;
+  font-size: 12px;
+  font-weight: 100;
+  padding-left: 7px;
+}
+
+#poststuff .tp-settings .postbox h3:first-child {
+  border-top: none;
+}
+
+#poststuff h2 {
+  margin-top: 20px;
+  font-weight: normal;
+  font-size: 2.0em;
+  margin-bottom: 20px;
+  padding: 0 0 3px;
+  clear: left;
 }
 
 .tp-settings h2 {
@@ -213,28 +247,30 @@ TinyPass admin form sytles
 }
 
 #tp_modes {
-  margin-top:10px;
-  background-color:#FDFDFD;
-  border:1px solid #EAEAEA;
-  padding:0px 3px 0px 3px;
+  margin-top: 10px;
+  background-color: #F8F8F9;
+  border: 1px solid #B8B8B8;
+  padding: 0px 3px 0px 3px;
   border-radius: 30px;
-  float:left;
-  height:50px;
+  float: left;
+  height: 50px;
+  box-shadow: inset 0px 1px 3px rgba(0, 0, 0, .1);
 }
-#tp_modes .choice{
-  margin-top:7px; 
-  margin-left:5px;
-  margin-right:5px;
-  float:left;
-  width:340px;
-  height:35px;
-  font-size:14px;
+
+#tp_modes .choice {
+  margin-top: 7px;
+  margin-left: 5px;
+  margin-right: 5px;
+  float: left;
+  width: 340px;
+  height: 35px;
+  font-size: 14px;
   line-height: 35px;
-  text-align:center;
+  text-align: center;
   text-transform: uppercase;
-  color:#D0D0D0;
-  font-weight:bold;
-  cursor:pointer;
+  color: #a9a9a9;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 #tp_modes .choice-on, #tp_modes .choice-selected{
@@ -268,24 +304,20 @@ TinyPass admin form sytles
   border:1px solid #DFDFDF;
 }
 
-
-.tag-holder {
-  height:40px;
-  padding-top:10px;
-  padding-left:10px;
-  border:1px solid #DFDFDF;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  background-color:white;
-}
-
 .tag-entry {
-  border:1px solid #DFDFDF;
-  height:40px;
-  padding-top:15px;
-  padding-left:10px;
+  border-top: 1px solid #DFDFDF;
+  height: 40px;
+  padding-top: 15px;
+  padding-left: 10px;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+
+.tag-holder {
+  height: 40px;
+  padding-top: 10px;
+  padding-left: 10px;
+  background-color: white;
 }
 
 .tag-holder div.tag {
@@ -325,16 +357,18 @@ TinyPass admin form sytles
   background-color:#FAFAFA;
 }
 
+
 .tp-slider .choice {
-  color:#ccc;
-  height:2.5em;
-  float:left;
-  line-height:2.14em;
+  cursor: pointer;
+  color: #CCC;
+  height: 2.5em;
+  float: left;
+  line-height: 2.14em;
   text-transform: uppercase;
-  font-size:1.16em;
-  font-weight:bold;
-  width:4.64em;
-  text-align:center;
+  font-size: 1.16em;
+  font-weight: bold;
+  width: 4.64em;
+  text-align: center;
 }
 
 .tp-slider .choice-selected {
@@ -358,14 +392,15 @@ TinyPass admin form sytles
 }
 
 .paywall-card {
-  margin-top:30px;
-  width:800px;
+  margin-top: 30px;
+  width: 800px;
   border-radius: 5px;
-  background-color:white;
+  background-color: white;
   border: 1px solid #BABABA;
-  padding:15px 15px 0px 0px;
+  padding: 15px 15px 0px 0px;
   font-family: Helvetica;
   background: url('images/card-bg.png') repeat-x top left;
+  box-shadow: 0px 1px 2px #EFEFEF;
 }
 
 .paywall-card .type {
@@ -385,10 +420,10 @@ TinyPass admin form sytles
 }
 
 .paywall-card .footer .leftcol {
-  padding-left:15px;
-  float:left;
+  padding: 4px 0px 4px 4px;
+  float: left;
   border-top: 1px solid #BABABA;
-  width:70%;
+  width: 70%;
 }
 
 .paywall-card .footer .section {
@@ -409,22 +444,23 @@ TinyPass admin form sytles
 
 .paywall-card .footer .action {
   float:right;
-  padding:10px;
 }
+
 
 .paywall-card .footer .action a {
   width:54px;
   float:right;
   background-color: #4985DC;
   color:white;
-  padding:10px;
   background-image: none;
   border: 1px solid #3978d5;
   text-align: center;
   border-radius: 20px;
-  -moz-box-shadow: 1px 1px 5px #888;
-  -webkit-box-shadow: 1px 1px 5px #888;
-  box-shadow: 1px 1px 5px #888;
+  font-size: 15px !important;
+  padding: 12px 32px;
+  -moz-box-shadow: 0px 1px 3px #cbcbcb;
+  -webkit-box-shadow: 0px 1px 3px #cbcbcb;
+  box-shadow: 0px 1px 3px #cbcbcb;
 }
 
 #tinypass-counter {
@@ -486,4 +522,53 @@ TinyPass admin form sytles
   font-size:14px;
   line-height:20px;
   height:20px;
+}
+
+#tinypass-appeal-dialog {
+  width:480px;
+  background-color:white;
+  border-radius: 10px;
+  color:black;
+  padding:40px 0px 0px 0px;
+  border:2px solid #abbac1;
+}
+
+#tinypass-appeal-dialog .row-head {
+  font-weight:bold;
+  font-size:30px;
+  color:black;
+  padding:0px 20px 0px 20px;
+}
+#tinypass-appeal-dialog .row-body { 
+  color:#7d8389;
+  font-size:16px;
+  padding:30px 20px 30px 20px;
+}
+#tinypass-appeal-dialog .row-footer { 
+  padding-top:30px;
+  padding-bottom:30px;
+  border-top:1px solid #d5dbe0;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-icon-closethick {
+  color:black;
+  text-indent: inherit;
+}
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+  font-family: sans-serif;
+  background-color:white;
+  color:black;
+  display: inline-block;
+  float:right;
+  width:25px;
+  height:25px;
+  line-height:25px;
+  font-size:12px;
+  font-weight:bold;
+  border-radius: 30px;
+  text-transform: uppercase;
+  margin-top:4px;
+  margin-right:-8px;
+  margin-bottom:-30px;
+  border:1px solid #abbac1;
 }

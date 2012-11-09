@@ -7,11 +7,12 @@ function tinypass_mode_settings() {
 
   if (isset($_POST['_Submit'])) {
     $ss = $storage->getSiteSettings();
-    $errors = array();
     $ps = $ss->validatePaySettings($_POST['tinypass'], $errors);
-    $storage->savePaywallSettings($ss, $ps);
-    $location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Options saved.'));
-    wp_redirect($location);
+    if (count($errors) == 0) {
+      $storage->savePaywallSettings($ss, $ps);
+      $location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your paywall has been saved!.'));
+      wp_redirect($location);
+    }
   }
 
   $rid = 'wp_bundle1';
@@ -44,9 +45,15 @@ function tinypass_mode_settings() {
       <div class="tp-section">
         <?php __tinypass_section_head($ps, ++$num, __("Paywall mode")) ?>
 
-          <!--<div id="tp-show-paywalls"><span>Hide paywall details</span>-->
-                <!-- <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">-->
-        <!--</div>-->
+        <div id="tp-hide-paywalls">
+          <span>Hide paywall details</span>
+          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">
+        </div>
+        <div id="tp-show-paywalls">
+          <span>Show paywall details</span>
+          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/closer.png">
+        </div>
+
         <div id="tp_mode_details">
           <div id="tp_mode1_details" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" >
             <div class="inner">
@@ -173,7 +180,7 @@ function tinypass_mode_settings() {
 
         $(this).addClass("choice-selected");
         $(this).attr("checked", "checked");
-                                                    													
+                                                            													
         var elem = $(".choice[checked=checked]");
         var id = elem.attr("id");
 
@@ -217,7 +224,7 @@ function tinypass_mode_settings() {
           return false;
         }
       });
-                                                    									
+                                                            									
       //toggle access_period after recurring is changed
       $('.recurring-opts-off').bind('change', function(){
         var index = $(this).attr("opt");
@@ -248,6 +255,25 @@ function tinypass_mode_settings() {
 
       tinypass.showMeteredOptions(document.getElementsByName("tinypass[metered]")[0])
 
+      $('#tp-hide-paywalls').bind('click', function(event){
+        $('#tp_mode_details').hide();
+        $(this).hide();
+        $('#tp-show-paywalls').show();
+      })
+
+      $('#tp-show-paywalls').bind('click', function(event){
+        $('#tp_mode_details').show();
+        $(this).hide();
+        $('#tp-hide-paywalls').show();
+      })
+
+<?php
+       if(isset($_REQUEST['rid'])) {
+          echo "$('#tp-hide-paywalls').trigger('click');";
+       } else {
+          echo "$('#tp-show-paywalls').trigger('click');";
+       }
+?>
 
     });
   </script>

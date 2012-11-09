@@ -148,7 +148,7 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
         <input type="hidden" name="post_ID" value="<?php echo $postID ?>"/>
 
         <div style="float:right">
-          <strong>Enabled for this post?</strong>: <input type="checkbox" autocomplete=off name="tinypass[mode]" value="1" <?php echo checked($ps->isEnabled()) ?>>
+          <strong>Enabled for this post?</strong>: <input type="checkbox" autocomplete=off name="tinypass[en]" value="1" <?php echo checked($ps->isEnabled()) ?>>
         </div>
         <br>
 
@@ -197,6 +197,14 @@ function __tinypass_section_head(TPPaySettings $ps, $num, $text = '') {
   ?>
   <div class="tp-section-header">
     <div class="num"><?php echo $num ?></div>
+    <?php echo $text ?>
+  </div>
+<?php } ?>
+
+<?php
+function __tinypass_section_head_alt($text = '') {
+  ?>
+  <div class="tp-section-header">
     <?php echo $text ?>
   </div>
 <?php } ?>

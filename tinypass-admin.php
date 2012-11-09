@@ -15,7 +15,7 @@ function tinypass_add_admin_pages() {
 	add_menu_page('Tinypass', 'Tinypass', 'edit_plugins', 'tinypass.php', 'tinypass_paywalls_list', TINYPASS_FAVICON);
 	add_submenu_page('', 'Paywalls', 'Paywalls', 'edit_plugins', 'TinyPassPaywalls', 'tinypass_paywalls_list');
 	add_submenu_page('tinypass.php', 'Settings', 'Settings', 'edit_plugins', 'TinyPassSiteSettings', 'tinypass_site_settings');
-	add_submenu_page('tinypass.php', 'Guide', 'Guide', 'edit_plugins', 'TinyPassGuide', 'http://www.google.com');
+	//add_submenu_page('tinypass.php', 'Guide', 'Guide', 'edit_plugins', 'TinyPassGuide', 'http://www.google.com');
 	add_submenu_page('', 'Edit Paywall', '', 'edit_plugins', 'TinyPassEditPaywall', 'tinypass_mode_settings');
 
 	wp_enqueue_script('suggest');
@@ -29,7 +29,7 @@ function tinypass_add_meta_boxes() {
 
   $ss = tinypass_load_settings();
 
-	if (!$ss->isPPVEnabled()) {
+	if (!$ss->isPPPEnabled()) {
 		return;
 	}
 
