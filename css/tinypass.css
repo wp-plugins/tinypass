@@ -116,6 +116,7 @@ TinyPass admin form sytles
   margin-right: 10px;
 }
 #tp-hide-paywalls {
+  cursor:pointer;
   width:1055px;
   text-align: right;
   color:#b7b7b7;
@@ -128,6 +129,7 @@ TinyPass admin form sytles
 }
 
 #tp-show-paywalls {
+  cursor:pointer;
   width:1055px;
   text-align: right;
   color:#b7b7b7;
@@ -538,21 +540,25 @@ TinyPass admin form sytles
   font-size:30px;
   color:black;
   padding:0px 20px 0px 20px;
+  text-align: center;
 }
 #tinypass-appeal-dialog .row-body { 
   color:#7d8389;
   font-size:16px;
   padding:30px 20px 30px 20px;
+  text-align: center;
 }
 #tinypass-appeal-dialog .row-footer { 
   padding-top:30px;
   padding-bottom:30px;
   border-top:1px solid #d5dbe0;
+  text-align: center;
 }
 
 .ui-dialog .ui-dialog-titlebar .ui-icon-closethick {
   color:black;
   text-indent: inherit;
+  text-align: center;
 }
 .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
   font-family: sans-serif;

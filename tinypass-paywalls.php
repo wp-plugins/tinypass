@@ -22,7 +22,7 @@ function ajax_tp_enablePaywall() {
   $ps = $storage->getPaywall($form['rid']);
 
   $ps->setEnabled(0);
-  if(isset($form['en']) && $form['en'] == 1)
+  if (isset($form['en']) && $form['en'] == 1)
     $ps->setEnabled(1);
 
   $storage->savePaywallSettings($ss, $ps);
@@ -33,12 +33,11 @@ function ajax_tp_enablePaywall() {
 
 function tinypass_paywalls_list() {
 
-
   $storage = new TPStorage();
   $pws = $storage->getPaywalls(true);
 
-  if(count($pws) == 0)
-     wp_redirect(menu_page_url("TinyPassEditPaywall"));
+  if (count($pws) == 0)
+    wp_redirect(menu_page_url("TinyPassEditPaywall"));
   ?>
 
   <div id = "poststuff">
@@ -46,57 +45,18 @@ function tinypass_paywalls_list() {
       <h2><?php _e('My Paywalls'); ?></h2>
       <hr>
 
-
-  <?php foreach ($pws as $rid => $ps) : ?>
-
-        <?php
-        $tags = $ps->getPremiumTagsArray();
-        $all = array();
-        $count = 0;
-        foreach ($tags as $name) {
-          $td = get_term_by('name', $name, 'post_tag');
-          $count += $td->count;
-        }
-        ?>
-
-        <div class="paywall-card">
-          <div class="slider">
-            <form>
-    <?php wp_nonce_field('enable_paywall', 'tinypass_nonce'); ?>
-              <input type="hidden" name="tinypass[rid]" value="<?php echo $rid ?>">
-              <?php echo tinypass_slider('tinypass[en]', array('Off' => '0', 'On' => '1'), $ps->getEnabled()) ?>
-            </form>
-          </div>
-          <div class="type"> <?php echo "{$ps->getModeName()} ({$ps->getModeNameReal()}) " ?> </div>
-          <div class="title"> <?php echo $ps->getResourceName() ?> </div>
-
-          <div class="footer">
-            <div class="leftcol">
-              <div class="section">
-                <div class="value"><?php echo $count ?> Items</div>
-                <div class="label"><?php _e("Content") ?></div>
-              </div>            
-              <div class="section">
-                <div class="value"><?php _e($ps->getPremiumTags(',')) ?></div>
-                <div class="label"><?php _e("Tags") ?></div>
-              </div>            
-              <div class="clear"></div>
-            </div>
-            <div class="action">
-              <a class="button" href="admin.php?page=TinyPassEditPaywall&rid=<?php echo $rid ?>">Edit</a>
-            </div>            
-            <div class="clear"></div>
-          </div>
-
-        </div>
-
-  <?php endforeach; ?>
+      <?php foreach ($pws as $rid => $ps) : ?>
+        <?php tinypass_display_card($rid, $ps); ?>
+      <?php endforeach; ?>
 
       <br>
       <div class="buttons">
         <a class="button" href="admin.php?page=TinyPassEditPaywall&rid="><?php _e("Add another") ?></a>
       </div>
     </div>
+
+    <br><br>
+
   </div>
 
 
@@ -110,8 +70,61 @@ function tinypass_paywalls_list() {
         $("input", this).val(choice.parent().attr('val'));
         tinypass.enablePaywall($(this).parents("form"));
       })
+
+      $('#tp-show-deleted').bind('click', function(event){
+        $("#tp-deleted-paywalls").toggle();
+        return false;
+      })
+
     })
   </script>
+
+<?php } ?>
+
+<?php
+
+function tinypass_display_card($rid, TPPaySettings $ps) {
+
+  $tags = $ps->getPremiumTagsArray();
+  $all = array();
+  $count = 0;
+  foreach ($tags as $name) {
+    $td = get_term_by('name', $name, 'post_tag');
+    $count += $td->count;
+  }
+  ?>
+
+  <div class="paywall-card">
+    <div class="slider">
+      <form>
+        <?php wp_nonce_field('enable_paywall', 'tinypass_nonce'); ?>
+        <input type="hidden" name="tinypass[rid]" value="<?php echo $rid ?>">
+        <?php echo tinypass_slider('tinypass[en]', array('Off' => '0', 'On' => '1'), $ps->getEnabled()) ?>
+      </form>
+    </div>
+    <div class="type"> <?php echo "{$ps->getModeName()} ({$ps->getModeNameReal()}) " ?> </div>
+    <div class="title"> <?php echo $ps->getResourceName() ?> </div>
+
+    <div class="footer">
+      <div class="leftcol">
+        <div class="section">
+          <div class="value"><?php echo $count ?> Items</div>
+          <div class="label"><?php _e("Content") ?></div>
+        </div>            
+        <div class="section">
+          <div class="value"><?php _e($ps->getPremiumTags(',')) ?></div>
+          <div class="label"><?php _e("Tags") ?></div>
+        </div>            
+        <div class="clear"></div>
+      </div>
+
+      <div class="action">
+        <a class="button" href="admin.php?page=TinyPassEditPaywall&rid=<?php echo $rid ?>">Edit</a>
+      </div>            
+      <div class="clear"></div>
+    </div>
+
+  </div>
 
   <?php
 }

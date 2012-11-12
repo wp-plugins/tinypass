@@ -5,30 +5,49 @@ function tinypass_mode_settings() {
   $storage = new TPStorage();
   $errors = array();
 
-  if (isset($_POST['_Submit'])) {
+  $ps = null;
+
+  if (isset($_POST['_Delete'])) {
+
+    if (isset($_POST['tinypass']['resource_id'])) {
+      $rid = $_POST['tinypass']['resource_id'];
+      $ss = $storage->getSiteSettings();
+      $ps = $storage->getPaywall($rid, true);
+
+      $storage->deletePaywall($ps);
+
+      $location = 'admin.php?page=tinypass.php&msg=' . urlencode(__('Your paywall has been deleted!.'));
+      wp_redirect($location);
+    }
+  } else if (isset($_POST['_Submit'])) {
     $ss = $storage->getSiteSettings();
     $ps = $ss->validatePaySettings($_POST['tinypass'], $errors);
     if (count($errors) == 0) {
       $storage->savePaywallSettings($ss, $ps);
       $location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your paywall has been saved!.'));
       wp_redirect($location);
+    } else {
+      //$ps = new TPPaySettings($_POST['tinypass']);
     }
   }
 
-  $rid = 'wp_bundle1';
-  $pws = $storage->getPaywalls(true);
+  if ($ps == null) {
+    $rid = 'wp_bundle1';
+    $pws = $storage->getPaywalls(true);
 
-  if (isset($_GET['rid']) && $_GET['rid'] != '') {
-    $rid = $_GET['rid'];
-  } else if ($pws != null || count($pws) > 1) {
-    $last = 0;
-    foreach ($pws as $ps) {
-      $last = max($last, preg_replace('/[^0-9]*/', '', $ps->getResourceId()));
+    if (isset($_GET['rid']) && $_GET['rid'] != '') {
+      $rid = $_GET['rid'];
+    } else if ($pws != null || count($pws) > 1) {
+      $last = 0;
+      foreach ($pws as $ps) {
+        $last = max($last, preg_replace('/[^0-9]*/', '', $ps->getResourceId()));
+      }
+      $rid = 'wp_bundle' . ($last + 1);
     }
-    $rid = 'wp_bundle' . ($last + 1);
+
+    $ps = $storage->getPaywall($rid, true);
   }
 
-  $ps = $storage->getPaywall($rid, true);
   ?>
 
   <div id="poststuff">
@@ -47,11 +66,11 @@ function tinypass_mode_settings() {
 
         <div id="tp-hide-paywalls">
           <span>Hide paywall details</span>
-          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">
+          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/closer.png">
         </div>
         <div id="tp-show-paywalls">
           <span>Show paywall details</span>
-          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/closer.png">
+          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">
         </div>
 
         <div id="tp_mode_details">
@@ -98,9 +117,10 @@ function tinypass_mode_settings() {
           <?php __tinypass_tag_display($ps) ?>
           <?php __tinypass_pricing_display($ps) ?>
           <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
-          <?php __tinypass_purchase_option_table_display($ps, $rid) ?>
+          <?php __tinypass_purchase_option_table_display($ps) ?>
           <p>
             <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
+            <input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style=""/>
           </p>
         </form>
       </div>
@@ -123,10 +143,11 @@ function tinypass_mode_settings() {
           <?php __tinypass_appeal_display($ps) ?>
           <?php __tinypass_counter_display($ps) ?>
           <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
-          <?php __tinypass_purchase_option_table_display($ps, $rid) ?>
+          <?php __tinypass_purchase_option_table_display($ps) ?>
           <?php __tinypass_purchase_page_display($ps) ?>
           <p>
             <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
+            <input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style=""/>
           </p>
         </form>
       </div>
@@ -147,6 +168,7 @@ function tinypass_mode_settings() {
           <?php __tinypass_purchase_page_display($ps) ?>
           <p>
             <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
+            <input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style=""/>
           </p>
         </form>
       </div>
@@ -180,7 +202,7 @@ function tinypass_mode_settings() {
 
         $(this).addClass("choice-selected");
         $(this).attr("checked", "checked");
-                                                            													
+                                                                                  													
         var elem = $(".choice[checked=checked]");
         var id = elem.attr("id");
 
@@ -224,7 +246,7 @@ function tinypass_mode_settings() {
           return false;
         }
       });
-                                                            									
+                                                                                  									
       //toggle access_period after recurring is changed
       $('.recurring-opts-off').bind('change', function(){
         var index = $(this).attr("opt");
@@ -267,13 +289,13 @@ function tinypass_mode_settings() {
         $('#tp-hide-paywalls').show();
       })
 
-<?php
-       if(isset($_REQUEST['rid'])) {
-          echo "$('#tp-hide-paywalls').trigger('click');";
-       } else {
-          echo "$('#tp-show-paywalls').trigger('click');";
-       }
-?>
+  <?php
+  if (isset($_REQUEST['rid'])) {
+    echo "$('#tp-hide-paywalls').trigger('click');";
+  } else {
+    echo "$('#tp-show-paywalls').trigger('click');";
+  }
+  ?>
 
     });
   </script>

@@ -43,7 +43,7 @@ class TPSiteSettings {
           TPSiteSettings::SECRET_KEY_PROD => 'Retreive your secret key from www.tinypass.com',
           TPSiteSettings::ENV => 0,
           TPSiteSettings::ENABLED => 1,
-          TPSiteSettings::PPP_ENABLED=> 1,
+          TPSiteSettings::PPP_ENABLED => 1,
       ));
     }
   }
@@ -132,7 +132,15 @@ class TPSiteSettings {
 
   public function removePaywall(TPPaySettings $ps) {
     $rid = $ps->getResourceId();
-    unset($this->data[TPSiteSettings::PAYWALLS][$rid]);
+    $pws = $this->data[self::PAYWALLS];
+    if ($pws) {
+      foreach ($pws as $i => $value) {
+        if ($value == $rid) {
+          unset($pws[$i]);
+        }
+      }
+    }
+    $this->data[self::PAYWALLS] = $pws;
   }
 
   public function getPaywalls() {
@@ -181,7 +189,6 @@ class TPSiteSettings {
       if (!TPValidate::validateAccessPeriod($ap)) {
         $errors["po_ap$i"] = _(TPValidate::ACCESS_PERIOD_FAILED_MSG);
       }
-
     }
 
     $ps = new TPPaySettings($form->toArray());
@@ -202,7 +209,13 @@ class TPSiteSettings {
       $ps = $storage->getPaywall($form['resource_id']);
       $ps->setMode(TPPaySettings::MODE_OFF);
       return $ps;
+
     } else if ($activeMode != TPPaySettings::MODE_OFF) {
+
+
+      if(empty($form['resource_name'])){
+        $errors['resource_name'] = "Paywall name must no be empty";
+      }
 
       if (!is_array($form['tags']))
         $form['tags'] = array();
