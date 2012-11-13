@@ -408,49 +408,49 @@ TinyPass admin form sytles
   float:left;
   text-align:center;
 }
+
+.paywall-card {
+  margin-top: 20px;
+  width: 800px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #BABABA;
+  padding: 20px;
+  font-family: Helvetica;
+  background: url('images/card-bg.png') repeat-x top left #f4f4f4;
+  box-shadow: 0px 2px 2px #EFEFEF;
+  display: block;
+  overflow: hidden;
+  clear: both;
+}	
+
 .paywall-card .slider {
   float:right;
   font-size:8px;
 }
 
-.paywall-card {
-  margin-top: 30px;
-  width: 800px;
-  border-radius: 5px;
-  background-color: white;
-  border: 1px solid #BABABA;
-  padding: 15px 15px 0px 0px;
-  font-family: Helvetica;
-  background: url('images/card-bg.png') repeat-x top left;
-  box-shadow: 0px 1px 2px #EFEFEF;
-}
-
 .paywall-card .type {
-  padding-left:15px;
   font-size:14px;
   font-weight:bold;
 }
 
 .paywall-card .title {
-  padding-left:15px;
-  margin-top:10px;
-  font-size:20px;
+  margin-top: 18px;
+  font-size: 24px;
 }
 
 .paywall-card .footer {
-  margin-top:40px;
+  margin-top: 60px;
 }
 
 .paywall-card .footer .leftcol {
-  padding: 4px 0px 4px 4px;
   float: left;
-  border-top: 1px solid #BABABA;
   width: 70%;
+  padding-top: 8px;
 }
 
 .paywall-card .footer .section {
   float:left;
-  padding:10px;
   margin-right:40px;
 }
 
@@ -462,6 +462,7 @@ TinyPass admin form sytles
   text-transform: uppercase;
   font-weight:bold;
   font-size:.8em;
+  margin-bottom: 2px;
 }
 
 .paywall-card .footer .action {
@@ -470,22 +471,51 @@ TinyPass admin form sytles
 
 
 .paywall-card .footer .action a {
+  text-decoration: none;
   width:54px;
+  height: 14px;
+  line-height: 14px;
   float:right;
-  background-color: #4985DC;
   color:white;
-  background-image: none;
-  border: 1px solid #3978d5;
   text-align: center;
-  border-radius: 20px;
   font-size: 15px !important;
   padding: 12px 32px;
-  -moz-box-shadow: 0px 1px 3px #cbcbcb;
-  -webkit-box-shadow: 0px 1px 3px #cbcbcb;
-  box-shadow: 0px 1px 3px #cbcbcb;
+  font-weight: bold;
+  text-shadow: 0 -1px #1753AB;
+  cursor: pointer;
+  border: #3878D8 1px solid;
+  border-radius: 40px;
+  -webkit-border-radius: 40px;
+  -moz-border-radius: 40px;
+  background: #5f95e2;
+  background: -moz-linear-gradient(top,  #5f95e2 40%, #3878d8 99%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(40%,#5f95e2), color-stop(99%,#3878d8));
+  background: -webkit-linear-gradient(top,  #5f95e2 40%,#3878d8 99%);
+  background: -o-linear-gradient(top,  #5f95e2 40%,#3878d8 99%);
+  background: -ms-linear-gradient(top,  #5f95e2 40%,#3878d8 99%);
+  background: linear-gradient(to bottom,  #5f95e2 40%,#3878d8 99%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5f95e2', endColorstr='#3878d8',GradientType=0 );
+  box-shadow: 0px 2px 1px #DBDBDE;
 }
 
-#tinypass-counter {
+.paywall-card .footer .action a:hover {
+  background: #6fa5f2;
+  background: -moz-linear-gradient(top,  #6fa5f2 40%, #5f95e2 99%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(40%,#6fa5f2), color-stop(99%,#5f95e2));
+  background: -webkit-linear-gradient(top,  #6fa5f2 40%,#5f95e2 99%);
+  background: -o-linear-gradient(top,  #6fa5f2 40%,#5f95e2 99%);
+  background: -ms-linear-gradient(top,  #6fa5f2 40%,#5f95e2 99%);
+  background: linear-gradient(to bottom,  #6fa5f2 40%,#5f95e2 99%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6fa5f2', endColorstr='#5f95e2',GradientType=0 );
+}
+
+.paywall-card .edit-bundle {
+  width: 15px;
+  height: 16px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-bottom: -4px;
+  background: url('images/gear.png') no-repeat;
 }
 
 .position-1 { 
