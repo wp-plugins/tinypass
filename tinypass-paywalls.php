@@ -183,7 +183,7 @@ function tinypass_display_card($rid, TPPaySettings $ps) {
       <input type="text" id="value" name="tinypass[value]">
       <br>
     </form>
-      <br> <br>
+    <br> <br>
     <div style="text-align: center">
       <a class="button" onclick="tinypass.updateRID(this);return false;">Save</a>
       <a class="button" onclick="tinypass.closeEditRIDPopup();return false;">Cancel</a>

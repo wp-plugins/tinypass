@@ -1,5 +1,4 @@
 <?php
-
 /*
   Plugin Name: TinyPass
   Plugin URI: http://www.tinypass.com

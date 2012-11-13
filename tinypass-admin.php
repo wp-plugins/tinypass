@@ -1,5 +1,4 @@
 <?php
-
 define('TINYPASS_FAVICON', 'http://www.tinypass.com/favicon.ico');
 
 tinypass_include();

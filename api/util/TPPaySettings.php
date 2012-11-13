@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Options Helper Class used generically across PHP plugins
  */

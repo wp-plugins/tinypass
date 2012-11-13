@@ -32,10 +32,10 @@ function tinypass_activate() {
   $version = $data['Version'];
   update_option('tinypass_version', $version);
 
-  tinypass_include();
-  $storage = new TPStorage();
-  $ss = new TPSiteSettings();
-  $storage->saveSiteSettings($ss);
+  //tinypass_include();
+  //$storage = new TPStorage();
+  //$ss = new TPSiteSettings();
+  //$storage->saveSiteSettings($ss);
 }
 
 function tinypass_deactivate() {

@@ -1,5 +1,4 @@
 <?php
-
 function tinypass_site_settings() {
 
   $storage = new TPStorage();
