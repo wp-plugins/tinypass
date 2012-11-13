@@ -1,3 +1,9 @@
+hr  {
+  height: 0px;  
+  border: 0;  
+  border-top: 1px solid #CACACA; 
+}
+
 input {
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -254,27 +260,59 @@ TinyPass admin form sytles
 
 #tp_mode_details .choice .inner {
   width:310px;
+  height:450px;
+  padding-top:40px;
+}
+
+#tp_mode_details .choice .inner div.name {
+  margin-top:20px;
+  font-size:15pt;
+}
+#tp_mode_details .choice .inner div.sub {
+  margin-top:10px;
+  float:none;
+  text-align: center;
+  width:auto;
+  font-weight:bold;
+  font-size:11px;
+}
+
+#tp_mode_details .choice .inner div.info {
+  margin-top:10px;
+  font-size:11px;
+  float:none;
+  text-align: center;
+  width:auto;
+}
+
+#tp_mode_details .choice .inner div.example {
+  margin-top:10px;
+  font-size:11px;
+  float:none;
+  text-align: center;
+  width:auto;
+}
+
+
+
+
+
+#tp_mode_details .choice-selected .inner {
+  background-image: url('./images/slider-selected.png');
+  background-repeat: no-repeat;
 }
 
 #tp_mode_details .choice .inner img {
-  width:310px;
-  z-index: 1;
-  border:1px solid transparent;
+  /*width:310px;*/
+  /*z-index: 1;*/
+  /*border:1px solid transparent;*/
 }
 
 #tp_mode_details .choice-selected .inner img {
-  z-index: 1;
-  border:1px solid #b8b8b8;
-  border-radius: 3px;
-  background-color: #F4F4F4;
-}
-
-#tp_mode_details .choice-selected .picker {
-  height:13px;
-  background-image: url('./images/details-arrow.png');
-  background-repeat: no-repeat;
-  background-position: center -3px;
-  z-index: 2;
+  /*z-index: 1;*/
+  /*border:1px solid #b8b8b8;*/
+  /*border-radius: 3px;*/
+  /*background-color: #F4F4F4;*/
 }
 
 #tp_modes {
@@ -567,6 +605,7 @@ TinyPass admin form sytles
   color: #ABBAC1;
   box-shadow: inset 0px -2px 2px #F2F3F5;
   border: 1px solid #ABB8C1;
+  cursor: pointer;
 }
 
 #tinypass-counter div#inner:hover {

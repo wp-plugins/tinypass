@@ -1,4 +1,5 @@
 <?php
+
 function tinypass_mode_settings() {
 
   $storage = new TPStorage();
@@ -31,9 +32,11 @@ function tinypass_mode_settings() {
   }
 
   $edit = false;
+  $many = false;
   if ($ps == null) {
     $rid = 'wp_bundle1';
     $pws = $storage->getPaywalls(true);
+    $many = count($pws) > 0;
 
     if (isset($_GET['rid']) && $_GET['rid'] != '') {
       $edit = true;
@@ -59,42 +62,53 @@ function tinypass_mode_settings() {
         <?php endif; ?>
       <?php else: ?>
         <div id="tp-error" class="error fade"></div>
-      <?php endif; ?>
+  <?php endif; ?>
 
 
       <div class="tp-section">
-        <div class="tp-all-paywalls-crumb">
-          <a href="<?php menu_page_url("tinypass.php")?>"> &lsaquo; <?php _e("All my paywalls") ?> </a>
-        </div>
-        <?php __tinypass_section_head($ps, 1, __("Paywall mode"), 
 
-        '<div id="tp-hide-paywalls">
+        <?php if($many): ?>
+        <div class="tp-all-paywalls-crumb">
+          <a href="<?php menu_page_url("tinypass.php") ?>"> &lsaquo; <?php _e("All my paywalls") ?> </a>
+        </div>
+        <?php endif; ?>
+        <?php __tinypass_section_head($ps, 1, __("Paywall mode"), '<div id="tp-hide-paywalls">
           <span>Hide paywall details</span>
           <img src="' . plugin_dir_url('tinypass.php') . '/tinypass/css/images/closer.png">
         </div>
         <div id="tp-show-paywalls">
           <span>Show paywall details</span>
           <img src="' . plugin_dir_url('tinypass.php') . '/tinypass/css/images/opener.png">
-        </div>'); ?>
+        </div>');
+        ?>
 
 
         <div id="tp_mode_details">
           <div id="tp_mode1_details" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" >
             <div class="inner">
-              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/mode_ppv_info.png">
-              <div class="picker"></div>
+              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-ppv.png">
+              <div class="name"><?php echo TPPaySettings::MODE_PPV_NAME ?></div>
+              <div class="sub">Purchase individual items</div>
+              <div class="info">Users can look at your content for a certain<br> number of views, or for a certain time period.</div>
+              <div class="example">Examples: <a href="http://www.ufc.com">UFC</a></div>
             </div>
           </div>
           <div id="tp_mode2_details" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" >
             <div class="inner">
-              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/mode_preview_info.png">
-              <div class="picker"></div>
+              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-metered.png">
+              <div class="name"><?php echo TPPaySettings::MODE_METERED_NAME ?></div>
+              <div class="sub">Free preview period</div>
+              <div class="info">Users can look at your content for a certain<br> number of views, or for a certain time period.</div>
+              <div class="example">Examples: <a href="http://www.nytimes.com">The New York Times</a></div>
             </div>
           </div>
           <div id="tp_mode3_details" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" >
             <div class="inner">
-              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/mode_strict_info.png">
-              <div class="picker"></div>
+              <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-hard.png">
+              <div class="name"><?php echo TPPaySettings::MODE_STRICT_NAME ?></div>
+              <div class="sub">Fully restricted content</div>
+              <div class="info">Users can look at your content for a certain<br> number of views, or for a certain time period.</div>
+              <div class="example">Examples: <a href="http://www.thebostonglobe.com">The Boston Globe</a></div>
             </div>
           </div>
           <div class="clear"></div>
@@ -198,7 +212,7 @@ function tinypass_mode_settings() {
 
         $(this).addClass("choice-selected");
         $(this).attr("checked", "checked");
-                                                                                    													
+                                                                                      													
         var elem = $(".choice[checked=checked]");
         var id = elem.attr("id");
 
@@ -242,7 +256,7 @@ function tinypass_mode_settings() {
           return false;
         }
       });
-                                                                                    									
+                                                                                      									
       //toggle access_period after recurring is changed
       $('.recurring-opts-off').bind('change', function(){
         var index = $(this).attr("opt");
@@ -284,14 +298,14 @@ function tinypass_mode_settings() {
         $(this).hide();
         $('#tp-hide-paywalls').show();
       })
-<?php
+  <?php
   if (isset($_REQUEST['rid'])) {
     echo "$('#tp-hide-paywalls').trigger('click');";
   } else {
     echo "$('#tp-show-paywalls').trigger('click');";
   }
   ?>
-});
+    });
   </script>
 
   <?php if (count($errors)): ?>
