@@ -6,13 +6,13 @@
  *  $max - max views before meter expires
  *  $remaining - remaining number of view before expiration
  *  $class - position class
- *  $on_click_url - wordpress page to go when clicked
+ *  $onclick_url - wordpress page to go when clicked
  *
  * 
  */
 ?>
 
-<a href="<?php echo $on_click_url ?> ">
+<a href="<?php echo $onclick_url ?> ">
   <div id="tinypass-counter" class="<?php echo $class ?>">
     <div id="inner">
       <div class="num"><?php echo $remaining ?> </div>

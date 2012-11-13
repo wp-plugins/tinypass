@@ -196,7 +196,7 @@ function tinypass_intercept_content($content) {
 
   $tagOfferTrialActive = FALSE;
 
-  if($tagOptions != null && $tagOptions->isEnabled()){
+  if ($tagOptions != null && $tagOptions->isEnabled()) {
     $tagOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
     $tagToken = $store->findActiveToken('/' . $tagOptions->getResourceId() . '/');
   }
@@ -204,12 +204,12 @@ function tinypass_intercept_content($content) {
   //Only check metered if the mode is metered and it is enabled
   if ($tagOptions->isMode(TPPaySettings::MODE_METERED) && $tagOptions->isEnabled()) {
 
-
     $meter = null;
     if ($tagOptions->isMetered()) {
 
       $cookieName = "TR_" . preg_replace('/[^0-9]*/', '', $tagOptions->getResourceId());
       $meter = TPMeterHelper::loadMeterFromCookie($cookieName, $_COOKIE);
+
 
       if ($meter == null) {
 
@@ -230,12 +230,12 @@ function tinypass_intercept_content($content) {
         if ($tagOptions->isCounterEnabled() && $meter->getTrialViewCount() > $tagOptions->getCounterDelay(PHP_INT_MAX)) {
           $content .= '[TP_COUNTER]';
 
-          $onclick = 'onclick="return false"';
+          $onclick_url = 'onclick="return false"';
           if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_PAGE)) {
             $gotolink = get_page_link($tagOptions->getSubscriptionPageRef());
-            $onclick = 'href="' . $gotolink . '"';
+            $onclick_url = 'href="' . $gotolink . '"';
           } else if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_APPEAL)) {
-            $onclick = 'onclick="tinypass.showAppeal(); return false"';
+            $onclick_url = 'onclick="tinypass.showAppeal(); return false"';
             $tinypass_embed_appeal = __tinypass_create_appeal($tagOptions);
           }
 
@@ -244,22 +244,22 @@ function tinypass_intercept_content($content) {
               'max' => $meter->getTrialViewLimit(),
               'remaining' => $meter->getTrialViewLimit() - $meter->getTrialViewCount(),
               'class' => 'position-' . $tagOptions->getCounterPosition(),
-              'on_click' => $onclick,
+              'onclick_url' => $onclick_url,
                   ));
         }
-      }
 
-      if ($tagOptions->getAppealEnabled() && $meter != null) {
-        $count = $meter->getTrialViewCount();
-        if ($count == $tagOptions->getAppealNumViews() ||
-                ( $count > $tagOptions->getAppealNumViews() && $count % $tagOptions->getAppealFrequency() == 0 )) {
-          $tinypass_show_appeal = true;
-          $tinypass_embed_appeal = __tinypass_create_appeal($tagOptions);
+        if ($tagOptions->getAppealEnabled() && $meter != null) {
+          $count = $meter->getTrialViewCount();
+          if ($count == $tagOptions->getAppealNumViews() ||
+                  ( $count > $tagOptions->getAppealNumViews() && $count % $tagOptions->getAppealFrequency() == 0 )) {
+            $tinypass_show_appeal = true;
+            $tinypass_embed_appeal = __tinypass_create_appeal($tagOptions);
+          }
         }
+
+        return $content;
       }
     }
-
-    return $content;
   }
 
   if ($postOffer == null && $tagOffer == null)

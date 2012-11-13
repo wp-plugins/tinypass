@@ -9,7 +9,8 @@ jQuery(function(){
       minWidth:480,
       modal: true,
       closeOnEscape: true,
-      closeText: "x"
+      closeText: "x",
+      zIndex: 50000
     });
   }
 

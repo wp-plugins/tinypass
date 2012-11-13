@@ -202,6 +202,7 @@ function __tinypass_section_head(TPPaySettings $ps, $num, $text = '') {
 <?php } ?>
 
 <?php
+
 function __tinypass_section_head_alt($text = '') {
   ?>
   <div class="tp-section-header">
@@ -226,7 +227,10 @@ function __tinypass_counter_display(TPPaySettings $ps) {
         <br>
       </div>
       <div class="desc">
-        Show a small counter on the edge of the screen so users know how many free views they have left
+        Show a small counter on the edge of the screen so users know how many free views they have left.
+      </div>
+      <div class="image">
+        <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/support-counter.png">
       </div>
     </div>
     <div class="body">
@@ -255,7 +259,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
             <?php echo __tinypass_dropdown("tinypass[ct_pos]", array('1' => 'Top right', '2' => 'Top left', '3' => 'Bottom left', '4' => 'Bottom right'), $ps->getCounterPosition()) ?>
           </div>
           <div class="label">Only show the counter to user after
-            <input type="text" name="tinypass[ct_delay]" size="2" value="<?php echo $ps->getCounterDelay('') ?>">
+            <input type="text" name="tinypass[ct_delay]" size="2" value="<?php echo $ps->getCounterDelay(0) ?>">
             views
           </div>
         </div>
@@ -285,8 +289,8 @@ function __tinypass_counter_display(TPPaySettings $ps) {
  */
 function __tinypass_appeal_display(TPPaySettings $ps) {
 
-  $num_views = $ps->getAppealNumViews();
-  $freq = $ps->getAppealFrequency();
+  $num_views = $ps->getAppealNumViews(5);
+  $freq = $ps->getAppealFrequency(2);
   $msg1 = esc_attr(stripslashes($ps->getAppealMessage1()));
   $msg2 = esc_attr(stripslashes($ps->getAppealMessage2()));
   ?>
@@ -300,7 +304,10 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
         <br>
       </div>
       <div class="desc">During the preview periods, you can trigger a lightbox overlay that asks users to purchase or subscribe.
-        Pick what it says, how it looks, and when it appears
+        Pick what it says, how it looks, and when it appears.
+      </div>
+      <div class="image">
+        <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/support-appeal.png">
       </div>
     </div>
     <div class="body">
@@ -352,13 +359,13 @@ function __tinypass_metered_display(TPPaySettings $ps) {
 
   $metered = $ps->getMetered('count');
 
-  $trial_period = $ps->getMeterTrialPeriod('');
+  $trial_period = $ps->getMeterTrialPeriod();
   $trial_period_type = $ps->getMeterTrialPeriodType();
 
-  $lockout_period = $ps->getMeterLockoutPeriod();
-  $lockout_period_type = $ps->getMeterLockoutPeriodType();
+  $lockout_period = $ps->getMeterLockoutPeriod('1');
+  $lockout_period_type = $ps->getMeterLockoutPeriodType('month');
 
-  $meter_count = $ps->getMeterMaxAccessAttempts();
+  $meter_count = $ps->getMeterMaxAccessAttempts(4);
 
   $times = TPSiteSettings::$PERIOD_CHOICES;
   ?>
@@ -367,7 +374,8 @@ function __tinypass_metered_display(TPPaySettings $ps) {
     <div class="info">
       <div class="heading">How many previews?</div>
       <div class="desc">After a user hits their preview count, they will be required
-        to pay for access until your timer resets</div>
+        to pay for access until your timer resets.
+      </div>
     </div>
     <div class="body">
 
@@ -413,6 +421,25 @@ function __tinypass_metered_display(TPPaySettings $ps) {
 
 
 <?php } ?>
+
+<?php
+
+function __tinypass_save_buttons(TPPaySettings $ps, $edit = false) {
+  ?>
+
+  <p>
+    <?php if ($edit): ?>
+      <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
+      <a href="<?php menu_page_url('tinypass.php') ?>" class="button-primary"> Cancel </a>
+      <input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style="" onclick="return confirm('Are you sure you want to delete this paywall? All protected posts will become available for free.')"/>
+    <?php else: ?>
+      <input type="submit" name="_Submit" value="Create paywall" tabindex="4" class="button-primary" />
+      <a href="<?php menu_page_url('tinypass.php') ?>" class="button-primary"> Cancel </a>
+    <?php endif; ?>
+  </p>
+
+<?php } ?>
+
 <?php
 
 function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
@@ -425,7 +452,7 @@ function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
         your users should buy it?
         <br><br>
         Specify the page here and Tinypass will give you a shortcode that will put the purchase
-        options anywhere you place it on the page
+        options anywhere you place it on the page.
       </div>
     </div>
     <div class="body">
@@ -456,6 +483,12 @@ function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
  * Tag display section
  */
 function __tinypass_tag_display(TPPaySettings $ps) {
+
+
+  $name = stripslashes(esc_attr($ps->getResourceName()));
+
+  if (!$name)
+    $name = get_bloginfo("name") . " - Premium Content";
   ?>
   <div class="tp-section">
     <div class="info">
@@ -469,7 +502,7 @@ function __tinypass_tag_display(TPPaySettings $ps) {
         <div class="inside"> 
 
           <div class="tp-simple-table">
-            <input name="tinypass[resource_name]" size="40" value="<?php echo $ps->getResourceName() ? stripslashes(esc_attr($ps->getResourceName())) : "" ?>" >
+            <input name="tinypass[resource_name]" size="40" value="<?php echo $name ?>" >
           </div>
 
         </div>
@@ -481,7 +514,7 @@ function __tinypass_tag_display(TPPaySettings $ps) {
   <div class="tp-section">
     <div class="info">
       <div class="heading">Pick your content</div>
-      <div class="desc">All tagged posts will automatically be restricted with this paywall</div>
+      <div class="desc">All tagged posts will automatically be restricted with this paywall.</div>
     </div>
     <div class="body">
       <div class="postbox"> 
@@ -521,11 +554,9 @@ function __tinypass_pricing_display(TPPaySettings $ps) {
     <div class="info">
       <div class="heading"><?php _e("Set your price options") ?></div>
       <div class="desc">
-        Set access perios of housrs, days, weeks, months, unliminted time, or
-        even monthly subscriptions.
+        Give access periods of hours, days, weeks, months, unlimited time, or even monthly subscriptions.
         <br> <br>
-        Check out our <a target="_blank" href="http://developer.tinypass.com">documentation</a> for cool stuff like foreign currency, pay-what-you-want,
-        and more
+        Check out our  <a target="_blank" href="http://developer.tinypass.com">documentation</a> for cool stuff like foreign currency, pay-what-you-want, and more.
       </div>
     </div>
     <div class="body">
@@ -625,6 +656,9 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
       <div class="desc">
         This contains the purchase buttons for users on restricted pages.
       </div>
+      <div class="image">
+        <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/support-table.png">
+      </div>
     </div>
     <div class="body">
 
@@ -675,11 +709,20 @@ function __tinypass_price_option_display($opt, TPPaySettings $ps, $sub = true, $
   $times = TPSiteSettings::$PERIOD_CHOICES;
 
   $enabled = 0;
-  $price = $ps->getPrice($opt, '');
 
-  $access_period = $ps->getAccessPeriod($opt, '');
+  $default_price = '';
+  $default_access_period = '';
+  $default_access_period_type = '';
 
-  $access_period_type = $ps->getAccessPeriodType($opt, '');
+  if ($opt == '1') {
+    $default_price = '1';
+    $default_access_period = '1';
+    $default_access_period_type = 'day';
+  }
+
+  $price = $ps->getPrice($opt, $default_price);
+  $access_period = $ps->getAccessPeriod($opt, $default_access_period);
+  $access_period_type = $ps->getAccessPeriodType($opt, $default_access_period_type);
 
   $caption = htmlspecialchars(stripslashes($ps->getCaption($opt)));
 

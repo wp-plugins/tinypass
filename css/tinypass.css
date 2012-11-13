@@ -98,11 +98,26 @@ TinyPass admin form sytles
   background-color:#F7F7F7;
 }
 
+.tp-all-paywalls-crumb {
+  color:#5B94E0;
+  font-weight:bold;
+  margin-bottom:30px;
+}
+
+.tp-all-paywalls-crumb a{
+  color:#5B94E0;
+  text-decoration: none;
+}
+
 .tp-section-header {
   margin-top:50px;
   height:40px;
   line-height:38px;
   font-size:26px;
+}
+
+.tp-section-header1 {
+  margin-top:0px;
 }
 
 .tp-section-header div.num {
@@ -154,6 +169,11 @@ TinyPass admin form sytles
   float:left;
   width:200px;
 }
+
+.tp-section .info .image {
+  margin-top:20px;
+}
+
 
 .tp-section .body {
   margin-left:70px;

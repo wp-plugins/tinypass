@@ -54,6 +54,7 @@ class TPPaySettings {
   const PD_TYPE = 'pd_type';
   const OFFER_ORDER = 'pd_order';
   const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with TinyPass';
+  const DEFAULT_DENIED_MESSAGE2 = 'Get instant access with just a few clicks';
 
   public static $MODE_NAMES = array(
       self::MODE_PPV => self::MODE_PPV_NAME,
@@ -364,12 +365,12 @@ class TPPaySettings {
     return $this->data->val(self::PD_DENIED_MSG1, $msg);
   }
 
-  public function getDeniedMessage2() {
-    return $this->data->val(self::PD_DENIED_MSG2, "");
+  public function getDeniedMessage2($msg = self::DEFAULT_DENIED_MESSAGE) {
+    return $this->data->val(self::PD_DENIED_MSG2, $msg);
   }
 
-  public function getDeniedSub1($msg = self::DEFAULT_DENIED_MESSAGE) {
-    return $this->data->val(self::PD_DENIED_SUB1, "");
+  public function getDeniedSub1($msg = self::DEFAULT_DENIED_MESSAGE2) {
+    return $this->data->val(self::PD_DENIED_SUB1, $msg);
   }
 
   public function getDeniedSub2() {
@@ -403,12 +404,12 @@ class TPPaySettings {
     return $this->data->val(self::APP_MSG2, $msg);
   }
 
-  public function getAppealNumViews() {
-    return $this->data->val(self::APP_NUM_VIEWS, "");
+  public function getAppealNumViews($d = "") {
+    return $this->data->val(self::APP_NUM_VIEWS, $d);
   }
 
-  public function getAppealFrequency() {
-    return $this->data->val(self::APP_FREQUENCY, "");
+  public function getAppealFrequency($d = '') {
+    return $this->data->val(self::APP_FREQUENCY, $d);
   }
 
   /**
@@ -430,11 +431,11 @@ class TPPaySettings {
     return $this->getCounterOnClick() == $i;
   }
 
-  public function getCounterPosition() {
-    return $this->data->val(self::CT_POSTION, 1);
+  public function getCounterPosition($d = 3) {
+    return $this->data->val(self::CT_POSTION, 3);
   }
 
-  public function getCounterDelay($def = -1) {
+  public function getCounterDelay($def = 0) {
     return $this->data->val(self::CT_DELAY, $def);
   }
 

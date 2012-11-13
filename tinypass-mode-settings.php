@@ -31,11 +31,13 @@ function tinypass_mode_settings() {
     }
   }
 
+  $edit = false;
   if ($ps == null) {
     $rid = 'wp_bundle1';
     $pws = $storage->getPaywalls(true);
 
     if (isset($_GET['rid']) && $_GET['rid'] != '') {
+      $edit = true;
       $rid = $_GET['rid'];
     } else if ($pws != null || count($pws) > 1) {
       $last = 0;
@@ -47,7 +49,6 @@ function tinypass_mode_settings() {
 
     $ps = $storage->getPaywall($rid, true);
   }
-
   ?>
 
   <div id="poststuff">
@@ -61,7 +62,11 @@ function tinypass_mode_settings() {
         <div id="tp-error" class="error fade"></div>
       <?php endif; ?>
 
+
       <div class="tp-section">
+        <div class="tp-all-paywalls-crumb">
+          <a href="<?php menu_page_url("tinypass.php")?>"> &lsaquo; <?php _e("All my paywalls") ?> </a>
+        </div>
         <?php __tinypass_section_head($ps, ++$num, __("Paywall mode")) ?>
 
         <div id="tp-hide-paywalls">
@@ -72,6 +77,7 @@ function tinypass_mode_settings() {
           <span>Show paywall details</span>
           <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">
         </div>
+
 
         <div id="tp_mode_details">
           <div id="tp_mode1_details" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" >
@@ -105,6 +111,7 @@ function tinypass_mode_settings() {
       </div>
       <div class="hr"></div>
 
+
       <div id="tp_mode1_panel" class="tp_mode_panel">
         <form action="" method="post" autocomplete="off">
           <input class="tp_mode" name="tinypass[mode]" type="hidden">
@@ -118,10 +125,7 @@ function tinypass_mode_settings() {
           <?php __tinypass_pricing_display($ps) ?>
           <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
           <?php __tinypass_purchase_option_table_display($ps) ?>
-          <p>
-            <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
-            <input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style=""/>
-          </p>
+          <?php __tinypass_save_buttons($ps, $edit) ?>
         </form>
       </div>
 
@@ -137,7 +141,6 @@ function tinypass_mode_settings() {
           <?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
           <?php __tinypass_tag_display($ps) ?>
           <?php __tinypass_pricing_display($ps) ?>
-
           <?php __tinypass_section_head($ps, ++$num, __("Customize your preview period")) ?>
           <?php __tinypass_metered_display($ps) ?>
           <?php __tinypass_appeal_display($ps) ?>
@@ -145,10 +148,7 @@ function tinypass_mode_settings() {
           <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
           <?php __tinypass_purchase_option_table_display($ps) ?>
           <?php __tinypass_purchase_page_display($ps) ?>
-          <p>
-            <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
-            <input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style=""/>
-          </p>
+          <?php __tinypass_save_buttons($ps, $edit) ?>
         </form>
       </div>
 
@@ -166,10 +166,7 @@ function tinypass_mode_settings() {
           <?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
           <?php __tinypass_purchase_option_table_display($ps) ?>
           <?php __tinypass_purchase_page_display($ps) ?>
-          <p>
-            <input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
-            <input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style=""/>
-          </p>
+          <?php __tinypass_save_buttons($ps, $edit) ?>
         </form>
       </div>
     </div>
@@ -202,7 +199,7 @@ function tinypass_mode_settings() {
 
         $(this).addClass("choice-selected");
         $(this).attr("checked", "checked");
-                                                                                  													
+                                                                                    													
         var elem = $(".choice[checked=checked]");
         var id = elem.attr("id");
 
@@ -246,7 +243,7 @@ function tinypass_mode_settings() {
           return false;
         }
       });
-                                                                                  									
+                                                                                    									
       //toggle access_period after recurring is changed
       $('.recurring-opts-off').bind('change', function(){
         var index = $(this).attr("opt");
