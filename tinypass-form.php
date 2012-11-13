@@ -363,9 +363,9 @@ function __tinypass_metered_display(TPPaySettings $ps) {
   $trial_period_type = $ps->getMeterTrialPeriodType();
 
   $lockout_period = $ps->getMeterLockoutPeriod('1');
-  $lockout_period_type = $ps->getMeterLockoutPeriodType('month');
+  $lockout_period_type = $ps->getMeterLockoutPeriodType('week');
 
-  $meter_count = $ps->getMeterMaxAccessAttempts(4);
+  $meter_count = $ps->getMeterMaxAccessAttempts(10);
 
   $times = TPSiteSettings::$PERIOD_CHOICES;
   ?>

@@ -305,4 +305,3 @@ function tinypass_mode_settings() {
 
 
 <?php } ?>
-

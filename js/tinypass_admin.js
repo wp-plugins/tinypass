@@ -111,8 +111,32 @@ var tinypass = {
     data += '&action=tp_enablePaywall';
     jQuery.post(ajaxurl, data, function(response) {
     });
- 
+  },
+
+  showEditRIDPopup:function(rid){
+    jQuery("#tp-edit-rid-dialog #rid").val(rid);
+    jQuery("#tp-edit-rid-dialog #value").val(rid);
+    jQuery("#tp-edit-rid-dialog").dialog({
+      title:'Modify your Resource ID (RID) '
+    })
+
+  },
+
+  closeEditRIDPopup:function() {
+    jQuery(".ui-dialog-content").dialog("close");
+  },
+
+  updateRID:function(elem){
+    var form = jQuery(elem).parents("form");
+    var data = jQuery(form).serialize();
+    data += '&action=tp_updateRID';
+    jQuery.post(ajaxurl, data, function(response) {
+      location.reload();
+    });
   }
+
+
+
 
 
 }

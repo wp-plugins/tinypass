@@ -15,13 +15,13 @@ class TPStorage {
   /**
    * Individual paywall settings
    */
-  function getPaywalls($showDeleted = false) {
+  function getPaywalls($showEnabled = false) {
     $ss = $this->getSiteSettings();
     $paywallNames = $ss->getPaywalls();
     $data = array();
     foreach ($paywallNames as $rid) {
       $ps = new TPPaySettings(get_option("tinypass_" . $rid));
-      if ($showDeleted || $ps->isDeleted() == false)
+      if ($showEnabled  || $ps->isEnabled())
         $data[$rid] = new TPPaySettings(get_option("tinypass_" . $rid));
     }
     return $data;
@@ -38,7 +38,7 @@ class TPStorage {
     $ps = new TPPaySettings(array());
     $ps->setResourceId($name);
     $ps->setEnabled(true);
-    $ps->setMode(TPPaySettings::MODE_STRICT);
+    $ps->setMode(TPPaySettings::MODE_PPV);
     return $ps;
   }
 
@@ -48,6 +48,13 @@ class TPStorage {
     $this->saveSiteSettings($ss);
     wp_cache_delete("tinypass_" . $pw->getResourceId());
     delete_option("tinypass_" . $pw->getResourceId());
+  }
+  
+
+  function updatePaywallRID(TPPaySettings $pw, $rid) {
+    $this->deletePaywall($pw);
+    $pw->setResourceId($rid);
+    $this->savePaywallSettings($this->getSiteSettings(), $pw);
   }
 
   function savePaywallSettings(TPSiteSettings $ss, TPPaySettings $pw) {

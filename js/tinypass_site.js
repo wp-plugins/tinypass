@@ -10,7 +10,8 @@ jQuery(function(){
       modal: true,
       closeOnEscape: true,
       closeText: "x",
-      zIndex: 50000
+      zIndex: 50000,
+      dialogClass: 'tp-appeal-dialog',
     });
   }
 

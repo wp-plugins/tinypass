@@ -121,20 +121,20 @@ class TPPaySettings {
   }
 
   public function isMode($type) {
-    return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF) == $type;
+    return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_PPV) == $type;
   }
 
   public function getMode() {
-    return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+    return $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_PPV);
   }
 
   public function getModeName() {
-    $mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+    $mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_PPV);
     return self::$MODE_NAMES[$mode];
   }
 
   public function getModeNameReal() {
-    $mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_OFF);
+    $mode = $this->data->val(TPPaySettings::MODE, TPPaySettings::MODE_PPV);
     return self::$MODE_NAMES_REAL[$mode];
   }
 

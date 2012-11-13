@@ -1,3 +1,11 @@
+input {
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #DFDFDF;
+}
+
 #tinypass_subscription_holder {
   text-align:center;
   padding-top:10px;
@@ -377,6 +385,7 @@ TinyPass admin form sytles
   border:1px solid #EAEAEA;
   border-radius: 20px;
   background-color:#FAFAFA;
+  box-shadow: inset 0px 1px 2px #EAEAEA;
 }
 
 
@@ -394,19 +403,27 @@ TinyPass admin form sytles
 }
 
 .tp-slider .choice-selected {
-  border:1px solid #b7b7b7;
-  background-color:white;
-  border-radius: 30px;
   position:absolute;
   top:-.4em;
-  color:#333;
   height:2.88em;
   line-height:2.88em;
-  text-transform: uppercase;
-  font-weight:bold;
   width:5em;
   float:left;
+  border:1px solid #b7b7b7;
+  border-radius: 30px;
+  color:#333;
+  background-color:white;
+  text-transform: uppercase;
+  font-weight:bold;
   text-align:center;
+  background: -moz-linear-gradient(top, #ffffff 50%, #f5f5f5 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#ffffff), color-stop(100%,#f5f5f5));
+  background: -webkit-linear-gradient(top, #ffffff 50%,#f5f5f5 100%);
+  background: -o-linear-gradient(top, #ffffff 50%,#f5f5f5 100%);
+  background: -ms-linear-gradient(top, #ffffff 50%,#f5f5f5 100%);
+  background: linear-gradient(to bottom, #ffffff 50%,#f5f5f5 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 );
+  box-shadow: 0px 1px 2px #CACACA;
 }
 
 .paywall-card {
@@ -456,6 +473,8 @@ TinyPass admin form sytles
 
 .paywall-card .footer .section div.value {
   font-size:1.0em;
+  line-height: 16px;
+  height:16px;
 }
 
 .paywall-card .footer .section div.label{
@@ -541,11 +560,12 @@ TinyPass admin form sytles
 
 #tinypass-counter div#inner {
   border-radius: 20px;
-  padding:8px 15px 8px 15px;
-  background-color:white;
-  font-size:12px;
-  color:#abbac1;
-  border:1px solid #abbac1;
+  padding: 10px 18px 10px 18px;
+  background-color: white;
+  font-size: 16px;
+  color: #ABBAC1;
+  box-shadow: inset 0px -2px 2px #F2F3F5;
+  border: 1px solid #ABB8C1;
 }
 
 #tinypass-counter div#inner:hover {
@@ -554,29 +574,30 @@ TinyPass admin form sytles
 } 
 
 #tinypass-counter div#inner .num {
-  float:left;
-  font-weight:bold;
-  line-height:20px;
-  height:20px;
-  font-size:14px;
-  margin-right:4px;
+  float: left;
+  font-weight: bold;
+  line-height: 20px;
+  height: 20px;
+  font-size: 22px;
+  margin-right: 7px;
 }
 
 #tinypass-counter div#inner .text {
-  float:left;
-  line-height:20px;
-  height:20px;
-  margin-right:4px;
+  float: left;
+  line-height: 20px;
+  height: 20px;
+  margin-right: 8px;
 }
 
 #tinypass-counter div#inner .arrow {
-  float:left;
-  font-size:14px;
-  line-height:20px;
-  height:20px;
+  float: left;
+  font-size: 18px;
+  line-height: 20px;
+  height: 20px;
 }
 
 #tinypass-appeal-dialog {
+  display:none;
   width:480px;
   background-color:white;
   border-radius: 10px;
@@ -605,12 +626,13 @@ TinyPass admin form sytles
   text-align: center;
 }
 
-.ui-dialog .ui-dialog-titlebar .ui-icon-closethick {
+.tp-appeal-dialog .ui-dialog-titlebar .ui-icon-closethick {
   color:black;
   text-indent: inherit;
   text-align: center;
 }
-.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+
+.tp-appeal-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
   font-family: sans-serif;
   background-color:white;
   color:black;

@@ -207,12 +207,11 @@ function tinypass_intercept_content($content) {
     $meter = null;
     if ($tagOptions->isMetered()) {
 
-      $cookieName = "TR_" . preg_replace('/[^0-9]*/', '', $tagOptions->getResourceId());
+//      $cookieName = "tr_" . preg_replace('/[^0-9]*/', '', $tagOptions->getResourceId());
+      $cookieName = "tr_" . $tagOptions->getResourceId();
       $meter = TPMeterHelper::loadMeterFromCookie($cookieName, $_COOKIE);
 
-
       if ($meter == null) {
-
         if ($tagOptions->isTimeMetered()) {
           $meter = TPMeterHelper::createTimeBased($cookieName, $tagOptions->getMeterTrialPeriod(), $tagOptions->getMeterLockoutPeriodFull());
         } elseif ($tagOptions->isCountMetered()) {
@@ -230,12 +229,12 @@ function tinypass_intercept_content($content) {
         if ($tagOptions->isCounterEnabled() && $meter->getTrialViewCount() > $tagOptions->getCounterDelay(PHP_INT_MAX)) {
           $content .= '[TP_COUNTER]';
 
-          $onclick_url = 'onclick="return false"';
+          $onclick = 'onclick="return false"';
           if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_PAGE)) {
             $gotolink = get_page_link($tagOptions->getSubscriptionPageRef());
-            $onclick_url = 'href="' . $gotolink . '"';
+            $onclick = 'href="' . $gotolink . '"';
           } else if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_APPEAL)) {
-            $onclick_url = 'onclick="tinypass.showAppeal(); return false"';
+            $onclick = 'onclick="tinypass.showAppeal(); return false"';
             $tinypass_embed_appeal = __tinypass_create_appeal($tagOptions);
           }
 
@@ -243,8 +242,8 @@ function tinypass_intercept_content($content) {
               'count' => $meter->getTrialViewCount(),
               'max' => $meter->getTrialViewLimit(),
               'remaining' => $meter->getTrialViewLimit() - $meter->getTrialViewCount(),
-              'class' => 'position-' . $tagOptions->getCounterPosition(),
-              'onclick_url' => $onclick_url,
+              'position' => 'position-' . $tagOptions->getCounterPosition(),
+              'onclick' => $onclick,
                   ));
         }
 
