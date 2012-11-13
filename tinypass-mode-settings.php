@@ -66,16 +66,16 @@ function tinypass_mode_settings() {
         <div class="tp-all-paywalls-crumb">
           <a href="<?php menu_page_url("tinypass.php")?>"> &lsaquo; <?php _e("All my paywalls") ?> </a>
         </div>
-        <?php __tinypass_section_head($ps, ++$num, __("Paywall mode")) ?>
+        <?php __tinypass_section_head($ps, 1, __("Paywall mode"), 
 
-        <div id="tp-hide-paywalls">
+        '<div id="tp-hide-paywalls">
           <span>Hide paywall details</span>
-          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/closer.png">
+          <img src="' . plugin_dir_url('tinypass.php') . '/tinypass/css/images/closer.png">
         </div>
         <div id="tp-show-paywalls">
           <span>Show paywall details</span>
-          <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/opener.png">
-        </div>
+          <img src="' . plugin_dir_url('tinypass.php') . '/tinypass/css/images/opener.png">
+        </div>'); ?>
 
 
         <div id="tp_mode_details">
@@ -284,16 +284,14 @@ function tinypass_mode_settings() {
         $(this).hide();
         $('#tp-hide-paywalls').show();
       })
-
-  <?php
+<?php
   if (isset($_REQUEST['rid'])) {
     echo "$('#tp-hide-paywalls').trigger('click');";
   } else {
     echo "$('#tp-show-paywalls').trigger('click');";
   }
   ?>
-
-    });
+});
   </script>
 
   <?php if (count($errors)): ?>

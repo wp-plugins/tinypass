@@ -1,11 +1,9 @@
 <?php
 add_action('wp_ajax_tp_showEditPopup', 'ajax_tp_showEditPopup');
 add_action('wp_ajax_tp_saveEditPopup', 'ajax_tp_saveEditPopup');
-
 wp_enqueue_script("jquery");
 wp_enqueue_script("jquery-ui");
 wp_enqueue_script('jquery-ui-dialog');
-
 /**
  * AJAX callback to show the Tinypass options form for both tags and posts/pages
  */
@@ -186,21 +184,19 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
   </div>
 
 <?php } ?>
-
-
 <?php
 
 /**
  * show settings section head
  */
-function __tinypass_section_head(TPPaySettings $ps, $num, $text = '') {
+function __tinypass_section_head(TPPaySettings $ps, $num, $text = '', $html = '') {
   ?>
   <div class="tp-section-header">
     <div class="num"><?php echo $num ?></div>
     <?php echo $text ?>
+    <?php echo $html ?>
   </div>
 <?php } ?>
-
 <?php
 
 function __tinypass_section_head_alt($text = '') {
@@ -209,7 +205,6 @@ function __tinypass_section_head_alt($text = '') {
     <?php echo $text ?>
   </div>
 <?php } ?>
-
 <?php
 
 /**
@@ -234,7 +229,6 @@ function __tinypass_counter_display(TPPaySettings $ps) {
       </div>
     </div>
     <div class="body">
-
 
       <div class="postbox">
         <h3><?php _e('Where should clicking on the counter bring users?'); ?> </h3>
@@ -277,11 +271,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
     <div class="clear"></div>
   </div>
 
-
 <?php } ?>
-
-
-
 <?php
 
 /**
@@ -311,7 +301,6 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
       </div>
     </div>
     <div class="body">
-
 
       <div class="postbox">
         <h3><?php _e('When it appears'); ?> </h3>
@@ -346,10 +335,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
     <div class="clear"></div>
   </div>
 
-
 <?php } ?>
-
-
 <?php
 
 /**
@@ -378,7 +364,6 @@ function __tinypass_metered_display(TPPaySettings $ps) {
       </div>
     </div>
     <div class="body">
-
 
       <div class="postbox">
         <h3><?php _e('Mode & Rules'); ?> </h3>
@@ -418,10 +403,7 @@ function __tinypass_metered_display(TPPaySettings $ps) {
     </div>
     <div class="clear"></div>
   </div>
-
-
 <?php } ?>
-
 <?php
 
 function __tinypass_save_buttons(TPPaySettings $ps, $edit = false) {
@@ -439,7 +421,6 @@ function __tinypass_save_buttons(TPPaySettings $ps, $edit = false) {
   </p>
 
 <?php } ?>
-
 <?php
 
 function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
@@ -483,7 +464,6 @@ function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
  * Tag display section
  */
 function __tinypass_tag_display(TPPaySettings $ps) {
-
 
   $name = stripslashes(esc_attr($ps->getResourceName()));
 
@@ -539,8 +519,6 @@ function __tinypass_tag_display(TPPaySettings $ps) {
     </div>
     <div class="clear"></div>
   </div>
-
-
 <?php } ?>
 <?php
 
@@ -662,7 +640,6 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
     </div>
     <div class="body">
 
-
       <div class="postbox">
         <h3><?php _e('Add some messaging'); ?> </h3>
         <div class="inside"> 
@@ -760,8 +737,7 @@ function __tinypass_price_option_display($opt, TPPaySettings $ps, $sub = true, $
       </td>
     </tr>
   </table>
-  <?php
-}
+<?php } 
 
 function tinypass_slider($field_name, $options, $selected_value) {
 

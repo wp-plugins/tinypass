@@ -25,8 +25,8 @@ class add_tinypass_button {
 
 
 		// Set path to editor_plugin.js
-		$NGGALLERY_URLPATH = "/wp-content/plugins/tinypass/tinymce/";
-		$this->path = site_url($NGGALLERY_URLPATH);
+		$URLPATH = "/wp-content/plugins/tinypass/tinymce/";
+		$this->path = site_url($URLPATH);
 	
 		// Modify the version when tinyMCE plugins are changed.
 		add_filter('tiny_mce_version', array (&$this, 'change_tinymce_version') );

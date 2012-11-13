@@ -113,7 +113,6 @@ function tinypass_paywalls_list() {
   </script>
 
 <?php } ?>
-
 <?php
 
 function tinypass_display_card($rid, TPPaySettings $ps) {
@@ -190,6 +189,4 @@ function tinypass_display_card($rid, TPPaySettings $ps) {
     </div>
   </div>
 
-  <?php
-}
-?>
+<?php } ?>

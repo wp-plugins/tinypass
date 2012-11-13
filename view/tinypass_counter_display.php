@@ -11,7 +11,6 @@
  * 
  */
 ?>
-
 <a <?php echo $onclick ?>>
   <div id="tinypass-counter" class="<?php echo $position ?>">
     <div id="inner">

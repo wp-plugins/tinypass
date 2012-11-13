@@ -96,5 +96,4 @@ function tinypass_site_settings() {
       </form>
     </div>
   </div>
-
 <?php } ?>

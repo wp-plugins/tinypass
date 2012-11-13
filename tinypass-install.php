@@ -1,11 +1,10 @@
 <?php
-
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 function tinypass_activate() {
-  
+ 
   $error = '';
   if (!extension_loaded('mbstring'))
     $error .= "&nbsp;&nbsp;&nbsp;<a href=\"http://php.net/manual/en/ref.mbstring.php\">mbstring php module</a> is required for Tinypass<br>";

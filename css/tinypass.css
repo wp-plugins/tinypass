@@ -118,6 +118,7 @@ TinyPass admin form sytles
 }
 
 .tp-section-header {
+  width:1050px;
   margin-top:50px;
   height:40px;
   line-height:38px;
@@ -139,8 +140,8 @@ TinyPass admin form sytles
   margin-right: 10px;
 }
 #tp-hide-paywalls {
+  float:right;
   cursor:pointer;
-  width:1055px;
   text-align: right;
   color:#b7b7b7;
   font-weight:bold;
@@ -152,8 +153,8 @@ TinyPass admin form sytles
 }
 
 #tp-show-paywalls {
+  float:right;
   cursor:pointer;
-  width:1055px;
   text-align: right;
   color:#b7b7b7;
   font-weight:bold;
