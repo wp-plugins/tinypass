@@ -15,19 +15,19 @@ class TPStorage {
   /**
    * Individual paywall settings
    */
-  function getPaywalls($showEnabled = false) {
+  function getPaywalls($showDisabled = true) {
     $ss = $this->getSiteSettings();
     $paywallNames = $ss->getPaywalls();
     $data = array();
     foreach ($paywallNames as $rid) {
       $ps = new TPPaySettings(get_option("tinypass_" . $rid));
-      if ($showEnabled  || $ps->isEnabled())
+      if ($showDisabled    || $ps->isEnabled())
         $data[$rid] = new TPPaySettings(get_option("tinypass_" . $rid));
     }
     return $data;
   }
 
-  function getPaywall($name = null, $showDisabled = false) {
+  function getPaywall($name = null, $showDisabled = true) {
     $paywalls = $this->getPaywalls($showDisabled);
 
     foreach ($paywalls as $rid => $ps) {

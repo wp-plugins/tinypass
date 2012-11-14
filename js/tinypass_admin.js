@@ -117,7 +117,8 @@ var tinypass = {
     jQuery("#tp-edit-rid-dialog #rid").val(rid);
     jQuery("#tp-edit-rid-dialog #value").val(rid);
     jQuery("#tp-edit-rid-dialog").dialog({
-      title:'Modify your Resource ID (RID) '
+      title:'Modify your Resource ID (RID) ',
+      modal: true,
     })
 
   },

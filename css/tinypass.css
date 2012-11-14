@@ -259,9 +259,9 @@ TinyPass admin form sytles
 }
 
 #tp_mode_details .choice .inner {
-  width:310px;
-  height:450px;
-  padding-top:40px;
+  width: 310px;
+  height: 375px;
+  padding-top: 60px;
 }
 
 #tp_mode_details .choice .inner div.name {
@@ -278,11 +278,12 @@ TinyPass admin form sytles
 }
 
 #tp_mode_details .choice .inner div.info {
-  margin-top:10px;
-  font-size:11px;
-  float:none;
+  margin-top: 10px;
+  font-size: 11px;
+  float: none;
   text-align: center;
-  width:auto;
+  width: auto;
+  padding: 0px 20px;
 }
 
 #tp_mode_details .choice .inner div.example {
@@ -316,7 +317,7 @@ TinyPass admin form sytles
 }
 
 #tp_modes {
-  margin-top: 10px;
+  margin-top: 20px;
   background-color: #F8F8F9;
   border: 1px solid #B8B8B8;
   padding: 0px 3px 0px 3px;
@@ -343,12 +344,26 @@ TinyPass admin form sytles
 }
 
 #tp_modes .choice-on, #tp_modes .choice-selected{
-  background-color:#4985dc;
-  border-radius: 20px;
-  color:white;
-  /*background-image: url('./images/choice-bg.png');*/
-  /*background-repeat:no-repeat;*/
-  /*color:inherit;*/
+  text-shadow: 0 -1px #1753AB;
+  cursor: pointer;
+  display: inline-block;
+  border: #3878D8 1px solid;
+  border-radius: 40px;
+  -webkit-border-radius: 40px;
+  -moz-border-radius: 40px;
+  color: white;
+  margin-left: 4px;
+  margin-right: 4px;
+  text-align: center;
+  background: #5f95e2;
+  background: -moz-linear-gradient(top, #5f95e2 40%, #3878d8 99%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(40%,#5f95e2), color-stop(99%,#3878d8));
+  background: -webkit-linear-gradient(top, #5f95e2 40%,#3878d8 99%);
+  background: -o-linear-gradient(top, #5f95e2 40%,#3878d8 99%);
+  background: -ms-linear-gradient(top, #5f95e2 40%,#3878d8 99%);
+  background: linear-gradient(to bottom, #5f95e2 40%,#3878d8 99%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5f95e2', endColorstr='#3878d8',GradientType=0 );
+  box-shadow: 0px 2px 1px #dbdbde;
 }
 
 #tinypass_post_options_form h4{

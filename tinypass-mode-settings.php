@@ -89,16 +89,16 @@ function tinypass_mode_settings() {
               <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-ppv.png">
               <div class="name"><?php echo TPPaySettings::MODE_PPV_NAME ?></div>
               <div class="sub">Purchase individual items</div>
-              <div class="info">Users can look at your content for a certain<br> number of views, or for a certain time period.</div>
-              <div class="example">Examples: <a href="http://www.ufc.com">UFC</a></div>
+              <div class="info">Sell access to individual blog posts. Set some default price options or tweak them per post.</div>
+              <div class="example">Examples: <a href="http://www.djbooth.net">djbooth.net</a></div>
             </div>
           </div>
           <div id="tp_mode2_details" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" >
             <div class="inner">
               <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-metered.png">
               <div class="name"><?php echo TPPaySettings::MODE_METERED_NAME ?></div>
-              <div class="sub">Free preview period</div>
-              <div class="info">Users can look at your content for a certain<br> number of views, or for a certain time period.</div>
+              <div class="sub">Metered access</div>
+              <div class="info">Users can look at your content for a certain number of views, or for a certain time period.</div>
               <div class="example">Examples: <a href="http://www.nytimes.com">The New York Times</a></div>
             </div>
           </div>
@@ -107,7 +107,7 @@ function tinypass_mode_settings() {
               <img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-hard.png">
               <div class="name"><?php echo TPPaySettings::MODE_STRICT_NAME ?></div>
               <div class="sub">Fully restricted content</div>
-              <div class="info">Users can look at your content for a certain<br> number of views, or for a certain time period.</div>
+              <div class="info">All of your tagged content is restricted by the paywall right from the beginning.</div>
               <div class="example">Examples: <a href="http://www.thebostonglobe.com">The Boston Globe</a></div>
             </div>
           </div>

@@ -11,7 +11,7 @@ jQuery(function(){
       closeOnEscape: true,
       closeText: "x",
       zIndex: 50000,
-      dialogClass: 'tp-appeal-dialog',
+      dialogClass: 'tp-appeal-dialog'
     });
   }
 
