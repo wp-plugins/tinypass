@@ -7,8 +7,8 @@ function tinypass_ppv_settings() {
 
 	if (isset($_POST['_Submit'])) {
 		$ss = $storage->getSiteSettings();
-    if(!isset($_POST['tinypass']['ppv']))
-      $_POST['tinypass']['ppv'] = 0;
+		if (!isset($_POST['tinypass']['ppv']))
+			$_POST['tinypass']['ppv'] = 0;
 
 		$ss->mergeValues($_POST['tinypass']);
 		$storage->saveSiteSettings($ss);
@@ -30,15 +30,15 @@ function tinypass_ppv_settings() {
 
 		<div class="">
 			<h2><?php _e('Pay-per-post settings'); ?></h2>
-      <hr>
+			<hr>
 
-      <p class="info">Want to allow users to buy individual pages or posts?  You can set the prices using the post options in the post editor screen.</p>
+			<p class="info">Want to allow users to buy individual pages or posts?  You can set the prices using the post options in the post editor screen.</p>
 			<form method="post">
 
 				<div class="postbox">
 					<div class="inside">
-            <input type="checkbox" id="ppv" name="tinypass[ppv]" value="1" <?php checked($ss->isPPPEnabled()) ?>>
-            <label for="ppv" >Enable the sale of purchase individual posts</label>
+						<input type="checkbox" id="ppv" name="tinypass[ppv]" value="1" <?php checked($ss->isPPPEnabled()) ?>>
+						<label for="ppv" >Enable the sale of purchase individual posts</label>
 					</div>
 				</div>
 				<div class="clear"></div>
