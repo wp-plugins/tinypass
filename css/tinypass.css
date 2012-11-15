@@ -129,6 +129,7 @@ TinyPass admin form sytles
   height:40px;
   line-height:38px;
   font-size:26px;
+  clear: both;
 }
 
 .tp-section-header1 {
@@ -174,6 +175,7 @@ TinyPass admin form sytles
 .tp-section {
   margin-top:40px;
   font-size:12px;
+  clear:both;
 }
 
 .tp-section input, .tp-section select, .tp-section textarea{

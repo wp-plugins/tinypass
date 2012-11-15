@@ -578,16 +578,16 @@ function __tinypass_ppv_payment_display(TPSiteSettings $ss) {
 	?>
 
 	<div class="postbox">
-		<h3><?php _e('Purchase section'); ?> </h3>
+		<h3><?php _e('Add default messaging for posts '); ?> </h3>
 		<div class="inside"> 
 
 			<div class="tp-simple-table">
 
-				<div class="label">Header</div>
+				<div class="label">Enter a header</div>
 				<input id="tp_pd_denied_msg1" name="tinypass[pd_denied_msg1]" value="<?php echo esc_attr(stripslashes($ss->getDeniedMessage1())) ?>" size="80" maxlength="80">
 				<br>
 
-				<div class="label">Description</div>
+				<div class="label">Enter a description</div>
 				<textarea id="tp_pd_denied_sub1" rows="5" cols="80" name="tinypass[pd_denied_sub1]"><?php echo stripslashes($ss->getDeniedSub1()) ?></textarea>
 			</div>
 
