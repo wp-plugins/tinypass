@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * Persistent layer that users wp_options for all TinyPass settings
+ */
 class TPStorage {
 
 	function getSiteSettings() {

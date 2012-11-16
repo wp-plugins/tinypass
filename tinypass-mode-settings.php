@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * This file is responsbile for confiuring, displaying, and saving
+ * individual paywall settings.
+ */
 function tinypass_mode_settings() {
 
 	$storage = new TPStorage();
@@ -7,6 +10,7 @@ function tinypass_mode_settings() {
 
 	$ps = null;
 
+	//Delete the paywall
 	if (isset($_POST['_Delete'])) {
 
 		if (isset($_POST['tinypass']['resource_id'])) {
@@ -20,6 +24,8 @@ function tinypass_mode_settings() {
 			wp_redirect($location);
 		}
 	} else if (isset($_POST['_Submit'])) {
+
+		//Save the paywall
 		$ss = $storage->getSiteSettings();
 		$ps = $ss->validatePaySettings($_POST['tinypass'], $errors);
 		if (count($errors) == 0) {
@@ -27,6 +33,7 @@ function tinypass_mode_settings() {
 			$location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your paywall has been saved!.'));
 			wp_redirect($location);
 		}
+
 	}
 
 	$edit = false;

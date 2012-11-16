@@ -1,8 +1,13 @@
 <?php
+/**
+ * This file perform the saving and dispalying of TinyPass settings on the 
+ * TinyPass->Settings menu
+ */
 
 function tinypass_site_settings() {
 
 	$storage = new TPStorage();
+
 	if (isset($_POST['_Submit'])) {
 		$ss = $storage->getSiteSettings();
 		$ss->mergeValues($_POST['tinypass']);

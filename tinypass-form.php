@@ -1,4 +1,8 @@
 <?php
+/*
+ * This file contains all form related helper methods for disaplying
+ * form content either from settings, post settings, or various other popups
+ */
 add_action('wp_ajax_tp_showEditPopup', 'ajax_tp_showEditPopup');
 add_action('wp_ajax_tp_saveEditPopup', 'ajax_tp_saveEditPopup');
 wp_enqueue_script("jquery");

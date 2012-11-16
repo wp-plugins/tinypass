@@ -22,18 +22,20 @@ class TPState {
 
 	public $post_req = null;
 	public $tag_req = null;
-	public $meter = null;
+	public $counter = null;
 	public $add_scripts = false;
 	public $embed_appeal = null;
 	public $show_appeal = null;
+	public $show_counter = false;
 
 	public function reset() {
 		$this->post_req = null;
 		$this->tag_req = null;
-		$this->meter = null;
+		$this->counter = null;
 		$this->add_scripts = false;
 		$this->show_appeal = false;
 		$this->embed_appeal = null;
+		$this->show_counter = false;
 	}
 
 }
@@ -61,7 +63,12 @@ function tinypass_init() {
 }
 
 /**
- * Main function for displaying Tinypass button on restricted post/pages
+ * This method performs nearly all of the TinyPass logic for when and how to protect content.
+ * Based upon the TP configuration, the post, the tags this method will either permit access
+ * to a post or it will truncate the content and show a 'purchase now' widget instead of the post content.
+ * 
+ * Access is checked by retreiving an encrypted cookie that is stored after a successful purchase.
+ * 
  */
 function tinypass_intercept_content($content) {
 
@@ -97,14 +104,6 @@ function tinypass_intercept_content($content) {
 	//we want to dump the button on this page
 	if ($tagOptions->getSubscriptionPageRef() == $post->ID) {
 		$tagOffer = TPPaySettings::create_offer($tagOptions, $tagOptions->getResourceId());
-
-
-//    $token = $store->findActiveToken('/(^wp_bundle1)|(^wp_tag_\d+)/');
-//		if ($token->isAccessGranted()) {
-		//wp_redirect(get_page_link($tagOptions->getSubscriptionPageSuccessRef()));
-//			$gotolink = get_page_link($tagOptions->getSubscriptionPageSuccessRef());
-//			exit;
-//		}
 		$gotolink = get_page_link($tagOptions->getSubscriptionPageSuccessRef());
 
 		$req = new TPPurchaseRequest($tagOffer);
@@ -215,7 +214,7 @@ function tinypass_intercept_content($content) {
 				$tagOfferTrialActive = TRUE;
 
 				if ($tagOptions->isCounterEnabled() && $meter->getTrialViewCount() > $tagOptions->getCounterDelay(PHP_INT_MAX)) {
-					$content .= '[TP_COUNTER]';
+					$tpstate->show_counter = true;
 
 					$onclick = 'onclick="return false"';
 					if ($tagOptions->isCounterOnClick(TPPaySettings::CT_ONCLICK_PAGE)) {
@@ -226,7 +225,7 @@ function tinypass_intercept_content($content) {
 						$tpstate->embed_appeal = __tinypass_create_appeal($tagOptions);
 					}
 
-					$tpstate->meter = __tinypass_render_template(TINYPASS_COUNTER_TEMPLATE, array(
+					$tpstate->counter = __tinypass_render_template(TINYPASS_COUNTER_TEMPLATE, array(
 							'count' => $meter->getTrialViewCount(),
 							'max' => $meter->getTrialViewLimit(),
 							'remaining' => $meter->getTrialViewLimit() - $meter->getTrialViewCount(),
@@ -252,12 +251,12 @@ function tinypass_intercept_content($content) {
 	if ($postOffer == null && $tagOffer == null)
 		return $content;
 
-	//check single offer1
+	//If they already have access to the post
 	if ($postToken != null && $postToken->isAccessGranted()) {
 		return $content;
 	}
 
-	//check offer2
+	//If the tag level offer does not exist or access is already granted
 	if ($tagToken != null && $tagToken->isAccessGranted() || $tagOfferTrialActive) {
 		return $content;
 	}
@@ -271,6 +270,9 @@ function tinypass_intercept_content($content) {
 		$content = $c['main'];
 	}
 
+	/*
+	 * Construct the offers for both the tag level offer and the post level offer if they exist
+	 */
 	$ticketoptions = array();
 	if ($postOffer) {
 		$req = new TPPurchaseRequest($postOffer, $ticketoptions);
@@ -290,25 +292,28 @@ function tinypass_intercept_content($content) {
 		$req2->setCallback('tinypass_reloader');
 	}
 
+	//Switch the offer order if selected in the settings
 	if ($tagOptions->isPostFirstInOrder() == false) {
 		$temp = $tpstate->post_req;
 		$tpstate->post_req = $tpstate->tag_req;
 		$tpstate->tag_req = $temp;
 	}
 
-	return $content .= " [TP_HOOK]";
+	return $content;
 }
 
 /**
- * Append ticket to the end of the post content
+ * This method is responsbile for appending any TinyPass related content
+ * when trying to view a post.  It will add the offer purchase table
+ * and counter/appeal related widget is access is denied.
  */
 function tinypass_append_ticket($content) {
 
 	global $tpstate;
 
-	//Add the counter
-	if (preg_match('/\[TP_COUNTER\]/', $content)) {
-		$content = preg_replace('/\[TP_COUNTER\]/', $tpstate->meter, $content);
+	//Add the counter content
+	if ($tpstate->show_counter) {
+		$content .= $tpstate->counter;
 	}
 
 	if ($tpstate->post_req == null && $tpstate->tag_req == null)
@@ -365,10 +370,7 @@ function tinypass_append_ticket($content) {
 						));
 	}
 
-	if (preg_match('/\[TP_HOOK\]/', $content)) {
-		$content = preg_replace('/\[TP_HOOK\]/', $tout, $content);
-	}
-
+	$content .= $tout;
 
 	return $content;
 }
@@ -396,11 +398,7 @@ function __tinypass_render_template($template, $vars = array()) {
 }
 
 /**
- *
  * Trims a string based on WP settings
- *  
- * @param string $text
- * @return string
  */
 function tinypass_trim_excerpt($text) {
 
@@ -419,7 +417,7 @@ function tinypass_trim_excerpt($text) {
 }
 
 /**
- * Include the TP api files
+ * Helper method to include tinypass related files
  */
 function tinypass_include() {
 	include_once dirname(__FILE__) . '/api/TinyPass.php';
@@ -470,6 +468,9 @@ function get_extended_with_tpmore($post) {
 	return array('main' => $main, 'extended' => $extended);
 }
 
+/*
+ * Helper method to render the appeal content
+ */
 function __tinypass_create_appeal($tagOptions) {
 	return __tinypass_render_template(TINYPASS_APPEAL_TEMPLATE, array(
 							'header' => $tagOptions->getAppealMessage1('Purchase to get full access to our great content'),
