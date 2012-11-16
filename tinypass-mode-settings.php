@@ -26,8 +26,6 @@ function tinypass_mode_settings() {
 			$storage->savePaywallSettings($ss, $ps);
 			$location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your paywall has been saved!.'));
 			wp_redirect($location);
-		} else {
-			//$ps = new TPPaySettings($_POST['tinypass']);
 		}
 	}
 
@@ -212,7 +210,7 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-	                                                                                        													
+	  	                                                                                        													
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -256,7 +254,7 @@ function tinypass_mode_settings() {
 					return false;
 				}
 			});
-	                                                                                        									
+	  	                                                                                        									
 			//toggle access_period after recurring is changed
 			$('.recurring-opts-off').bind('change', function(){
 				var index = $(this).attr("opt");

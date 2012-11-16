@@ -25,10 +25,7 @@ function ajax_tp_showEditPopup() {
 }
 
 /**
- * Save the Popup Form
- *
- * 	Tags will be saved directly
- *
+ * Save the post popup form
  */
 function ajax_tp_saveEditPopup() {
 
@@ -106,9 +103,8 @@ function tinypass_post_options_summary(TPPaySettings $ps) {
 
 /**
  * 
- * @param type $meta
  */
-function tinypass_post_header_form($meta) {
+function tinypass_post_header_form(TPPaySettings $postSettings) {
 	?>
 
 	<table class="form-table">
@@ -122,7 +118,7 @@ function tinypass_post_header_form($meta) {
 
 		<tr>
 			<td>
-				<span id="tp_hidden_options"><?php echo tinypass_post_options_summary($meta); ?> </span>
+				<span id="tp_hidden_options"><?php echo tinypass_post_options_summary($postSettings); ?> </span>
 			</td>
 		</tr>
 	</table>
@@ -138,7 +134,7 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 	?>
 
 	<div id="poststuff">
-	<?php wp_nonce_field('tinypass_options', 'tinypass_nonce'); ?>
+		<?php wp_nonce_field('tinypass_options', 'tinypass_nonce'); ?>
 		<div class="tp-settings">
 			<div id="tp-error"></div>
 			<div class="inside">
@@ -165,7 +161,7 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 
 						<?php echo __tinypass_price_option_display('1', $ps, false, 180) ?>
 						<?php echo __tinypass_price_option_display('2', $ps, false, 180) ?>
-	<?php echo __tinypass_price_option_display('3', $ps, false, 180) ?>
+						<?php echo __tinypass_price_option_display('3', $ps, false, 180) ?>
 
 						<br> <br>
 						<a class="add_option_link button" href="#" onclick="tinypass.addPriceOption();return false;">Add</a>
@@ -173,7 +169,7 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 						<br> <br>
 					</div>
 				</div>
-	<?php echo __tinypass_payment_messaging_post_display($ps) ?>
+				<?php echo __tinypass_payment_messaging_post_display($ps) ?>
 				<div>
 					<center>
 						<button class="button" type="button" onclick="tinypass.saveTinyPassPopup();">Save</button>
@@ -192,19 +188,26 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
  */
 function __tinypass_section_head(TPPaySettings $ps, $num, $text = '', $html = '') {
 	?>
+
 	<div class="tp-section-header">
 		<div class="num"><?php echo $num ?></div>
 		<?php echo $text ?>
-	<?php echo $html ?>
+		<?php echo $html ?>
 	</div>
+
 <?php } ?>
 <?php
 
+/**
+ * Alternative settings section head 
+ */
 function __tinypass_section_head_alt($text = '') {
 	?>
+
 	<div class="tp-section-header">
-	<?php echo $text ?>
+		<?php echo $text ?>
 	</div>
+
 <?php } ?>
 <?php
 
@@ -218,7 +221,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 		<div class="info">
 			<div class="heading"><?php _e('Add a preview counter') ?></div>
 			<div class="slider">
-	<?php echo tinypass_slider('tinypass[ct_en]', array('Off' => '0', 'On' => '1'), $ps->getCounterEnabled()) ?>
+				<?php echo tinypass_slider('tinypass[ct_en]', array('Off' => '0', 'On' => '1'), $ps->getCounterEnabled()) ?>
 				<div class="clear"></div>
 				<br>
 			</div>
@@ -251,7 +254,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 				<h3><?php _e('Customize it'); ?> </h3>
 				<div class="inside">
 					<div class="label">Where should the counter appear?
-	<?php echo __tinypass_dropdown("tinypass[ct_pos]", array('1' => 'Top right', '2' => 'Top left', '3' => 'Bottom left', '4' => 'Bottom right'), $ps->getCounterPosition()) ?>
+						<?php echo __tinypass_dropdown("tinypass[ct_pos]", array('1' => 'Top right', '2' => 'Top left', '3' => 'Bottom left', '4' => 'Bottom right'), $ps->getCounterPosition()) ?>
 					</div>
 					<div class="label">Only show the counter to user after
 						<input type="text" name="tinypass[ct_delay]" size="2" value="<?php echo $ps->getCounterDelay(0) ?>">
@@ -264,7 +267,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 					<div class="">
 						Override the default appeal design by creating a custom template file
 						<br> <br>
-	<?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
+						<?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
 					</div>
 				</div>
 			</div>
@@ -290,7 +293,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
 		<div class="info">
 			<div class="heading">Add an appeal pop-up</div>
 			<div class="slider">
-	<?php echo tinypass_slider('tinypass[app_en]', array('Off' => '0', 'On' => '1'), $ps->getAppealEnabled()) ?>
+				<?php echo tinypass_slider('tinypass[app_en]', array('Off' => '0', 'On' => '1'), $ps->getAppealEnabled()) ?>
 				<div class="clear"></div>
 				<br>
 			</div>
@@ -328,7 +331,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
 					<div class="">
 						Override the default appeal design by creating a custom template file
 						<br> <br>
-	<?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
+						<?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
 					</div>
 				</div>
 			</div>
@@ -374,7 +377,7 @@ function __tinypass_metered_display(TPPaySettings $ps) {
 						<tr>
 							<td width="120" valign="middle">
 								<div>
-	<?php echo __tinypass_dropdown("tinypass[metered]", array('count' => 'Page views'), $metered, array("onchange" => "tinypass.showMeteredOptions(this)")) ?>
+									<?php echo __tinypass_dropdown("tinypass[metered]", array('count' => 'Page views'), $metered, array("onchange" => "tinypass.showMeteredOptions(this)")) ?>
 								</div>
 							</td>
 							<td style="border-left:1px solid #DFDFDF">
@@ -384,16 +387,16 @@ function __tinypass_metered_display(TPPaySettings $ps) {
 									<input type="text" size="5" maxlength="5" name="tinypass[m_maa]" value="<?php echo $meter_count ?>">
 									<label>free views within</label>
 									<input type="text" size="5" maxlength="5" name="tinypass[m_lp]" value="<?php echo $lockout_period ?>">
-	<?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
+									<?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
 								</div>
 
 								<div id="tp-metered-time" class="tp-metered-options">
 									<label>Users will have access for</label>
 									<input type="text" size="5" maxlength="5" name="tinypass[m_tp]" value="<?php echo $trial_period ?>">
-	<?php echo __tinypass_dropdown("tinypass[m_tp_type]", $times, $trial_period_type) ?>
+									<?php echo __tinypass_dropdown("tinypass[m_tp_type]", $times, $trial_period_type) ?>
 									<label>then they will be locked out for</label>
 									<input type="text" size="5" maxlength="5" name="tinypass[m_lp]" value="<?php echo $lockout_period ?>">
-	<?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
+									<?php echo __tinypass_dropdown("tinypass[m_lp_type]", $times, $lockout_period_type) ?>
 								</div>
 
 							</td>
@@ -411,14 +414,14 @@ function __tinypass_save_buttons(TPPaySettings $ps, $edit = false) {
 	?>
 
 	<p>
-	<?php if ($edit): ?>
+		<?php if ($edit): ?>
 			<input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
 			<a href="<?php menu_page_url('tinypass.php') ?>" class="button-primary"> Cancel </a>
 			<input type="submit" name="_Delete" value="Delete" tabindex="4" class="button-primary"  style="" onclick="return confirm('Are you sure you want to delete this paywall? All protected posts will become available for free.')"/>
-	<?php else: ?>
+		<?php else: ?>
 			<input type="submit" name="_Submit" value="Create paywall" tabindex="4" class="button-primary" />
 			<a href="<?php menu_page_url('tinypass.php') ?>" class="button-primary"> Cancel </a>
-	<?php endif; ?>
+		<?php endif; ?>
 	</p>
 
 <?php } ?>
@@ -502,13 +505,13 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 				<h3><?php echo _e("Select the tags of the content you want restricted") ?></h3>
 				<div class=""> 
 					<div class="tag-holder">
-	<?php foreach ($ps->getPremiumTagsArray() as $tag): ?>
+						<?php foreach ($ps->getPremiumTagsArray() as $tag): ?>
 							<div class="tag">
 								<div class="text"><?php echo $tag ?></div>
 								<div class="remove"></div>
 								<input type="hidden" name="tinypass[tags][]" value="<?php echo $tag ?>">
 							</div>
-	<?php endforeach; ?>
+						<?php endforeach; ?>
 					</div>
 					<div class="clear"></div>
 					<div class="tag-entry tp-bg">
@@ -552,7 +555,7 @@ function __tinypass_pricing_display(TPPaySettings $ps) {
 
 					<?php echo __tinypass_price_option_display(1, $ps) ?>
 					<?php echo __tinypass_price_option_display(2, $ps) ?>
-	<?php echo __tinypass_price_option_display(3, $ps) ?>
+					<?php echo __tinypass_price_option_display(3, $ps) ?>
 
 					<br>
 					<div id="pricing_add_more_buttons">
@@ -667,7 +670,7 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
 					<div class="">
 						Override the default purchase layout by creating a custom template file
 						<br> <br>
-	<?php echo get_template_directory() ?>/<b><?php echo TINYPASS_PURCHASE_TEMPLATE ?></b>
+						<?php echo get_template_directory() ?>/<b><?php echo TINYPASS_PURCHASE_TEMPLATE ?></b>
 					</div>
 				</div>
 
@@ -727,18 +730,18 @@ function __tinypass_price_option_display($opt, TPPaySettings $ps, $sub = true, $
 				<?php endif; ?>
 				<input type="text" size="5" maxlength="5" name="tinypass[<?php echo "po_ap$opt" ?>]" value="<?php echo $access_period ?>" class="po_ap_opts<?php echo $opt ?>">
 				<?php echo __tinypass_dropdown("tinypass[po_ap_type$opt]", $times, $access_period_type, array('class' => "po_ap_opts$opt")) ?>
-	<?php if ($sub): ?>
+				<?php if ($sub): ?>
 					<span style="margin-left:30px">&nbsp;</span>
 					<input class="recurring-opts-on" id="<?php echo "po_recur$opt" ?>" type="radio" name="tinypass[po_recur<?php echo $opt ?>]" value="1 month" <?php checked($recur) ?> opt="<?php echo $opt ?>">
 					<label for="<?php echo "po_recur$opt" ?>"><?php _e("Monthly Subscription") ?></label>
-	<?php endif; ?>
+				<?php endif; ?>
 			</td>
 			<td width="270">
 				<input type="text" size="20" maxlength="20" name="tinypass[<?php echo "po_cap$opt" ?>]" value="<?php echo $caption ?>">
 			</td>
 		</tr>
 	</table>
-<?php
+	<?php
 }
 
 function tinypass_slider($field_name, $options, $selected_value) {

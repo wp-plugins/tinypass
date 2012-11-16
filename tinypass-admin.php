@@ -4,12 +4,11 @@ define('TINYPASS_FAVICON', 'http://www.tinypass.com/favicon.ico');
 
 tinypass_include();
 
-add_action("admin_menu", 'tinypass_add_admin_pages');
-
 require_once (dirname(__FILE__) . '/tinypass-mode-settings.php');
-require_once (dirname(__FILE__) . '/tinypass-ppp-settings.php');
 require_once (dirname(__FILE__) . '/tinypass-site-settings.php');
 require_once (dirname(__FILE__) . '/tinypass-paywalls.php');
+
+add_action("admin_menu", 'tinypass_add_admin_pages');
 
 function tinypass_add_admin_pages() {
 	add_menu_page('Tinypass', 'Tinypass', 'edit_plugins', 'tinypass.php', 'tinypass_paywalls_list', TINYPASS_FAVICON);

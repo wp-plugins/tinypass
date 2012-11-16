@@ -42,23 +42,24 @@ function tinypass_upgrades() {
 	if ($current < '2.1.0') {
 		$storage = new TPStorage();
 		$ss = $storage->getSiteSettings();
-		$pw = $storage->getPaywall('wp_bundle1');
 
-		$pw->setEnabled(true);
-		if ($pw->getMode() == 0) {
-			$pw->setEnabled(false);
+		//update the old wp_bundle1
+		$pw = $storage->findPaywall('wp_bundle1');
+		if ($pw != null) {
+
+			$pw->setEnabled(true);
+			if ($pw->getMode() == 0) {
+				$pw->setEnabled(false);
+			}
+			$storage->savePaywallSettings($ss, $pw);
 		}
-		$storage->savePaywallSettings($ss, $pw);
 
 		update_option('tinypass_version', '2.1.0');
 	}
 }
 
 function tinypass_deactivate() {
-	//$storage = new TPStorage();
-	//$ss = $storage->getSiteSettings();
-	//$ss->setEnabled(0);
-	//$storage->saveSiteSettings($ss);
+	
 }
 
 function tinypass_uninstall() {

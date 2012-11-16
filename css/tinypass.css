@@ -80,6 +80,7 @@ input {
 }
 
 .tp-col.right {
+  margin:0px;
   width:30%;
   text-align:right;
   padding-top:10px;
@@ -666,6 +667,7 @@ TinyPass admin form sytles
 #tinypass-appeal-dialog .row-head {
   font-weight:bold;
   font-size:30px;
+  line-height: 30px;
   color:black;
   padding:0px 20px 0px 20px;
   text-align: center;
@@ -695,6 +697,7 @@ TinyPass admin form sytles
   color:black;
   display: inline-block;
   float:right;
+  text-align:center;
   width:25px;
   height:25px;
   line-height:25px;
