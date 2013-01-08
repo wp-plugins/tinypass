@@ -95,7 +95,7 @@ Every site has different content and a unique audience. That's why Tinypass supp
 
 = Where can I learn more about using Tinypass for WordPress? =
 
-We're glad you asked! For a complete set of instructions for working with Tinypass for WordPress, please visit [our developer side](www.developer.tinypass.com/main/wordpress "Tinypass Wordpress Plugin for Developers").
+We're glad you asked! For a complete set of instructions for working with Tinypass for WordPress, please visit [our developer site](http://developer.tinypass.com/main/wordpress "Tinypass Wordpress Plugin for Developers").
 
 = How do my visitors pay? =
 
