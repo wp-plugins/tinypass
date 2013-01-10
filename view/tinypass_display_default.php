@@ -1,3 +1,4 @@
+<p>
 <script type="text/javascript">
 	if(typeof tinypass_reloader != 'function') {
 		function tinypass_reloader(status){
@@ -5,6 +6,7 @@
 		}
 	}
 </script>
+</p>
 <?php
 /**
  * Available variables
