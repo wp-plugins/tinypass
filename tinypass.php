@@ -3,7 +3,7 @@
 /*
   Plugin Name: TinyPass:Metered
   Plugin URI: http://www.tinypass.com
-  Description: Tinypass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free Tinypass publisher account and configure the Tinypass plugin for your WordPress site
+  Description: TinyPass:Metered allows for metered access to your WordPress site
   Author: Tinypass
   Version: 1.0.0
   Author URI: http://www.tinypass.com
@@ -115,7 +115,6 @@ function tinypass_intercept_content($content) {
 
 		if ($c['extended'] == '') {
 			$content = tinypass_trim_excerpt($content);
-			$content .= "<div>some div</div>";
 		} else {
 			$content = $c['main'];
 			$content .= apply_filters('the_content_more_link', ' <a href="' . get_permalink() . "\" class=\"readon-link\">Read On</a>", 'Read On');

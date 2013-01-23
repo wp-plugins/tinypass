@@ -212,8 +212,10 @@ class TPSiteSettings {
 		} else if ($activeMode != TPPaySettings::MODE_OFF) {
 
 
-			if (empty($form['resource_name'])) {
-				$errors['resource_name'] = "Paywall name must no be empty";
+			if($activeMode != TPPaySettings::MODE_METERED_LIGHT) {
+				if (empty($form['resource_name'])) {
+					$errors['resource_name'] = "Paywall name must no be empty";
+				}
 			}
 
 			if (!is_array($form['tags']))

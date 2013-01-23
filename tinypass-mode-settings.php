@@ -59,32 +59,13 @@ function tinypass_mode_settings() {
 
 			<div class="tp-section">
 
-				<?php __tinypass_section_head($ps, 1, __("Paywall Settings"), '');?>
-
-				<div id="tp_mode_details">
-					<!--
-					<div id="tp_mode4_details" class="choice" mode="<?php echo TPPaySettings::MODE_METERED_LIGHT ?>" >
-						<div class="inner">
-							<img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-metered.png">
-							<div class="name"><?php echo TPPaySettings::MODE_METERED_LIGHT_NAME ?></div>
-							<div class="sub">Metered access</div>
-							<div class="info">Users can look at your content for a certain number of views, or for a certain time period.</div>
-							<div class="example">Examples: <a href="http://www.nytimes.com">The New York Times</a></div>
-						</div>
-					</div>
-					-->
-					<div class="clear"></div>
-				</div>
-				<div class="clear"></div>
-
-				<div id="tp_modes">
+				<div id="tp_modes" style="display:none">
 					<div id="tp_mode4" class="choice" mode="<?php echo TPPaySettings::MODE_METERED_LIGHT ?>" <?php checked(true, true) ?>><?php echo TPPaySettings::MODE_METERED_LIGHT_NAME ?></div>
 					<div class="clear"></div>
 				</div>
 
 				<div class="clear"></div>
 			</div>
-			<div class="hr"></div>
 
 
 			<div id="tp_mode4_panel" class="tp_mode_panel">
@@ -92,13 +73,14 @@ function tinypass_mode_settings() {
 					<input class="tp_mode" name="tinypass[mode]" type="hidden">
 					<div style="float:right">
 						<input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
+						<input type="hidden" readonly="true" name="tinypass[resource_name]" value="pw">
 						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
 					</div>
-					<?php $num = 1; ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Pick your content")) ?>
-					<?php __tinypass_tag_display($ps) ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Settings")) ?>
+					<?php $num = 0; ?>
+					<?php __tinypass_section_head($ps, ++$num, __("Setup your paywall")) ?>
 					<?php __tinypass_mlite_display($ps) ?>
+					<?php __tinypass_section_head($ps, ++$num, __("Select your premium content")) ?>
+					<?php __tinypass_tag_display($ps) ?>
 					<?php __tinypass_save_buttons($ps, $edit) ?>
 				</form>
 			</div>

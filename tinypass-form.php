@@ -53,13 +53,22 @@ function __tinypass_mlite_display(TPPaySettings $ps) {
 	$sandId = stripslashes(esc_attr($ps->getPaywallIDSand()));
 	?>
 	<div class="tp-section">
+
+		<div class="desc">Sign up or login to <a href="dashboard.tinypass.com">Tinypass Dashboard</a> to create a new paywall.<br>
+			A Paywall ID number will be generated for you.  Copy it to your clipboard
+		</div>
+		<br> <br>
+
 		<div class="info">
-			<div class="heading">Paywall IDs</div>
+			<div class="heading">Enter your Paywall ID</div>
+			<div class="desc">Create a paywall on the <a href="dashboard.tinypass.com">Tinypass Dashboard</a> and paste the ID number here.</div>
+			<br>
+			<div class="desc">If you're just testing, create a paywall on the <a href="sandbox.tinypass.com">Tinypass Dashboard</a> and paste the ID number here.</div>
 		</div>
 		<div class="body">
 
 			<div class="postbox">
-				<h3><?php _e('Enter your Paywall ID for the \'Live\' environment'); ?> </h3>
+				<h3><?php _e('Paywall ID'); ?> </h3>
 				<div class="inside"> 
 
 					<div class="tp-simple-table">
@@ -69,7 +78,7 @@ function __tinypass_mlite_display(TPPaySettings $ps) {
 				</div>
 			</div>
 			<div class="postbox">
-				<h3><?php _e('Enter your Paywall ID for the \'Sandbox\' environment'); ?> </h3>
+				<h3><?php _e('Sandbox Paywall ID'); ?> </h3>
 				<div class="inside"> 
 
 					<div class="tp-simple-table">
@@ -97,28 +106,7 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 	?>
 	<div class="tp-section">
 		<div class="info">
-			<div class="heading">Name your content</div>
-			<div class="desc">What are you users buying?</div>
-		</div>
-		<div class="body">
-
-			<div class="postbox">
-				<h3><?php _e('Enter the name'); ?> </h3>
-				<div class="inside"> 
-
-					<div class="tp-simple-table">
-						<input name="tinypass[resource_name]" size="40" value="<?php echo $name ?>" >
-					</div>
-
-				</div>
-			</div>
-		</div>
-		<div class="clear"></div>
-	</div>
-
-	<div class="tp-section">
-		<div class="info">
-			<div class="heading">Pick your content</div>
+			<div class="heading">Add tags</div>
 			<div class="desc">All tagged posts will automatically be restricted with this paywall.</div>
 		</div>
 		<div class="body">
