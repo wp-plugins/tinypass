@@ -23,25 +23,6 @@ var tinypass = {
 		}
 	},
 
-	showTinyPassPopup: function(type, termId){
-
-		var self = this;
-
-		if(termId){
-			data = 'tagPopup=t&action=tp_showEditPopup&tp_type=' + type + "&term_id=" + termId;
-		}else{
-			var data = jQuery('form').serialize();
-			data += '&action=tp_showEditPopup&tp_type=' + type;
-		}
-
-		jQuery.post(ajaxurl, data, function(response) {
-			jQuery("#tp_dialog").html(response);
-			jQuery("#tp_dialog").dialog({
-				minWidth:700
-			});
-		});
-
-	},
 	deleteTagOption:function(termId){
 		data = 'tagPopup=t&action=tp_deleteTagOption&tp_type=tag&term_id=' + termId;
 
@@ -62,21 +43,6 @@ var tinypass = {
 		jQuery(".form-invalid").removeClass("form-invalid");
 		jQuery(".tp-error").removeClass("tp-error");
 		jQuery("#tp-error").html("");
-	},
-
-	saveTinyPassPopup:function(){
-		var data = jQuery('#tp_dialog *').serialize();
-		data += '&action=tp_saveEditPopup';
-
-		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-		jQuery.post(ajaxurl, data, function(response) {
-			if(response.indexOf("var a;") >= 0)
-				eval(response);
-			else {
-				jQuery("#tp_hidden_options").html(response);
-				jQuery("#tp_dialog").dialog('close');
-			}
-		});
 	},
 
 	closeTinyPassPopup:function(){

@@ -13,17 +13,21 @@ class TPPaySettings {
 	const MODE_DONATION_KEY = 'tinypass_mode_donation';
 	const MODE_STRICT_KEY = 'tinypass_mode_strict';
 	const MODE_METERED_KEY = 'tinypass_mode_metered';
+	const MODE_METERED_LIGHT_KEY = 'tinypass_mode_metered_light';
 	const MODE_OFF = 0;
 	const MODE_PPV = 1;
 	const MODE_METERED = 2;
 	const MODE_STRICT = 3;
+	const MODE_METERED_LIGHT = 4;
 	const MODE_OFF_NAME = 'Off';
 	const MODE_PPV_NAME = 'Pay-Per-View';
 	const MODE_METERED_NAME = 'New York';
 	const MODE_STRICT_NAME = 'Boston';
+	const MODE_METERED_LIGHT_NAME = 'Metered';
 	const MODE_PPV_NAME_REAL = 'Pay-Per-View';
 	const MODE_METERED_NAME_REAL = 'Preview';
 	const MODE_STRICT_NAME_REAL = 'Strict';
+	const MODE_METERED_LIGHT_NAME_REAL = 'Metered';
 
 	//PRICE OPTIONS
 	const PO_PRICE = 'po_p';
@@ -55,6 +59,12 @@ class TPPaySettings {
 	const OFFER_ORDER = 'pd_order';
 	const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with TinyPass';
 	const DEFAULT_DENIED_MESSAGE2 = 'Get instant access with just a few clicks';
+
+	//MLITE SETTINGS
+	const MLITE_PWID_PROD = 'mlite_pwid_prod';
+	const MLITE_PWID_SAND = 'mlite_pwid_sand';
+	const MLITE_TRACK_HOMEPAGE = 'mlite_track_homepage';
+	const MLITE_READON_ENABLED = 'mlite_readon_enabled';
 
 	public static $MODE_NAMES = array(
 			self::MODE_PPV => self::MODE_PPV_NAME,
@@ -439,6 +449,45 @@ class TPPaySettings {
 		return $this->data->val(self::CT_DELAY, $def);
 	}
 
+	/**
+	 * MeteredList settings
+	 */
+
+	public function getPaywallID($env = 1) {
+		if($env == 1)
+			return $this->getPaywallIDProd('');
+		return $this->getPaywallIDSand('');
+	}
+
+	public function getPaywallIDProd($d = '') {
+		return $this->data->val(self::MLITE_PWID_PROD, $d);
+	}
+
+	public function getPaywallIDSand($d = '') {
+		return $this->data->val(self::MLITE_PWID_SAND, $d);
+	}
+
+	public function isTrackHomePage() {
+		return $this->data->isValEnabled(self::MLITE_TRACK_HOMEPAGE);
+	}
+
+	public function getTrackHomePage() {
+		return $this->data->isValEnabled(self::MLITE_TRACK_HOMEPAGE, 0);
+	}
+
+	public function isReadOnEnabled() {
+		return $this->data->isValEnabled(self::MLITE_READON_ENABLED);
+	}
+
+	public function getReadOnEnabled() {
+		return $this->data->isValEnabled(self::MLITE_READON_ENABLED, 0);
+	}
+
+
+
+	/**
+	 * Helper method
+	 */
 	public function getSummaryFields() {
 		$output = array();
 

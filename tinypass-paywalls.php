@@ -69,8 +69,8 @@ function tinypass_paywalls_list() {
 	$storage = new TPStorage();
 	$pws = $storage->getPaywalls(true);
 
-	if (count($pws) == 0)
-		wp_redirect(menu_page_url("TinyPassEditPaywall"));
+	if (count($pws) >= 0)
+		wp_redirect(menu_page_url("TinyPassEditPaywall") . "&rid=pw_config");
 	?>
 
 	<div id = "poststuff">

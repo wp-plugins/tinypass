@@ -3,189 +3,9 @@
  * This file contains all form related helper methods for disaplying
  * form content either from settings, post settings, or various other popups
  */
-add_action('wp_ajax_tp_showEditPopup', 'ajax_tp_showEditPopup');
-add_action('wp_ajax_tp_saveEditPopup', 'ajax_tp_saveEditPopup');
 wp_enqueue_script("jquery");
 wp_enqueue_script("jquery-ui");
 wp_enqueue_script('jquery-ui-dialog');
-
-/**
- * AJAX callback to show the Tinypass options form for both tags and posts/pages
- */
-function ajax_tp_showEditPopup() {
-	if (!current_user_can('edit_posts'))
-		die();
-
-	tinypass_include();
-
-	$postID = $_POST['post_ID'];
-
-	$storage = new TPStorage();
-	$ps = $storage->getPostSettings($postID);
-
-	tinypass_post_form($ps, $postID);
-
-	die();
-}
-
-/**
- * Save the post popup form
- */
-function ajax_tp_saveEditPopup() {
-
-	if (!current_user_can('edit_posts'))
-		die();
-
-	if (!wp_verify_nonce($_REQUEST['tinypass_nonce'], 'tinypass_options'))
-		die('Security check failed');
-
-	tinypass_include();
-
-	$storage = new TPStorage();
-	$errors = array();
-
-	$ss = $storage->getSiteSettings();
-	$ps = $ss->validatePostSettings($_POST['tinypass'], $errors);
-
-	$storage->savePostSettings($_POST['post_ID'], $ps);
-
-	if (count($errors)) {
-		echo "var a; tinypass.clearError(); ";
-		foreach ($errors as $field => $msg) {
-			echo "tinypass.doError('$field', \"$msg\");";
-		}
-		die();
-	}
-
-	$ps = $storage->getPostSettings($_POST['post_ID']);
-	echo tinypass_post_options_summary($ps);
-
-	die();
-}
-
-/**
- * 
- * @param TPPaySettings $ps
- * @return string
- */
-function tinypass_post_options_summary(TPPaySettings $ps) {
-
-	$output = "";
-
-	$resource_name = htmlspecialchars(stripslashes($ps->getResourceName()));
-
-	if ($resource_name == '')
-		$resource_name = 'Default to post title';
-
-	$en = $ps->isEnabled() ? __('Yes') : __('No');
-
-	$output .= "<div><strong>Enabled:</strong>&nbsp;" . $en . "</div>";
-
-	$output .= "<div><strong>Name:</strong>&nbsp;" . $resource_name . "</div>";
-
-	$line = "<div><strong>Pricing:</strong></div>";
-	for ($i = 1; $i <= 3; $i++) {
-
-		if ($ps->hasPriceConfig($i) == false)
-			continue;
-
-		$caption = $ps->getCaption($i);
-
-		$line .= "<div style='padding-left:50px;'>" . $ps->getAccessFullFormat($i);
-
-		if ($caption != '') {
-			$line .= " - '" . htmlspecialchars(stripslashes($caption)) . "'";
-		}
-
-		$line .= "</div>";
-	}
-
-	$output .= $line;
-
-	return $output;
-}
-
-/**
- * 
- */
-function tinypass_post_header_form(TPPaySettings $postSettings) {
-	?>
-
-	<table class="form-table">
-		<tr>
-			<td>
-				<input id="tp_modify_button" class="button" type="button" hef="#" onclick="return tinypass.showTinyPassPopup();return false;" value="Modify Options">
-				<div id="tp_dialog" title="<img src='http://www.tinypass.com/favicon.ico'> Tinypass Options" style="display:none;"></div>
-				<br>
-			</td>
-		</tr>
-
-		<tr>
-			<td>
-				<span id="tp_hidden_options"><?php echo tinypass_post_options_summary($postSettings); ?> </span>
-			</td>
-		</tr>
-	</table>
-
-	<?php
-}
-
-/**
- * Method outputs the popup form for entering TP parameters.
- * Will work with both tag and post forms
- */
-function tinypass_post_form(TPPaySettings $ps, $postID = null) {
-	?>
-
-	<div id="poststuff">
-		<?php wp_nonce_field('tinypass_options', 'tinypass_nonce'); ?>
-		<div class="tp-settings">
-			<div id="tp-error"></div>
-			<div class="inside">
-
-				<input type="hidden" name="tinypass[post_ID]" value="<?php echo $postID ?>"/>
-				<input type="hidden" name="post_ID" value="<?php echo $postID ?>"/>
-
-				<div style="float:right">
-					<strong>Enabled for this post?</strong>: <input type="checkbox" autocomplete=off name="tinypass[en]" value="1" <?php echo checked($ps->isEnabled()) ?>>
-				</div>
-				<br>
-
-				<div class="postbox">
-					<h3><?php _e("Setup your pricing for this post") ?></h3>
-					<div class="inside">
-						<br> <br>
-						<table class="tinypass_price_options_form">
-							<tr>
-								<th width="100"><?php _e('Price') ?></th>
-								<th width="180"><?php _e('Length of access') ?></th>
-								<th width="270"><?php _e('Caption (optional)') ?></th>
-							</tr>
-						</table>
-
-						<?php echo __tinypass_price_option_display('1', $ps, false, 180) ?>
-						<?php echo __tinypass_price_option_display('2', $ps, false, 180) ?>
-						<?php echo __tinypass_price_option_display('3', $ps, false, 180) ?>
-
-						<br> <br>
-						<a class="add_option_link button" href="#" onclick="tinypass.addPriceOption();return false;">Add</a>
-						<a class="add_option_link button" href="#" onclick="tinypass.removePriceOption();return false;">Remove</a>
-						<br> <br>
-					</div>
-				</div>
-				<?php echo __tinypass_payment_messaging_post_display($ps) ?>
-				<div>
-					<center>
-						<button class="button" type="button" onclick="tinypass.saveTinyPassPopup();">Save</button>
-						<button class="button" type="button" onclick="tinypass.closeTinyPassPopup();">Cancel</button>
-					</center>
-				</div>
-			</div>
-		</div>
-	</div>
-
-<?php } ?>
-<?php
 
 /**
  * show settings section head
@@ -459,6 +279,33 @@ function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
 					<div class="label"><?php echo _e("Paste this shortcut on your information page to position the Tinypass button") ?></div>
 					<input name="" readonly="true" size="40" value='<?php echo "[tinypass rid=\"" . $ps->getResourceId() . "\"]" ?>' >
 					<p class="help"></p>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+<?php } ?>
+<?php
+
+function __tinypass_mlite_display(TPPaySettings $ps) {
+
+	$id = stripslashes(esc_attr($ps->getPaywallIDProd()));
+	?>
+	<div class="tp-section">
+		<div class="info">
+			<div class="heading">Paywall ID</div>
+		</div>
+		<div class="body">
+
+			<div class="postbox">
+				<h3><?php _e('Enter the ID'); ?> </h3>
+				<div class="inside"> 
+
+					<div class="tp-simple-table">
+						<input name="tinypass[mlite_pwid_prod]" size="40" value="<?php echo $id ?>" >
+					</div>
+
 				</div>
 			</div>
 		</div>

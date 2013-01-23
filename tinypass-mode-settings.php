@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is responsbile for confiuring, displaying, and saving
  * individual paywall settings.
@@ -33,7 +34,6 @@ function tinypass_mode_settings() {
 			$location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your paywall has been saved!.'));
 			wp_redirect($location);
 		}
-
 	}
 
 	$edit = false;
@@ -72,65 +72,37 @@ function tinypass_mode_settings() {
 
 			<div class="tp-section">
 
-				<?php if ($many): ?>
-					<div class="tp-all-paywalls-crumb">
-						<a href="<?php menu_page_url("tinypass.php") ?>"> &lsaquo; <?php _e("All my paywalls") ?> </a>
-					</div>
-				<?php endif; ?>
-				<?php __tinypass_section_head($ps, 1, __("Paywall mode"), '<div id="tp-hide-paywalls">
-          <span>Hide paywall details</span>
-          <img src="' . plugin_dir_url('tinypass.php') . '/tinypass/css/images/closer.png">
-        </div>
-        <div id="tp-show-paywalls">
-          <span>Show paywall details</span>
-          <img src="' . plugin_dir_url('tinypass.php') . '/tinypass/css/images/opener.png">
-        </div>');
+				<?php __tinypass_section_head($ps, 1, __("Paywall Settings"), '');
 				?>
 
 
 				<div id="tp_mode_details">
-					<div id="tp_mode1_details" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" >
-						<div class="inner">
-							<img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-ppv.png">
-							<div class="name"><?php echo TPPaySettings::MODE_PPV_NAME ?></div>
-							<div class="sub">Purchase individual items</div>
-							<div class="info">Sell access to individual blog posts. Set some default price options or tweak them per post.</div>
-							<div class="example">Examples: <a href="http://www.djbooth.net">djbooth.net</a></div>
-						</div>
-					</div>
-					<div id="tp_mode2_details" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" >
+					<!--
+					<div id="tp_mode4_details" class="choice" mode="<?php echo TPPaySettings::MODE_METERED_LIGHT ?>" >
 						<div class="inner">
 							<img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-metered.png">
-							<div class="name"><?php echo TPPaySettings::MODE_METERED_NAME ?></div>
+							<div class="name"><?php echo TPPaySettings::MODE_METERED_LIGHT_NAME ?></div>
 							<div class="sub">Metered access</div>
 							<div class="info">Users can look at your content for a certain number of views, or for a certain time period.</div>
 							<div class="example">Examples: <a href="http://www.nytimes.com">The New York Times</a></div>
 						</div>
 					</div>
-					<div id="tp_mode3_details" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" >
-						<div class="inner">
-							<img src="<?php echo plugin_dir_url('tinypass.php') ?>/tinypass/css/images/icon-hard.png">
-							<div class="name"><?php echo TPPaySettings::MODE_STRICT_NAME ?></div>
-							<div class="sub">Fully restricted content</div>
-							<div class="info">All of your tagged content is restricted by the paywall right from the beginning.</div>
-							<div class="example">Examples: <a href="http://www.thebostonglobe.com">The Boston Globe</a></div>
-						</div>
-					</div>
+					-->
 					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
+
 				<div id="tp_modes">
-					<div id="tp_mode1" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_PPV) ?> ><?php echo TPPaySettings::MODE_PPV_NAME ?></div>
-					<div id="tp_mode2" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_METERED) ?>><?php echo TPPaySettings::MODE_METERED_NAME ?></div>
-					<div id="tp_mode3" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" <?php checked($ps->getMode(), TPPaySettings::MODE_STRICT) ?>><?php echo TPPaySettings::MODE_STRICT_NAME ?></div>
+					<div id="tp_mode4" class="choice" mode="<?php echo TPPaySettings::MODE_METERED_LIGHT ?>" <?php checked(true, true) ?>><?php echo TPPaySettings::MODE_METERED_LIGHT_NAME ?></div>
 					<div class="clear"></div>
 				</div>
+
 				<div class="clear"></div>
 			</div>
 			<div class="hr"></div>
 
 
-			<div id="tp_mode1_panel" class="tp_mode_panel">
+			<div id="tp_mode4_panel" class="tp_mode_panel">
 				<form action="" method="post" autocomplete="off">
 					<input class="tp_mode" name="tinypass[mode]" type="hidden">
 					<div style="float:right">
@@ -138,55 +110,15 @@ function tinypass_mode_settings() {
 						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
 					</div>
 					<?php $num = 1; ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
+					<?php __tinypass_section_head($ps, ++$num, __("Pick your content")) ?>
 					<?php __tinypass_tag_display($ps) ?>
-					<?php __tinypass_pricing_display($ps) ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
-					<?php __tinypass_purchase_option_table_display($ps) ?>
+					<?php __tinypass_section_head($ps, ++$num, __("Settings")) ?>
+					<?php __tinypass_mlite_display($ps) ?>
 					<?php __tinypass_save_buttons($ps, $edit) ?>
 				</form>
 			</div>
 
 
-			<div id="tp_mode2_panel" class="tp_mode_panel">
-				<form action="" method="post" autocomplete="off">
-					<input class="tp_mode" name="tinypass[mode]" type="hidden">
-					<div style="float:right">
-						<input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
-						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
-					</div>
-					<?php $num = 1; ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
-					<?php __tinypass_tag_display($ps) ?>
-					<?php __tinypass_pricing_display($ps) ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Customize your preview period")) ?>
-					<?php __tinypass_metered_display($ps) ?>
-					<?php __tinypass_appeal_display($ps) ?>
-					<?php __tinypass_counter_display($ps) ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
-					<?php __tinypass_purchase_option_table_display($ps) ?>
-					<?php __tinypass_purchase_page_display($ps) ?>
-					<?php __tinypass_save_buttons($ps, $edit) ?>
-				</form>
-			</div>
-
-			<div id="tp_mode3_panel" class="tp_mode_panel">
-				<form action="" method="post" autocomplete="off">
-					<input class="tp_mode" name="tinypass[mode]" type="hidden">
-					<div style="float:right">
-						<input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
-						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
-					</div>
-					<?php $num = 1; ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
-					<?php __tinypass_tag_display($ps) ?>
-					<?php __tinypass_pricing_display($ps) ?>
-					<?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
-					<?php __tinypass_purchase_option_table_display($ps) ?>
-					<?php __tinypass_purchase_page_display($ps) ?>
-					<?php __tinypass_save_buttons($ps, $edit) ?>
-				</form>
-			</div>
 		</div>
 	</div>
 
@@ -194,15 +126,6 @@ function tinypass_mode_settings() {
 		var scope = '';
 		jQuery(function(){
 			var $ = jQuery;
-
-			//setup modes
-			$('#tp_modes .choice').hover(
-			function(){
-				$(this).addClass("choice-on");
-			}, 
-			function(){
-				$(this).removeClass("choice-on");
-			});
 
 			$('#tp_mode_details .choice').click(function(){
 				var index = $(this).index();
@@ -217,7 +140,7 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-	  	                                                                                        													
+				  	                                                                                        													
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -261,48 +184,9 @@ function tinypass_mode_settings() {
 					return false;
 				}
 			});
-	  	                                                                                        									
-			//toggle access_period after recurring is changed
-			$('.recurring-opts-off').bind('change', function(){
-				var index = $(this).attr("opt");
-				if($(this).is(":checked")){
-					$(scope + " .po_ap_opts" + index).removeAttr("disabled");
-				}
-			});
-
-			$('.recurring-opts-on').bind('change', function(){
-				var index = $(this).attr("opt");
-				if($(this).is(":checked")){
-					$(scope + " .po_ap_opts" + index).attr("disabled", "disabled");
-				} else {
-					$(scope + " .po_ap_opts" + index).removeAttr("disabled");
-				}
-			})
-			$('.recurring-opts-on').trigger('change');
-
+				  	                                                                                        									
 			$('.premium_tags').suggest("admin-ajax.php?action=ajax-tag-search&tax=post_tag",{minchars:2,multiple:false,multipleSep:""})
 
-
-			$('.tp-slider').bind('click', function(event){
-				$('.choice-selected', this).removeClass("choice-selected");
-				var choice = $(event.target);
-				choice.addClass('choice-selected');
-				$("input", this).val(choice.parent().attr('val'));
-			})
-
-			tinypass.showMeteredOptions(document.getElementsByName("tinypass[metered]")[0])
-
-			$('#tp-hide-paywalls').bind('click', function(event){
-				$('#tp_mode_details').hide();
-				$(this).hide();
-				$('#tp-show-paywalls').show();
-			})
-
-			$('#tp-show-paywalls').bind('click', function(event){
-				$('#tp_mode_details').show();
-				$(this).hide();
-				$('#tp-hide-paywalls').show();
-			})
 	<?php
 	if (isset($_REQUEST['rid'])) {
 		echo "$('#tp-hide-paywalls').trigger('click');";
