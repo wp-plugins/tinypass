@@ -20,11 +20,13 @@ class TPMeterState {
 	public $embed_meter = null;
 	public $do_not_track = false;
 	public $paywall_id = 0;
+	public $sandbox = 0;
 
 	public function reset() {
 		$this->embed_meter = null;
 		$this->do_not_track = false;
 		$this->paywall_id = 0;
+		$this->sandbox = 0;
 	}
 
 }
@@ -91,6 +93,7 @@ function tinypass_intercept_content($content) {
 
 	$tpmeter->embed_meter = true;
 	$tpmeter->paywall_id = $tagOptions->getPaywallID($ss->isProd());
+	$tpmeter->sandbox = $ss->isSand();
 
 
 	//When content is shown in list form, i.e. categories we still need to truncate content
@@ -209,12 +212,9 @@ function tinypass_footer() {
 <script type=\"text/javascript\">
     window._tpm = window._tpm || [];
     window._tpm['paywallID'] = '" . $tpmeter->paywall_id . "'; 
-    window._tpm['paywallID'] = '" . 8010 . "'; 
     window._tpm['jquery_trackable_selector'] = '.readon-link';
-    window._tpm['sandbox'] = 'true';
-    window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . " 
-    window._tpm['host'] = 'tinydev.com:9000';
-    window._tpm['host'] = 'sandbox.tinypass.com';
+    window._tpm['sandbox'] = " . ($tpmeter->sandbox ? 'true' : 'false') . " 
+    window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . "; 
 
 		 (function () {
         var _tp = document.createElement('script');
