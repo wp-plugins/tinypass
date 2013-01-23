@@ -10,9 +10,6 @@
  */
 
 define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
-define('TINYPASS_PURCHASE_TEMPLATE', 'tinypass_purchase_display.php');
-define('TINYPASS_COUNTER_TEMPLATE', 'tinypass_counter_display.php');
-define('TINYPASS_APPEAL_TEMPLATE', 'tinypass_appeal_display.php');
 
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
@@ -21,12 +18,12 @@ register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 class TPMeterState {
 
 	public $embed_meter = null;
-	public $count_on_load = false;
+	public $do_not_track = false;
 	public $paywall_id = 0;
 
 	public function reset() {
 		$this->embed_meter = null;
-		$this->count_on_load = false;
+		$this->do_not_track = false;
 		$this->paywall_id = 0;
 	}
 
@@ -48,7 +45,6 @@ add_action('wp_footer', 'tinypass_footer');
 
 function tinypass_init() {
 	ob_start();
-	wp_register_script('tinypass_site', TINYPASSS_PLUGIN_PATH . 'js/tinypass_site.js', array('jquery-ui-dialog'), false, true);
 	wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
 }
 
@@ -82,13 +78,13 @@ function tinypass_intercept_content($content) {
 		return $content;
 
 	if (is_home()) {
-		$tpmeter->count_on_load = $tagOptions->isTrackHomePage();
+		$tpmeter->do_not_track = !$tagOptions->isTrackHomePage();
 	} else {
 		//check if current post is tagged for restriction
 		$post_terms = wp_get_post_terms($post->ID, 'post_tag', array());
 		foreach ($post_terms as $term) {
 			if ($tagOptions->tagMatches($term->name)) {
-				$tpmeter->count_on_load = true;
+				$tpmeter->do_not_track = false;
 			}
 		}
 	}
@@ -119,8 +115,7 @@ function tinypass_intercept_content($content) {
 			$content .= "<div>some div</div>";
 		} else {
 			$content = $c['main'];
-//			$content .= apply_filters('the_content_more_link', ' <a href="' . get_permalink() . "#more-{$post->ID}\" class=\"readon-link\">ReadOn</a>", 'ReadOn' );
-			$content .= apply_filters('the_content_more_link', ' <a href="' . get_permalink() . "\" class=\"readon-link\">ReadOn</a>", 'ReadOn' );
+			$content .= apply_filters('the_content_more_link', ' <a href="' . get_permalink() . "\" class=\"readon-link\">Read On</a>", 'Read On');
 		}
 	}
 
@@ -152,10 +147,10 @@ function tinypass_trim_excerpt($text) {
  * Helper method to include tinypass related files
  */
 function tinypass_include() {
-	include_once dirname(__FILE__) . '/api/util/TPStorage.php';
-	include_once dirname(__FILE__) . '/api/util/TPPaySettings.php';
-	include_once dirname(__FILE__) . '/api/util/TPSiteSettings.php';
-	include_once dirname(__FILE__) . '/api/util/TPValidate.php';
+	include_once dirname(__FILE__) . '/util/TPStorage.php';
+	include_once dirname(__FILE__) . '/util/TPPaySettings.php';
+	include_once dirname(__FILE__) . '/util/TPSiteSettings.php';
+	include_once dirname(__FILE__) . '/util/TPValidate.php';
 }
 
 /**
@@ -207,33 +202,31 @@ function get_extended_with_tpmore($post) {
  * Footer method to add scripts
  */
 function tinypass_footer() {
-	global $tpstate;
 	global $tpmeter;
-
-	tinypass_debug($tpmeter);
 
 	if ($tpmeter->embed_meter) {
 		echo "
 <script type=\"text/javascript\">
     window._tpm = window._tpm || [];
-    window._tpm['_paywallID'] = '" . $tpmeter->paywall_id . "'; 
+    window._tpm['paywallID'] = '" . $tpmeter->paywall_id . "'; 
+    window._tpm['paywallID'] = '" . 8010 . "'; 
     window._tpm['jquery_trackable_selector'] = '.readon-link';
     window._tpm['sandbox'] = 'true';
-    window._tpm['countOnLoad'] = " . ($tpmeter->count_on_load ? 'true' : 'false') . " 
-    window._tpm['host'] = 'http://tinydev.com:9000';
+    window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . " 
+    window._tpm['host'] = 'tinydev.com:9000';
+    window._tpm['host'] = 'sandbox.tinypass.com';
 
-    (function () {
+		 (function () {
         var _tp = document.createElement('script');
         _tp.type = 'text/javascript';
-        _tp.src = 'http://tinydev.com:9000/tinypass-meter.js';
+        var _host = window._tpm['host'] ? window._tpm['host'] : 'code.tinypass.com';
+        _tp.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + _host + '/tinypass-meter.js';
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(_tp, s);
     })();
+
 </script>\n\n";
 	}
-
-	wp_print_scripts('tinypass_js');
-	wp_print_scripts('tinypass_site');
 }
 
 ?>

@@ -11,27 +11,14 @@ function tinypass_mode_settings() {
 
 	$ps = null;
 
-	//Delete the paywall
-	if (isset($_POST['_Delete'])) {
-
-		if (isset($_POST['tinypass']['resource_id'])) {
-			$rid = $_POST['tinypass']['resource_id'];
-			$ss = $storage->getSiteSettings();
-			$ps = $storage->getPaywall($rid, true);
-
-			$storage->deletePaywall($ps);
-
-			$location = 'admin.php?page=tinypass.php&msg=' . urlencode(__('Your paywall has been deleted!.'));
-			wp_redirect($location);
-		}
-	} else if (isset($_POST['_Submit'])) {
+	if (isset($_POST['_Submit'])) {
 
 		//Save the paywall
 		$ss = $storage->getSiteSettings();
 		$ps = $ss->validatePaySettings($_POST['tinypass'], $errors);
 		if (count($errors) == 0) {
 			$storage->savePaywallSettings($ss, $ps);
-			$location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your paywall has been saved!.'));
+			$location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your settings have been saved!'));
 			wp_redirect($location);
 		}
 	}
@@ -72,9 +59,7 @@ function tinypass_mode_settings() {
 
 			<div class="tp-section">
 
-				<?php __tinypass_section_head($ps, 1, __("Paywall Settings"), '');
-				?>
-
+				<?php __tinypass_section_head($ps, 1, __("Paywall Settings"), '');?>
 
 				<div id="tp_mode_details">
 					<!--
@@ -140,7 +125,7 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-				  	                                                                                        													
+					  	                                                                                        													
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -184,7 +169,7 @@ function tinypass_mode_settings() {
 					return false;
 				}
 			});
-				  	                                                                                        									
+					  	                                                                                        									
 			$('.premium_tags').suggest("admin-ajax.php?action=ajax-tag-search&tax=post_tag",{minchars:2,multiple:false,multipleSep:""})
 
 	<?php
