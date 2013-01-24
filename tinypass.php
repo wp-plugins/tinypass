@@ -15,18 +15,24 @@ register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
-class TPMeterState {
+wp_enqueue_script('tp-util', TINYPASSS_PLUGIN_PATH . 'js/tp-util.js', array(), true, true);
 
-	public $embed_meter = null;
-	public $do_not_track = false;
-	public $paywall_id = 0;
-	public $sandbox = 0;
+if (!class_exists('TPMeterState')) {
 
-	public function reset() {
-		$this->embed_meter = null;
-		$this->do_not_track = false;
-		$this->paywall_id = 0;
-		$this->sandbox = 0;
+	class TPMeterState {
+
+		public $embed_meter = null;
+		public $do_not_track = false;
+		public $paywall_id = 0;
+		public $sandbox = 0;
+
+		public function reset() {
+			$this->embed_meter = null;
+			$this->do_not_track = false;
+			$this->paywall_id = 0;
+			$this->sandbox = 0;
+		}
+
 	}
 
 }
@@ -41,13 +47,42 @@ if (is_admin()) {
 	include_once dirname(__FILE__) . '/tinymce/plugin.php';
 }
 
-add_filter('the_content', 'tinypass_intercept_content', 5);
 add_action('init', 'tinypass_init');
 add_action('wp_footer', 'tinypass_footer');
 
 function tinypass_init() {
+	global $more;
 	ob_start();
-	wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+
+	if (is_admin())
+		wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+
+	if (tinypass_is_readon_request()) {
+		$id = $_REQUEST['p'];
+		$query = new WP_Query(array('post_type' => 'any', 'p' => $id));
+
+		if (!$query->have_posts()) {
+			header("HTTP/1.0 404 Not Found");
+			exit;
+		}
+
+		$post = $query->the_post();
+
+		$more = true;
+		$content = get_the_content("");
+
+		$content = apply_filters('the_content', $content);
+		$content = str_replace(']]>', ']]&gt;', $content);
+
+		$c = tinypass_split_excerpt_and_body($content, false);
+
+		$content = $c['extended'];
+
+		echo $content;
+		exit;
+	}
+
+	add_filter('the_content', 'tinypass_intercept_content', 5);
 }
 
 /**
@@ -63,6 +98,10 @@ function tinypass_intercept_content($content) {
 	global $tpmeter;
 	global $post;
 
+
+	if (tinypass_is_readon_request())
+		return $content;
+
 	tinypass_include();
 
 	$ss = tinypass_load_settings();
@@ -73,55 +112,49 @@ function tinypass_intercept_content($content) {
 
 	$storage = new TPStorage();
 
-	$tagOptions = $storage->getPaywall("pw_config");
+	$pwOptions = $storage->getPaywall("pw_config");
 
 	//NOOP if pw is disabled or the wrong mode
-	if ($tagOptions->isEnabled() == false || $tagOptions->isMode(TPPaySettings::MODE_METERED_LIGHT) == false)
+	if ($pwOptions->isEnabled() == false || $pwOptions->isMode(TPPaySettings::MODE_METERED_LIGHT) == false)
 		return $content;
 
 	if (is_home()) {
-		$tpmeter->do_not_track = !$tagOptions->isTrackHomePage();
+		$tpmeter->do_not_track = !$pwOptions->isTrackHomePage();
 	} else {
 		//check if current post is tagged for restriction
 		$post_terms = wp_get_post_terms($post->ID, 'post_tag', array());
 		foreach ($post_terms as $term) {
-			if ($tagOptions->tagMatches($term->name)) {
+			if ($pwOptions->tagMatches($term->name)) {
 				$tpmeter->do_not_track = false;
 			}
 		}
 	}
 
 	$tpmeter->embed_meter = true;
-	$tpmeter->paywall_id = $tagOptions->getPaywallID($ss->isProd());
+	$tpmeter->paywall_id = $pwOptions->getPaywallID($ss->isProd());
 	$tpmeter->sandbox = $ss->isSand();
 
+	if (is_home() && ($pwOptions->isReadOnEnabled())) {
+		$c = tinypass_split_excerpt_and_body($post->post_content, false);
 
-	//When content is shown in list form, i.e. categories we still need to truncate content
-	//At this point in the execution we know that TP is enabled so we have to protect
-	/*
-	  if (is_singular() == false) {
-	  $c = get_extended_with_tpmore($content);
-	  if ($c['extended'] == '') {
-	  $content = tinypass_trim_excerpt($content);
-	  } else {
-	  $content = $c['main'];
-	  }
-	  return $content;
-	  }
-	 */
+		$content = $c['main'];
 
-	if (is_home()) {
-		$c = get_extended_with_tpmore($post->post_content);
+		//we only want to show if there is a readmore or tpmore
+		if ($c['extended'] && $c['extended'] != "") {
+			$url = get_permalink();
+			$rurl = $url . "?readon=fetch";
+			if (preg_match("/\?/", $url))
+				$rurl = $url . "&readon=fetch";
 
-		if ($c['extended'] == '') {
-			$content = tinypass_trim_excerpt($content);
-		} else {
-			$content = $c['main'];
-			$content .= apply_filters('the_content_more_link', ' <a href="' . get_permalink() . "\" class=\"readon-link\">Read On</a>", 'Read On');
+			$id = hash('md5', $url);
+			$content .= '<div id="' . $id . '" class="extended" style="display:none"></div>';
+			$content .= apply_filters('the_content_more_link', '<a href="' . get_permalink() . "\" longdesc=\"Read On\" rid=\"$id\" rurl=\"$rurl\" class=\"readon-link\">Read On</a>", 'Read On');
 		}
+	} else if (is_singular()) {
+
+		$c = tinypass_split_excerpt_and_body($post->post_content);
+		$content = $c['main'] . "<br>" . $c['extended'];
 	}
-
-
 
 	return $content;
 }
@@ -173,13 +206,24 @@ function tinypass_load_settings() {
 	return $ss;
 }
 
+function tinypass_is_readon_request() {
+	$result = false;
+	$header = $_SERVER['HTTP_X_REQUESTED_WITH'];
+	if ($header && strtolower($header) == 'xmlhttprequest') {
+		if ($_REQUEST['readon'] == 'fetch') {
+			$result = true;
+		}
+	}
+	return $result;
+}
+
 /**
  * Split the content by more or tp more
  */
-function get_extended_with_tpmore($post) {
+function tinypass_split_excerpt_and_body($post, $surround = true) {
 
-	$regex = '/<!--more(.*?)?-->/';
-	$tpmore_regex = '/<!--tpmore(.*?)?-->/';
+	$regex = '/<!--more(.*?)?-->|<span id="(.*)"><\/span>/';
+	$tpmore_regex = '/\s*<!--tpmore(.*?)?-->\s*/';
 
 	if (preg_match($tpmore_regex, $post)) {
 		$regex = $tpmore_regex;
@@ -195,7 +239,10 @@ function get_extended_with_tpmore($post) {
 
 	// Strip leading and trailing whitespace
 	$main = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $main);
-	$extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $extended);
+	if ($surround)
+		$extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', "<div id='tpmore'>" . $extended . "</div>");
+	else
+		$extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $extended);
 
 	return array('main' => $main, 'extended' => $extended);
 }
@@ -214,7 +261,8 @@ function tinypass_footer() {
     window._tpm['jquery_trackable_selector'] = '.readon-link';
     window._tpm['sandbox'] = " . ($tpmeter->sandbox ? 'true' : 'false') . " 
     window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . "; 
-
+    window._tpm['host'] = 'tinydev.com:9000';
+	
 		 (function () {
         var _tp = document.createElement('script');
         _tp.type = 'text/javascript';

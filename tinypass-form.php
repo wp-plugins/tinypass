@@ -41,7 +41,7 @@ function __tinypass_save_buttons(TPPaySettings $ps, $edit = false) {
 	?>
 
 	<p>
-			<input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
+		<input type="submit" name="_Submit" value="Save Changes" tabindex="4" class="button-primary" />
 	</p>
 
 <?php } ?>
@@ -127,6 +127,33 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 						<input type="text" class="premium_tags" autocomplete="off" >
 						<a class="add_tag button-secondary"><?php _e('Add') ?></a>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+<?php } ?>
+<?php
+
+/**
+ * Misc options display section
+ */
+function __tinypass_misc_display(TPPaySettings $ps) {
+	?>
+	<div class="tp-section">
+		<div class="info">
+			<div class="heading">Customize</div>
+			<div class="desc">Enable / disable these features of additional behavior</div>
+		</div>
+		<div class="body">
+			<div class="postbox"> 
+				<h3><?php echo _e("&nbsp;") ?></h3>
+				<div class="inside"> 
+					<input type="checkbox" name="tinypass[mlite_track_homepage]" value="1" <?php echo checked($ps->isTrackHomePage()) ?>>
+					<?php echo _e("Track on home page visit - visiting your homepage will count as a view") ?>
+					<br> <br>
+					<input type="checkbox" name="tinypass[mlite_readon_enabled]" value="1" <?php echo checked($ps->isReadOnEnabled()) ?>>
+					<?php echo _e("Enable ReadOn - Allows home page posts to be fetch via ajax") ?>
 				</div>
 			</div>
 		</div>

@@ -81,6 +81,8 @@ function tinypass_mode_settings() {
 					<?php __tinypass_mlite_display($ps) ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Select your premium content")) ?>
 					<?php __tinypass_tag_display($ps) ?>
+					<?php __tinypass_section_head($ps, ++$num, __("Miscellaneous")) ?>
+					<?php __tinypass_misc_display($ps) ?>
 					<?php __tinypass_save_buttons($ps, $edit) ?>
 				</form>
 			</div>
