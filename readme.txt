@@ -1,9 +1,9 @@
-=== Tinypass ===
+=== Tinypass:Metered ===
 Contributors: wordpress@tinypass.com
 Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe
 Requires at least: 3.1.0
 Tested up to: 3.4.2
-Stable tag: 2.1.0
+Stable tag: 1.0.0
 
 
 Tinypass is the best way to charge for access to content on your WordPress site.
@@ -46,8 +46,6 @@ Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Metered Ac
 
 = Requirements =
 PHP 5.2.X or more
-PHP mbstring module
-PHP mcrypt module
 
 == Frequently Asked Questions ==
 
@@ -69,111 +67,13 @@ But since you're looking at Tinypass for WordPress, here's how it works: Just cr
 
 The Tinypass plugin was designed to sell content in a way that makes sense for WordPress, and there's no need to work with any of the code if you don't want to.
 
-= Do I need to have any merchant or payment accounts to use Tinypass? =
-
-Nope! We think WordPress publishers should be able to sell content without jumping through payment industry hoops. So we handle all of that for you, managing relationships with PayPal, Google Checkout, Amazon, and all the major credit card processors in order to offer your visitors a wide variety of payment methods. You can log in to your publisher dashboard at Tinypass.com at anytime to track your sales in real time and request payout of your balance. 
-
-= How much can I charge? =
-
-You can use Tinypass to charge as little as $0.02 or as much as $999.99 per transaction. (Higher price points are allowed on a case-by-case basis. Just drop us a line if needed!) 
-
-= Can I set my prices in other currencies? =
-
-Tinypass can be used to sell access to content around the world. To support that, we make it easy to display pricing in 24 of the most popular currencies. There's a full list here: [supported currencies](http://developer.tinypass.com/main/wordpress#foreign_currency "Tinypass Wordpress Plugin for Developer - supported currencies")
-
-= Do you manage subscriptions? = 
-
-Yep. With Tinypass, you can setup ongoing subscriptions to whatever content you've protected. 
-
-= What makes Tinypass unique? =
-
-Unlike other approaches to paid-content, Tinypass allows anyone publishing digital content to design a pay-to-access plan that won't alienate their audience. Charge at price points from 10¿ to $200, charge for as much or as little content as you want, and charge in a way that allows your audience to make quick, simple and secure payments.
-
-= What features does Tinypass offer for WordPress users? =
-
-Every site has different content and a unique audience. That's why Tinypass supports a variety of approaches to paid-content. The Tinypass plugin for WordPress works seamlessly with the way content is published, allowing WordPress users to easily charge for access to a single post, a bundle of posts, offer discounts to loyal visitors, and even specify when content will go from paid to free.
-
-= Where can I learn more about using Tinypass for WordPress? =
-
-We're glad you asked! For a complete set of instructions for working with Tinypass for WordPress, please visit [our developer side](www.developer.tinypass.com/main/wordpress "Tinypass Wordpress Plugin for Developers").
-
-= How do my visitors pay? =
-
-Tinypass offers a quick and painless payment process that allows your visitors to use their preferred payment method (PayPal, Amazon, Google Wallet or Credit Card). There is no new account to create and no long form to fill out. Payment can be made in as little as two clicks, and visitors never leave your site during the payment process. 
-
-= How do I get paid? =
-
-You can track your sales and revenue in real-time in your Tinypass publisher dashboard and request payout per our terms of service, see https://tinypass.com/terms/publisher.
-
-= What does it cost to use Tinypass? =
-
-We pride ourselves on offering a unique and useful technology, great service, no startup cost, and a fair and transparent fee structure. We make money by deducting a small percentage of each transaction that is processed through Tinypass. Our system is purpose-built to maximize the revenue you earn while minimizing the fees you pay. In most cases, you'll get all of the services that Tinypass offers and still keep more revenue after fees than you would if you built your own system for processing transactions directly through PayPal, Amazon Payments, Google Checkout, or the major credit cards. For more on our fee structure, please visit https://tinypass.com/terms/publisher#transfees
-
-= Other Questions? =
-
-We love questions! Just email support@tinypass.com and we'll get right back to you!
-
 == Changelog ==
-
-2.0.8
-TP button will properly render on a page with multiple posts
-
-2.0.7
-Bug: 1.4.18 access type fix
-
-2.0.5
-Bug: 3.2.1 compatiblity fix
-
-2.0.4
-Bug: 3.2.1 compatiblity fix
-
-2.0.3
-Bug: wrong jquery enqueue fixed
-
-2.0.1
-Provides a clearer interface to restricted and controlling access to content
-Added dedicated subscription page
-Additional custom messages at the post level and tag level
-Offer order can be configured
-Pay-what-you-want supported
-Monthly subscription supported
-TP API Version 2.0 integrated
-Bug: Meter logic corrected
-
-Upgrading from 1.4.x will most likely delete existing TP settings.  You will
-need to reconfigure your settings at the post level and tag level
-Upgrade questions: email us at support@tinypass.com
-
-1.4.18
-Documentation updates
-
-1.4.16
-Multiple currency support
-
-1.4.15
-Bug Fix: wordpress editor conflicted with TP
 
 == Screenshots ==
 
-1. Screenshot Tinypass configuration options on a post
-
 == Other Notes ==
 
-Previous version can be downloaded at http://wordpress.org/extend/plugins/tinypass/developers/
-
 == Upgrade Notice ==
-
-Previous version can be downloaded at http://wordpress.org/extend/plugins/tinypass/developers/
-Due to new features of the plugin, publishers will not directly be able to upgrade from version 1.4.x to 2.0.x.  
-An upgrade from 1.4.x to 2.0.x will result in a failure and it will be necessary to manually restore
-the plugin to the previous version (1.4.x) which can be found here  http://wordpress.org/extend/plugins/tinypass/developers/
-
-Upgrading is still possible but it does requires manual steps.  Please contact support@tinypass.com where
-specific instructions will be provided to complete the upgrade.
-
-If you currently have 1.4.x installed you can upgrade by deactivating and uninstalling the 1.4.x version
-AND then installing the latest Tinypass plugin.  When you completely remove the 1.4.x version all settings and configuration
-will be lost.
 
 
 
