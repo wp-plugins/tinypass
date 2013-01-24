@@ -57,6 +57,7 @@ function tinypass_init() {
 	if (is_admin())
 		wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
 
+	//process readon ajax requests and return the content without the teaser
 	if (tinypass_is_readon_request()) {
 		$id = $_REQUEST['p'];
 		$query = new WP_Query(array('post_type' => 'any', 'p' => $id));
@@ -86,12 +87,12 @@ function tinypass_init() {
 }
 
 /**
- * This method performs nearly all of the TinyPass logic for when and how to protect content.
- * Based upon the TP configuration, the post, the tags this method will either permit access
- * to a post or it will truncate the content and show a 'purchase now' widget instead of the post content.
+ * This method determines if the tinypass-meter needs to be
+ * embeded at the bottom of the page.
  * 
- * Access is checked by retreiving an encrypted cookie that is stored after a successful purchase.
+ * If the post is tagged and the request is for a page then we will embed
  * 
+ * If the request is the home page it is embeded but not configured to track onLoad
  */
 function tinypass_intercept_content($content) {
 
@@ -261,7 +262,7 @@ function tinypass_footer() {
     window._tpm['jquery_trackable_selector'] = '.readon-link';
     window._tpm['sandbox'] = " . ($tpmeter->sandbox ? 'true' : 'false') . " 
     window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . "; 
-    window._tpm['host'] = 'tinydev.com:9000';
+    window._tpm['host'] = 'dishdev.tinypass.com';
 	
 		 (function () {
         var _tp = document.createElement('script');

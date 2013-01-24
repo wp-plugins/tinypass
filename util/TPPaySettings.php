@@ -480,7 +480,7 @@ class TPPaySettings {
 	}
 
 	public function getReadOnEnabled() {
-		return $this->data->isValEnabled(self::MLITE_READON_ENABLED, 1);
+		return $this->data->isValEnabled(self::MLITE_READON_ENABLED, 0);
 	}
 
 
