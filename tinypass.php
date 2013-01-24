@@ -15,7 +15,7 @@ register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
-wp_enqueue_script('tp-util', TINYPASSS_PLUGIN_PATH . 'js/tp-util.js', array(), true, true);
+wp_enqueue_script('tp-util', TINYPASSS_PLUGIN_PATH . 'js/tp-util.js', array('jquery'), true, true);
 
 if (!class_exists('TPMeterState')) {
 
@@ -111,6 +111,8 @@ function tinypass_intercept_content($content) {
 	if ($ss->isEnabled() == false)
 		return $content;
 
+	$tpmeter->embed_meter = true;
+
 	$storage = new TPStorage();
 
 	$pwOptions = $storage->getPaywall("pw_config");
@@ -131,7 +133,6 @@ function tinypass_intercept_content($content) {
 		}
 	}
 
-	$tpmeter->embed_meter = true;
 	$tpmeter->paywall_id = $pwOptions->getPaywallID($ss->isProd());
 	$tpmeter->sandbox = $ss->isSand();
 
