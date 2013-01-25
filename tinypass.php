@@ -22,15 +22,17 @@ if (!class_exists('TPMeterState')) {
 	class TPMeterState {
 
 		public $embed_meter = null;
-		public $do_not_track = false;
+		public $do_not_track = true;
 		public $paywall_id = 0;
 		public $sandbox = 0;
+		public $on_show_offer = null;
 
 		public function reset() {
 			$this->embed_meter = null;
-			$this->do_not_track = false;
+			$this->do_not_track = true;
 			$this->paywall_id = 0;
 			$this->sandbox = 0;
+			$this->$on_show_offer = null;
 		}
 
 	}
@@ -111,9 +113,15 @@ function tinypass_intercept_content($content) {
 	if ($ss->isEnabled() == false)
 		return $content;
 
+	$storage = new TPStorage();
+
+//	For non-subscribers metered should be ignored
 	$tpmeter->embed_meter = true;
 
-	$storage = new TPStorage();
+	if(is_user_logged_in() && current_user_can('subscriber') == false){
+		$tpmeter->embed_meter = false;
+	} 
+
 
 	$pwOptions = $storage->getPaywall("pw_config");
 
@@ -153,7 +161,7 @@ function tinypass_intercept_content($content) {
 			$content .= apply_filters('the_content_more_link', '<a href="' . get_permalink() . "\" longdesc=\"Read On\" rid=\"$id\" rurl=\"$rurl\" class=\"readon-link\">Read On</a>", 'Read On');
 		}
 	} else if (is_singular()) {
-
+		$tpmeter->on_show_offer = 'onPostPageShowOffer';
 		$c = tinypass_split_excerpt_and_body($post->post_content);
 		$content = $c['main'] . "<br>" . $c['extended'];
 	}
@@ -263,7 +271,7 @@ function tinypass_footer() {
     window._tpm['jquery_trackable_selector'] = '.readon-link';
     window._tpm['sandbox'] = " . ($tpmeter->sandbox ? 'true' : 'false') . " 
     window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . "; 
-    window._tpm['host'] = 'dishdev.tinypass.com';
+    window._tpm['onShowOffer'] = '" . ($tpmeter->on_show_offer ? $tpmeter->on_show_offer : '') . "'; 
 	
 		 (function () {
         var _tp = document.createElement('script');
