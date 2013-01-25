@@ -272,6 +272,7 @@ function tinypass_footer() {
     window._tpm['sandbox'] = " . ($tpmeter->sandbox ? 'true' : 'false') . " 
     window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . "; 
     window._tpm['onShowOffer'] = '" . ($tpmeter->on_show_offer ? $tpmeter->on_show_offer : '') . "'; 
+    window._tpm['host'] = 'dishdev.tinypass.com';
 	
 		 (function () {
         var _tp = document.createElement('script');
