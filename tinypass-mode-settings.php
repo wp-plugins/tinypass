@@ -11,7 +11,16 @@ function tinypass_mode_settings() {
 
 	$ps = null;
 
+	if (!current_user_can('manage_options')) {
+		wp_die(__('You do not have sufficient permissions to access this page.'));
+	}
+
 	if (isset($_POST['_Submit'])) {
+
+		if (!wp_verify_nonce($_REQUEST['_wpnonce'])) {
+			wp_die(__('This action is not allowed'));
+			check_admin_referer();
+		}
 
 		//Save the paywall
 		$ss = $storage->getSiteSettings();
@@ -19,30 +28,13 @@ function tinypass_mode_settings() {
 		if (count($errors) == 0) {
 			$storage->savePaywallSettings($ss, $ps);
 			$location = 'admin.php?page=TinyPassEditPaywall&rid=' . $ps->getResourceId() . "&msg=" . urlencode(__('Your settings have been saved!'));
-			wp_redirect($location);
+			wp_safe_redirect($location);
+			exit;
 		}
 	}
 
 	$edit = false;
-	$many = false;
-	if ($ps == null) {
-		$rid = 'wp_bundle1';
-		$pws = $storage->getPaywalls(true);
-		$many = count($pws) > 0;
-
-		if (isset($_GET['rid']) && $_GET['rid'] != '') {
-			$edit = true;
-			$rid = $_GET['rid'];
-		} else if ($pws != null || count($pws) > 1) {
-			$last = 0;
-			foreach ($pws as $ps) {
-				$last = max($last, preg_replace('/[^0-9]*/', '', $ps->getResourceId()));
-			}
-			$rid = 'wp_bundle' . ($last + 1);
-		}
-
-		$ps = $storage->getPaywall($rid, true);
-	}
+	$ps = $storage->getPaywall('pw_config', true);
 	?>
 
 	<div id="poststuff">
@@ -50,7 +42,7 @@ function tinypass_mode_settings() {
 
 			<?php if (!count($errors)): ?>
 				<?php if (!empty($_REQUEST['msg'])) : ?>
-					<div class="updated fade"><p><strong><?php echo $_REQUEST['msg'] ?></strong></p></div>
+					<div class="updated fade"><p><strong><?php echo esc_html($_REQUEST['msg']); ?></strong></p></div>
 				<?php endif; ?>
 			<?php else: ?>
 				<div id="tp-error" class="error fade"></div>
@@ -70,11 +62,12 @@ function tinypass_mode_settings() {
 
 			<div id="tp_mode4_panel" class="tp_mode_panel">
 				<form action="" method="post" autocomplete="off">
+					<?php wp_nonce_field(); ?>
 					<input class="tp_mode" name="tinypass[mode]" type="hidden">
 					<div style="float:right">
-						<input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
-						<input type="hidden" readonly="true" name="tinypass[resource_name]" value="pw">
-						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
+						<input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo esc_attr($ps->getResourceId()); ?>">
+						<input type="hidden" readonly="true" name="tinypass[resource_name]" value="na">
+						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo esc_attr($ps->getEnabled()); ?>">
 					</div>
 					<?php $num = 0; ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Setup your paywall")) ?>
@@ -109,7 +102,7 @@ function tinypass_mode_settings() {
 
 				$(this).addClass("choice-selected");
 				$(this).attr("checked", "checked");
-					  	                                                                                        													
+								  	                                                                                        													
 				var elem = $(".choice[checked=checked]");
 				var id = elem.attr("id");
 
@@ -153,7 +146,7 @@ function tinypass_mode_settings() {
 					return false;
 				}
 			});
-					  	                                                                                        									
+								  	                                                                                        									
 			$('.premium_tags').suggest("admin-ajax.php?action=ajax-tag-search&tax=post_tag",{minchars:2,multiple:false,multipleSep:""})
 
 	<?php
@@ -168,7 +161,7 @@ function tinypass_mode_settings() {
 
 	<?php if (count($errors)): ?>
 		<?php foreach ($errors as $key => $value): ?>
-			<script>tinypass.doError("<?php echo $key ?>", "<?php echo $value ?>");</script>
+			<script>tinypass.doError("<?php echo esc_js($key); ?>", "<?php echo esc_js($value); ?>");</script>
 		<?php endforeach; ?>
 	<?php endif; ?>
 

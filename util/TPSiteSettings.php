@@ -307,6 +307,7 @@ class TPSiteSettings {
 
 }
 
+if ( ! class_exists( 'NiceArray' ) ) :
 class NiceArray implements ArrayAccess, Iterator, Countable {
 
 	private $data;
@@ -393,5 +394,6 @@ class NiceArray implements ArrayAccess, Iterator, Countable {
 	}
 
 }
+endif;
 
 ?>

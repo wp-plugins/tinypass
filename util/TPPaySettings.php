@@ -65,6 +65,7 @@ class TPPaySettings {
 	const MLITE_PWID_SAND = 'mlite_pwid_sand';
 	const MLITE_TRACK_HOMEPAGE = 'mlite_track_homepage';
 	const MLITE_READON_ENABLED = 'mlite_readon_enabled';
+	const MLITE_DISABLED_FOR_ADMINS = 'mlite_disabled_for_admins';
 
 	public static $MODE_NAMES = array(
 			self::MODE_PPV => self::MODE_PPV_NAME,
@@ -483,6 +484,13 @@ class TPPaySettings {
 		return $this->data->isValEnabled(self::MLITE_READON_ENABLED, 0);
 	}
 
+	public function isDisabledForPriviledgesUsers() {
+		return $this->data->isValEnabled(self::MLITE_DISABLED_FOR_ADMINS, 0);
+	}
+
+	public function getDisabledForPriviledgesUsers() {
+		return $this->data->isValEnabled(self::MLITE_DISABLED_FOR_ADMINS, 0);
+	}
 
 
 	/**

@@ -3,8 +3,6 @@
  * This file contains all form related helper methods for disaplying
  * form content either from settings, post settings, or various other popups
  */
-wp_enqueue_script("jquery");
-wp_enqueue_script("jquery-ui");
 
 /**
  * show settings section head
@@ -72,7 +70,7 @@ function __tinypass_mlite_display(TPPaySettings $ps) {
 				<div class="inside"> 
 
 					<div class="tp-simple-table">
-						<input name="tinypass[mlite_pwid_prod]" size="20" value="<?php echo $prodId ?>" >
+						<input name="tinypass[mlite_pwid_prod]" size="20" value="<?php echo esc_attr( $prodId ); ?>" >
 					</div>
 
 				</div>
@@ -82,7 +80,7 @@ function __tinypass_mlite_display(TPPaySettings $ps) {
 				<div class="inside"> 
 
 					<div class="tp-simple-table">
-						<input name="tinypass[mlite_pwid_sand]" size="20" value="<?php echo $sandId ?>" >
+						<input name="tinypass[mlite_pwid_sand]" size="20" value="<?php echo esc_attr( $sandId ); ?>" >
 					</div>
 
 				</div>
@@ -118,7 +116,7 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 							<div class="tag">
 								<div class="text"><?php echo $tag ?></div>
 								<div class="remove"></div>
-								<input type="hidden" name="tinypass[tags][]" value="<?php echo $tag ?>">
+								<input type="hidden" name="tinypass[tags][]" value="<?php echo esc_attr( $tag ); ?>">
 							</div>
 						<?php endforeach; ?>
 					</div>
@@ -154,6 +152,9 @@ function __tinypass_misc_display(TPPaySettings $ps) {
 					<br> <br>
 					<input type="checkbox" name="tinypass[mlite_readon_enabled]" value="1" <?php echo checked($ps->isReadOnEnabled()) ?>>
 					<?php echo _e("Enable ReadOn - Allows home page posts to be fetch via ajax") ?>
+					<br> <br>
+					<input type="checkbox" name="tinypass[mlite_disabled_for_admins]" value="1" <?php echo checked($ps->isDisabledForPriviledgesUsers()) ?>>
+					<?php echo _e("Disable Tinypass for privileges users - TinyPass will be skipped for all non Subscriber users" ) ?>
 				</div>
 			</div>
 		</div>

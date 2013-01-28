@@ -5,34 +5,32 @@
   Plugin URI: http://www.tinypass.com
   Description: TinyPass:Metered allows for metered access to your WordPress site
   Author: Tinypass
-  Version: 1.0.2
+  Version: 1.0.3
   Author URI: http://www.tinypass.com
  */
 
-define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
+define('TINYPASSS_PLUGIN_PATH', plugins_url('', __FILE__));
 
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
 register_uninstall_hook(__FILE__, 'tinypass_uninstall');
-
-wp_enqueue_script('tp-util', TINYPASSS_PLUGIN_PATH . 'js/tp-util.js', array('jquery'), true, true);
 
 if (!class_exists('TPMeterState')) {
 
 	class TPMeterState {
 
 		public $embed_meter = null;
-		public $do_not_track = true;
+		public $track_page_view = false;
 		public $paywall_id = 0;
 		public $sandbox = 0;
 		public $on_show_offer = null;
 
 		public function reset() {
 			$this->embed_meter = null;
-			$this->do_not_track = true;
+			$this->track_page_view = false;
 			$this->paywall_id = 0;
 			$this->sandbox = 0;
-			$this->$on_show_offer = null;
+			$this->on_show_offer = null;
 		}
 
 	}
@@ -43,25 +41,24 @@ $tpmeter = new TPMeterState();
 
 //setup
 if (is_admin()) {
-	require_once dirname(__FILE__) . '/tinypass-install.php';
 	require_once dirname(__FILE__) . '/tinypass-admin.php';
-	require_once dirname(__FILE__) . '/tinypass-form.php';
-	include_once dirname(__FILE__) . '/tinymce/plugin.php';
 }
 
 add_action('init', 'tinypass_init');
+add_action('wp_enqueue_scripts', 'tinypass_enqueue_scripts');
 add_action('wp_footer', 'tinypass_footer');
 
 function tinypass_init() {
 	global $more;
 	ob_start();
 
-	if (is_admin())
-		wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+	if (is_admin()) {
+		wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . '/css/tinypass.css');
+	}
 
 	//process readon ajax requests and return the content without the teaser
 	if (tinypass_is_readon_request()) {
-		$id = $_REQUEST['p'];
+		$id = (int) $_REQUEST['p'];
 		$query = new WP_Query(array('post_type' => 'any', 'p' => $id));
 
 		if (!$query->have_posts()) {
@@ -86,6 +83,13 @@ function tinypass_init() {
 	}
 
 	add_filter('the_content', 'tinypass_intercept_content', 5);
+}
+
+/**
+ * Add the js-util script
+ */
+function tinypass_enqueue_scripts() {
+	wp_enqueue_script('tp-util', TINYPASSS_PLUGIN_PATH . '/js/tp-util.js', array('jquery'), true, true);
 }
 
 /**
@@ -115,28 +119,28 @@ function tinypass_intercept_content($content) {
 
 	$storage = new TPStorage();
 
-//	For non-subscribers metered should be ignored
+	//or non-subscribers metered should be ignored
 	$tpmeter->embed_meter = true;
 
-	if(is_user_logged_in() && current_user_can('subscriber') == false){
-		$tpmeter->embed_meter = false;
-	} 
-
-
 	$pwOptions = $storage->getPaywall("pw_config");
+
+	if ($pwOptions->isDisabledForPriviledgesUsers() && is_user_logged_in() && current_user_can('edit_posts') == false) {
+		$tpmeter->embed_meter = false;
+	}
 
 	//NOOP if pw is disabled or the wrong mode
 	if ($pwOptions->isEnabled() == false || $pwOptions->isMode(TPPaySettings::MODE_METERED_LIGHT) == false)
 		return $content;
 
 	if (is_home()) {
-		$tpmeter->do_not_track = !$pwOptions->isTrackHomePage();
+		$tpmeter->track_page_view = $pwOptions->isTrackHomePage();
 	} else {
 		//check if current post is tagged for restriction
 		$post_terms = wp_get_post_terms($post->ID, 'post_tag', array());
 		foreach ($post_terms as $term) {
 			if ($pwOptions->tagMatches($term->name)) {
-				$tpmeter->do_not_track = false;
+				$tpmeter->track_page_view = true;
+				break;
 			}
 		}
 	}
@@ -152,9 +156,9 @@ function tinypass_intercept_content($content) {
 		//we only want to show if there is a readmore or tpmore
 		if ($c['extended'] && $c['extended'] != "") {
 			$url = get_permalink();
-			$rurl = $url . "?readon=fetch";
+			$rurl = $url . "?tp-readon=fetch";
 			if (preg_match("/\?/", $url))
-				$rurl = $url . "&readon=fetch";
+				$rurl = $url . "&tp-readon=fetch";
 
 			$id = hash('md5', $url);
 			$content .= '<div id="' . $id . '" class="extended" style="display:none"></div>';
@@ -199,15 +203,6 @@ function tinypass_include() {
 }
 
 /**
- * Debug helper
- */
-function tinypass_debug($obj) {
-	echo "<pre>";
-	print_r($obj);
-	echo "</pre>";
-}
-
-/**
  * Load and init global tinypass settings
  */
 function tinypass_load_settings() {
@@ -218,9 +213,14 @@ function tinypass_load_settings() {
 
 function tinypass_is_readon_request() {
 	$result = false;
-	$header = $_SERVER['HTTP_X_REQUESTED_WITH'];
-	if ($header && strtolower($header) == 'xmlhttprequest') {
-		if ($_REQUEST['readon'] == 'fetch') {
+
+	$header = '';
+
+	if (isset($_SERVER['HTTP_X_REQUESTED_WITH']))
+		$header = $_SERVER['HTTP_X_REQUESTED_WITH'];
+
+	if (strtolower($header) == 'xmlhttprequest') {
+		if (isset($_REQUEST['tp-readon']) && $_REQUEST['tp-readon'] == 'fetch') {
 			$result = true;
 		}
 	}
@@ -267,11 +267,11 @@ function tinypass_footer() {
 		echo "
 <script type=\"text/javascript\">
     window._tpm = window._tpm || [];
-    window._tpm['paywallID'] = '" . $tpmeter->paywall_id . "'; 
+    window._tpm['paywallID'] = '" . esc_js($tpmeter->paywall_id) . "'; 
     window._tpm['jquery_trackable_selector'] = '.readon-link';
     window._tpm['sandbox'] = " . ($tpmeter->sandbox ? 'true' : 'false') . " 
-    window._tpm['doNotTrack'] = " . ($tpmeter->do_not_track ? 'true' : 'false') . "; 
-    window._tpm['onShowOffer'] = '" . ($tpmeter->on_show_offer ? $tpmeter->on_show_offer : '') . "'; 
+    window._tpm['trackPageview'] = " . ($tpmeter->track_page_view ? 'true' : 'false') . "; 
+    window._tpm['onShowOffer'] = '" . ($tpmeter->on_show_offer ? esc_js($tpmeter->on_show_offer) : '') . "'; 
     window._tpm['host'] = 'dishdev.tinypass.com';
 	
 		 (function () {

@@ -6,9 +6,19 @@
  */
 function tinypass_site_settings() {
 
+	if (!current_user_can('manage_options')) {
+		wp_die(__('You do not have sufficient permissions to access this page.'));
+	}
+
 	$storage = new TPStorage();
 
 	if (isset($_POST['_Submit'])) {
+
+		if (!wp_verify_nonce($_REQUEST['_wpnonce'])) {
+			wp_die(__('This action is not allowed'));
+			check_admin_referer();
+		}
+
 		$ss = $storage->getSiteSettings();
 		$ss->mergeValues($_POST['tinypass']);
 		$storage->saveSiteSettings($ss);
@@ -24,6 +34,7 @@ function tinypass_site_settings() {
 		<div class="">
 			<form action="" method="post" id="tinypass-conf">
 
+				<?php wp_nonce_field(); ?>
 				<?php __tinypass_section_head_alt(__("General settings")) ?>
 				<br>
 
