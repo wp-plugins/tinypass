@@ -5,7 +5,7 @@
   Plugin URI: http://www.tinypass.com
   Description: TinyPass:Metered allows for metered access to your WordPress site
   Author: Tinypass
-  Version: 1.0.4
+  Version: 1.0.5
   Author URI: http://www.tinypass.com
  */
 
@@ -50,15 +50,10 @@ add_action('wp_footer', 'tinypass_footer');
 
 function tinypass_init() {
 	global $more;
-	ob_start();
-
-	if (is_admin()) {
-		wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . '/css/tinypass.css');
-	}
 
 	//process readon ajax requests and return the content without the teaser
 	if (tinypass_is_readon_request()) {
-		$id = (int) $_REQUEST['p'];
+		$id = (int) $_REQUEST['_p'];
 		$query = new WP_Query(array('post_type' => 'any', 'p' => $id));
 
 		if (!$query->have_posts()) {
@@ -136,7 +131,7 @@ function tinypass_intercept_content($content) {
 		$tpmeter->track_page_view = $pwOptions->isTrackHomePage();
 	} else {
 		//check if current post is tagged for restriction
-		$post_terms = wp_get_post_terms($post->ID, 'post_tag', array());
+		$post_terms = get_the_tags( $post->ID );
 		foreach ($post_terms as $term) {
 			if ($pwOptions->tagMatches($term->name)) {
 				$tpmeter->track_page_view = true;
@@ -156,9 +151,9 @@ function tinypass_intercept_content($content) {
 		//we only want to show if there is a readmore or tpmore
 		if ($c['extended'] && $c['extended'] != "") {
 			$url = get_permalink();
-			$rurl = $url . "?tp-readon=fetch";
+			$rurl = $url . "?tp-readon=fetch&_p=". $post->ID;
 			if (preg_match("/\?/", $url))
-				$rurl = $url . "&tp-readon=fetch";
+				$rurl = $url . "&tp-readon=fetch&_p=". $post->ID;
 
 			$id = hash('md5', $url);
 			$content .= '<div id="' . $id . '" class="extended" style="display:none"></div>';
