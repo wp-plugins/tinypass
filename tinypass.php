@@ -5,7 +5,7 @@
   Plugin URI: http://www.tinypass.com
   Description: TinyPass:Metered allows for metered access to your WordPress site
   Author: Tinypass
-  Version: 1.0.5
+  Version: 1.0.6
   Author URI: http://www.tinypass.com
  */
 
