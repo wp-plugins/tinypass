@@ -119,7 +119,7 @@ function tinypass_intercept_content($content) {
 
 	$pwOptions = $storage->getPaywall("pw_config");
 
-	if ($pwOptions->isDisabledForPriviledgesUsers() && is_user_logged_in() && current_user_can('edit_posts') == false) {
+	if ($pwOptions->isDisabledForPriviledgesUsers() && is_user_logged_in() && current_user_can('edit_posts')) {
 		$tpmeter->embed_meter = false;
 	}
 

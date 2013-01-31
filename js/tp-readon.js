@@ -21,15 +21,20 @@ jQuery(function () {
 		
 		var href = jQuery(this).attr("href");
 
-		var meter = getTPMeter();
-		if(expand && !clicked[href]){
-			if (meter.isExpiredNextClick()) {
-				meter.showOffer();	
-				return false;
-			}else {
-				meter.processClick(this);
+		try{	
+			//possible that meter does not exist
+			if(typeof window.getTPMeter == 'function'){
+				var meter = getTPMeter();
+				if(meter && expand && !clicked[href]){
+					if (meter.isExpiredNextClick()) {
+						meter.showOffer();	
+						return false;
+					}else {
+						meter.processClick(this);
+					}
+				}
 			}
-		}
+		}catch(ex){}
 		
 		jQuery(this).html(expand ? 'Collapse Post' : 'ReadOn');
 
