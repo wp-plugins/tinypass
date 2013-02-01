@@ -17,7 +17,10 @@ jQuery(function () {
 
 	jQuery("body").delegate("a.readon-link", "click", function(){
 
-		var expand = jQuery(this).html() == 'Read On';
+		var readOnText = jQuery(this).attr("readon_desc");
+		var collpaseText = jQuery(this).attr("collapse_desc");
+
+		var expand = jQuery(this).html() == readOnText;
 		
 		var href = jQuery(this).attr("href");
 
@@ -36,7 +39,7 @@ jQuery(function () {
 			}
 		}catch(ex){}
 		
-		jQuery(this).html(expand ? 'Collapse Post' : 'ReadOn');
+		jQuery(this).html(expand ? collpaseText : readOnText);
 
 		// get the url that was clicked
 		clicked[href] = 1;
