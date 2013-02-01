@@ -29,7 +29,7 @@ jQuery(function () {
 			if(typeof window.getTPMeter == 'function'){
 				var meter = getTPMeter();
 				if(meter && expand && !clicked[href]){
-					if (meter.isExpiredNextClick()) {
+					if (meter.isExpiredNextClick() || meter.isExpired()) {
 						meter.showOffer();	
 						return false;
 					}else {
