@@ -5,7 +5,7 @@
   Plugin URI: http://www.tinypass.com
   Description: TinyPass:Metered allows for metered access to your WordPress site
   Author: Tinypass
-  Version: 1.0.7
+  Version: 1.0.8
   Author URI: http://www.tinypass.com
  */
 
@@ -270,13 +270,13 @@ function tinypass_footer() {
     window._tpm['sandbox'] = " . ($tpmeter->sandbox ? 'true' : 'false') . " 
     window._tpm['trackPageview'] = " . ($tpmeter->track_page_view ? 'true' : 'false') . "; 
     window._tpm['onShowOffer'] = '" . ($tpmeter->on_show_offer ? esc_js($tpmeter->on_show_offer) : '') . "'; 
-    window._tpm['host'] = 'dishdev.tinypass.com';
+		if(window._tpm['sandbox']) window._tpm['host'] = 'sandbox.tinypass.com';
 	
 		 (function () {
         var _tp = document.createElement('script');
         _tp.type = 'text/javascript';
         var _host = window._tpm['host'] ? window._tpm['host'] : 'code.tinypass.com';
-        _tp.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + _host + '/tinypass-meter.js';
+        _tp.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + _host + '/tpl/d1/tpm.js';
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(_tp, s);
     })();
