@@ -42,6 +42,17 @@ Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Metered Ac
 
 5. Make sure to switch from "Sandbox" to "Production" in Tinypass->Settings when you're ready to start accepting payments.
 
+To customize the access denied message you can register a filter.
+
+add_filter('tinypass_access_denied', 'showCustom');
+
+//$params = array contain button information and other messaging
+function showCustom($params){
+	return "Buy now for only " . $params['button1'];
+}
+
+
+
 **For complete instructions for working with Tinypass on your WordPress site, please visit [our developer site](http://developer.tinypass.com/main/wordpress "Tinypass WordPress Plugin For Developer")**
 
 = Requirements =
@@ -114,6 +125,10 @@ We pride ourselves on offering a unique and useful technology, great service, no
 We love questions! Just email support@tinypass.com and we'll get right back to you!
 
 == Changelog ==
+
+2.0.10
+Allow Tinypass on post types besides page and post
+Created tinypass_access_denied filter for customizing the error screen
 
 2.0.9
 Post teaser logic is slightly smarter
