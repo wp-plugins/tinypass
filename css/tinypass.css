@@ -109,6 +109,10 @@ TinyPass admin form sytles
   padding-left:0px;
 }
 
+.tp-settings p.info {
+	font-size:.9em;
+	line-height:.9em;
+}
 
 
 .tp-simple-table div.label, .tp-simple-table label{

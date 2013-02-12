@@ -5,7 +5,7 @@
   Plugin URI: http://www.tinypass.com
   Description: Tinypass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free Tinypass publisher account and configure the Tinypass plugin for your WordPress site
   Author: Tinypass
-  Version: 2.0.10
+  Version: 2.0.11
   Author URI: http://www.tinypass.com
  */
 $tinypass_ppp_req = null;
@@ -63,7 +63,7 @@ function tinypass_intercept_content($content) {
 	TinyPass::$AID = $ss->getAID();
 	TinyPass::$PRIVATE_KEY = $ss->getSecretKey();
 	TinyPass::$SANDBOX = $ss->isSand();
-  //TinyPass::$API_ENDPOINT_DEV = 'http://tinydev.com:9000';
+//  TinyPass::$API_ENDPOINT_DEV = 'http://tinydev.com:9000';
 	
 	$store = new TPAccessTokenStore();
 	$store->loadTokensFromCookie($_COOKIE);
@@ -135,7 +135,8 @@ function tinypass_intercept_content($content) {
 	$siteToken = null;
 
 	if ($ppvOptions->isEnabled() && $ss->isPPVEnabled()) {
-		$pppOffer = TPPaySettings::create_offer($ppvOptions, "wp_post_" . strval($post->ID), $ppvOptions->getResourceName() == '' ? $post->post_title : $ppvOptions->getResourceName());
+		$rid = $ppvOptions->getResourceId() == '' ?  "wp_post_" . strval($post->ID) : $ppvOptions->getResourceId();
+		$pppOffer = TPPaySettings::create_offer($ppvOptions, $rid, $ppvOptions->getResourceName() == '' ? $post->post_title : $ppvOptions->getResourceName());
 		$pppToken = $store->getAccessToken($pppOffer->getResource()->getRID());
 	}
 
