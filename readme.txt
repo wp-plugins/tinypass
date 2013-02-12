@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe
 Requires at least: 3.1.0
 Tested up to: 3.4.2
-Stable tag: 2.0.10
+Stable tag: 2.0.11
 
 
 Tinypass is the best way to charge for access to content on your WordPress site.
@@ -125,6 +125,9 @@ We pride ourselves on offering a unique and useful technology, great service, no
 We love questions! Just email support@tinypass.com and we'll get right back to you!
 
 == Changelog ==
+
+2.0.11
+Custom RID in Tinypass per post settings
 
 2.0.10
 Allow Tinypass on post types besides page and post
