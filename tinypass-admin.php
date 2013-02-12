@@ -31,12 +31,16 @@ function tinypass_add_meta_boxes() {
 		return;
 	}
 
-	add_meta_box(
-					'tinypass_post_options', '<img src="' . TINYPASS_FAVICON . '">&nbsp;' . __('Tinypass Options'), 'tinypass_meta_box_display', 'post', 'side'
-	);
-	add_meta_box(
-					'tinypass_post_options', '<img src="' . TINYPASS_FAVICON . '">&nbsp;' . __('Tinypass Options'), 'tinypass_meta_box_display', 'page', 'side'
-	);
+	$types = get_post_types();
+	unset($types['attachment']);
+	unset($types['revision']);
+	unset($types['nav_menu_item']);
+
+	foreach ($types as $type) {
+		add_meta_box(
+						'tinypass_post_options', '<img src="' . TINYPASS_FAVICON . '">&nbsp;' . __('Tinypass Options'), 'tinypass_meta_box_display', $type, 'side'
+		);
+	}
 }
 
 function tinypass_meta_box_display($post) {
