@@ -10,6 +10,7 @@ function tinypass_site_settings() {
 
 	if (isset($_POST['_Submit'])) {
 		$ss = $storage->getSiteSettings();
+		$ss->clear(array(TPSiteSettings::PPP_ENABLED, TPSiteSettings::DISABLE_COMMENTS_WHEN_DENIED));
 		$ss->mergeValues($_POST['tinypass']);
 		$storage->saveSiteSettings($ss);
 	}
@@ -24,20 +25,20 @@ function tinypass_site_settings() {
 		<div class="">
 			<form action="" method="post" id="tinypass-conf">
 
-				<?php __tinypass_section_head_alt(__("Purchase settings")) ?>
+				<?php __tinypass_section_head_alt(__("General settings")) ?>
 				<br>
 				<div class="tp-section">
 					<div class="info">
-						<div class="heading">Pay per post</div>
-						<div class="desc">By default you can go to any post, slap on a price, and start selling it.  No tags, no payments needed</div>
+						<div class="desc">Customize the Tinypass experience by changing these additional options</div>
 					</div>
 					<div class="body">
 
 						<div class="postbox">
-							<h3><?php _e('Allow pay-per-post') ?> </h3>
+							<h3><?php _e('Options') ?> </h3>
 							<div class="inside">
-								<input type="radio" name="tinypass[ppv]" value="1" <?php echo checked($ss->isPPPEnabled(), true) ?>><label><?php _e('Enabled'); ?></label>
-								<input type="radio" name="tinypass[ppv]" value="0" <?php echo checked($ss->isPPPEnabled(), false) ?>><label><?php _e('Disabled'); ?></label>
+								<input type="checkbox" name="tinypass[ppv]" <?php echo checked($ss->isPPPEnabled()) ?>><label>&nbsp;<?php _e('Enable Tinypass for individual posts '); ?></label>
+								<br>
+								<input type="checkbox" name="tinypass[dc]" <?php echo checked($ss->isDisableCommentsWhenDenied()) ?>><label>&nbsp;<?php _e('Disable post comments when access is denied'); ?></label>
 							</div>
 						</div>
 						<?php __tinypass_ppv_payment_display($ss) ?>

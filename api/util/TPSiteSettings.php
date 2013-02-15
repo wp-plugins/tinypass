@@ -16,6 +16,7 @@ class TPSiteSettings {
 	const PA_EXPANDED = 1;
 	const ENABLED = 'en';
 	const PPP_ENABLED = 'ppv';
+	const DISABLE_COMMENTS_WHEN_DENIED = 'dc';
 	const PD_DENIED_MSG1 = 'pd_denied_msg1';
 	const PD_DENIED_SUB1 = 'pd_denied_sub1';
 
@@ -44,6 +45,7 @@ class TPSiteSettings {
 					TPSiteSettings::ENV => 0,
 					TPSiteSettings::ENABLED => 1,
 					TPSiteSettings::PPP_ENABLED => 1,
+					TPSiteSettings::DISABLE_COMMENTS_WHEN_DENIED => 1,
 			));
 		}
 	}
@@ -145,6 +147,21 @@ class TPSiteSettings {
 
 	public function getPaywalls() {
 		return $this->data->val(TPSiteSettings::PAYWALLS, array());
+	}
+
+	public function isDisableCommentsWhenDenied() {
+		return $this->data->isValEnabled(self::DISABLE_COMMENTS_WHEN_DENIED);
+	}
+
+	public function clear($arg1){
+		$f = $arg1;
+		if(!is_array($arg1))
+			$f = array($arg1);
+
+		foreach($f as $field){
+			unset($this->data[$field]);
+		}
+
 	}
 
 	/**

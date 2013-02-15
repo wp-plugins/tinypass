@@ -157,9 +157,6 @@ function tinypass_intercept_content($content) {
 		return $content;
 	}
 
-	$post->comment_status = "closed";
-	add_filter('comments_template', 'tinypass_skip_comments');
-
 	define('DONOTCACHEPAGE', true);
 	define('DONOTCACHEDB', true);
 	define('DONOTMINIFY', true);
@@ -271,7 +268,11 @@ function tinypass_intercept_content($content) {
 	} else {
 		$content = $c['main'];
 	}
-
+	
+	if($ss->isDisableCommentsWhenDenied()){
+		$post->comment_status = "closed";
+		add_filter('comments_template', 'tinypass_skip_comments');
+	}
 	/*
 	 * Construct the offers for both the tag level offer and the post level offer if they exist
 	 */
