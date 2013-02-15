@@ -13,6 +13,7 @@ define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FIL
 define('TINYPASS_PURCHASE_TEMPLATE', 'tinypass_purchase_display.php');
 define('TINYPASS_COUNTER_TEMPLATE', 'tinypass_counter_display.php');
 define('TINYPASS_APPEAL_TEMPLATE', 'tinypass_appeal_display.php');
+define('TINYPASS_EMPTY', 'tinypass_empty.php');
 
 register_activation_hook(__FILE__, 'tinypass_activate');
 register_deactivation_hook(__FILE__, 'tinypass_deactivate');
@@ -139,7 +140,7 @@ function tinypass_intercept_content($content) {
 
 
 	//exit if everything is disabled 
-	if ($postOptions->isEnabled() == false && $tagOptions->isEnabled() == false)
+	if ($postOptions->isEnabled_20() == false && $tagOptions->isEnabled() == false)
 		return $content;
 
 	$tpstate->add_scripts = true;
@@ -157,6 +158,7 @@ function tinypass_intercept_content($content) {
 	}
 
 	$post->comment_status = "closed";
+	add_filter('comments_template', 'tinypass_skip_comments');
 
 	define('DONOTCACHEPAGE', true);
 	define('DONOTCACHEDB', true);
@@ -169,7 +171,7 @@ function tinypass_intercept_content($content) {
 	$postToken = null;
 	$tagToken = null;
 
-	if ($postOptions->isEnabled() && $ss->isPPPEnabled()) {
+	if ($postOptions->isEnabled_20() && $ss->isPPPEnabled()) {
 		$postOffer = TPPaySettings::create_offer($postOptions, "wp_post_" . strval($post->ID), $postOptions->getResourceName() == '' ? $post->post_title : $postOptions->getResourceName());
 		$postToken = $store->getAccessToken($postOffer->getResource()->getRID());
 	}
@@ -338,7 +340,7 @@ function tinypass_append_ticket($content) {
 		$sub1 = stripslashes($tpstate->post_req['sub1']);
 		$sub2 = stripslashes($tpstate->tag_req['sub1']);
 
-		$tout = __tinypass_render_template(TINYPASS_PURCHASE_TEMPLATE, array(
+		$params = array(
 				"button1" => $button1,
 				"button2" => $button2,
 				"message1" => $message1,
@@ -347,7 +349,13 @@ function tinypass_append_ticket($content) {
 				"resource2" => $resource2,
 				"sub1" => $sub1,
 				"sub2" => $sub2
-						));
+		);
+
+		if (has_filter("tinypass_access_denied"))
+			$tout = apply_filters("tinypass_access_denied", $params);
+		else
+			$tout = __tinypass_render_template(TINYPASS_PURCHASE_TEMPLATE, $params);
+
 	} else {
 
 		$request = $tpstate->tag_req;
@@ -361,13 +369,18 @@ function tinypass_append_ticket($content) {
 
 		$resource1 = $request['req']->getPrimaryOffer()->getResource()->getName();
 
-		$tout = __tinypass_render_template(TINYPASS_PURCHASE_TEMPLATE, array(
+		$params = array(
 				"button1" => $button1,
 				"button2" => '',
 				"message1" => $message1,
 				"sub1" => $sub1,
 				"resource1" => $resource1
-						));
+		);
+
+		if (has_filter("tinypass_access_denied"))
+			$tout = apply_filters("tinypass_access_denied", $params);
+		else
+			$tout = __tinypass_render_template(TINYPASS_PURCHASE_TEMPLATE, $params);
 	}
 
 	$content .= $tout;
@@ -471,6 +484,7 @@ function get_extended_with_tpmore($post) {
 /*
  * Helper method to render the appeal content
  */
+
 function __tinypass_create_appeal($tagOptions) {
 	return __tinypass_render_template(TINYPASS_APPEAL_TEMPLATE, array(
 							'header' => $tagOptions->getAppealMessage1('Purchase to get full access to our great content'),
@@ -478,6 +492,14 @@ function __tinypass_create_appeal($tagOptions) {
 							'link' => get_page_link($tagOptions->getSubscriptionPageRef())
 									)
 	);
+}
+
+/**
+ * Skip comments filter method.  
+ */
+function tinypass_skip_comments(){
+	$filename = dirname(__FILE__) . '/view/' . TINYPASS_EMPTY;
+	return  $filename;
 }
 
 /**

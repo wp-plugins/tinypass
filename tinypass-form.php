@@ -73,6 +73,7 @@ function tinypass_post_options_summary(TPPaySettings $ps) {
 	$output = "";
 
 	$resource_name = htmlspecialchars(stripslashes($ps->getResourceName()));
+	$resource_id = htmlspecialchars(stripslashes($ps->getResourceId()));
 
 	if ($resource_name == '')
 		$resource_name = 'Default to post title';
@@ -83,6 +84,7 @@ function tinypass_post_options_summary(TPPaySettings $ps) {
 
 	$output .= "<div><strong>Name:</strong>&nbsp;" . $resource_name . "</div>";
 
+	$output .= "<div><strong>RID:</strong>&nbsp;" . $resource_id . "</div>";
 	$line = "<div><strong>Pricing:</strong></div>";
 	for ($i = 1; $i <= 3; $i++) {
 
@@ -135,6 +137,10 @@ function tinypass_post_header_form(TPPaySettings $postSettings) {
  * Will work with both tag and post forms
  */
 function tinypass_post_form(TPPaySettings $ps, $postID = null) {
+	$resource_id = htmlspecialchars(stripslashes($ps->getResourceId()));
+
+	if ($resource_id == '')
+		$ps->setResourceId('wp_post_' . $postID);
 	?>
 
 	<div id="poststuff">
@@ -151,10 +157,9 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 				</div>
 				<br>
 
-				<div class="postbox">
-					<h3><?php _e("Setup your pricing for this post") ?></h3>
+				<div class="">
 					<div class="inside">
-						<br> <br>
+					<h3><?php _e("Enter up to 3 price options") ?></h3>
 						<table class="tinypass_price_options_form">
 							<tr>
 								<th width="100"><?php _e('Price') ?></th>
@@ -167,12 +172,12 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 						<?php echo __tinypass_price_option_display('2', $ps, false, 180) ?>
 						<?php echo __tinypass_price_option_display('3', $ps, false, 180) ?>
 
-						<br> <br>
+						<br>
 						<a class="add_option_link button" href="#" onclick="tinypass.addPriceOption();return false;">Add</a>
 						<a class="add_option_link button" href="#" onclick="tinypass.removePriceOption();return false;">Remove</a>
-						<br> <br>
 					</div>
 				</div>
+				<?php echo __tinypass_custom_rid_display($ps) ?>
 				<?php echo __tinypass_payment_messaging_post_display($ps) ?>
 				<div>
 					<center>
@@ -239,6 +244,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 		<div class="body">
 
 			<div class="postbox">
+					<!--
 				<h3><?php _e('Where should clicking on the counter bring users?'); ?> </h3>
 				<div class="inside">
 					<div class="label">
@@ -255,6 +261,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 					</div>
 					<br>
 				</div>
+					-->
 				<h3><?php _e('Customize it'); ?> </h3>
 				<div class="inside">
 					<div class="label">Where should the counter appear?
@@ -266,6 +273,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 					</div>
 				</div>
 				<br> <br>
+				<!--	
 				<h3><?php _e('Create a custom preview counter'); ?> </h3>
 				<div class="inside"> 
 					<div class="">
@@ -274,6 +282,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 						<?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
 					</div>
 				</div>
+				-->
 			</div>
 		</div>
 		<div class="clear"></div>
@@ -330,6 +339,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
 					<div class="label">Enter a description</div>
 					<textarea id="tp_pd_denied_sub1" rows="3" cols="59" name="tinypass[app_msg2]"><?php echo $msg2 ?></textarea>
 				</div>
+				<!--
 				<h3><?php _e('Create a custom appeal design'); ?> </h3>
 				<div class="inside"> 
 					<div class="">
@@ -338,6 +348,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
 						<?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
 					</div>
 				</div>
+				-->
 			</div>
 		</div>
 		<div class="clear"></div>
@@ -604,6 +615,34 @@ function __tinypass_ppv_payment_display(TPSiteSettings $ss) {
 <?php } ?>
 <?php
 
+function __tinypass_custom_rid_display(TPPaySettings $ps) { ?>
+	<div class="tp-section" id="">
+
+		<div class="postbox">
+			<h3><?php _e('Resource Details - for advanced usage only'); ?> </h3>
+			<div class="inside"> 
+				<div class="tp_pd_type_panel">
+
+					<div class="tp-simple-table">
+
+						<div class="label"><?php _e('RID') ?></div>
+						<input id="tp_pd_denied_msg1" name="tinypass[resource_id]" value="<?php echo esc_attr(stripslashes($ps->getResourceId(""))) ?>" size="50" maxlength="50">
+
+						<p class="">Leave this field empty for default RID value of <b>'wp_post_XXX'</b> where XXX is the current wordpress post ID</p>
+						<p class="">Changing RID will cause previous purchases to be 'disconnected'.  Users that have already made a purchase will no longer have access.</p>
+						<p class="">RIDs should NOT be modified after purchases have been made!</p>
+						
+						<div class="clear"></div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+<?php } ?>
+<?php
 function __tinypass_payment_messaging_post_display(TPPaySettings $ps) { ?>
 
 	<div class="tp-section" id="">
@@ -668,6 +707,7 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
 					</div>
 				</div>
 			</div>
+				<!--
 			<div class="postbox">
 				<h3><?php _e('Create a custom purchase layout'); ?> </h3>
 				<div class="inside"> 
@@ -677,8 +717,8 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
 						<?php echo get_template_directory() ?>/<b><?php echo TINYPASS_PURCHASE_TEMPLATE ?></b>
 					</div>
 				</div>
-
 			</div>
+				-->
 		</div>
 		<div class="clear"></div>
 	</div>

@@ -112,6 +112,20 @@ class TPPaySettings {
 		return $this->data->isValEnabled(TPPaySettings::ENABLED);
 	}
 
+	/**
+	 * Used to solve problem when migrating from 2.0 to 2.1.  2.0 posts options
+	 * only contained a mode field of values 0 / 1.
+	 */
+	public function isEnabled_20(){
+		$data = $this->data->toArray();
+		if(isset($data[TPPaySettings::ENABLED]) && $data[TPPaySettings::ENABLED] == 1)
+			return true;
+		else if(isset($data[TPPaySettings::ENABLED]) == false){
+			return $this->data->isValEnabled(TPPaySettings::MODE);
+		}
+		return false;
+	}
+
 	public function setEnabled($b = 1) {
 		$this->data[TPPaySettings::ENABLED] = $b;
 	}

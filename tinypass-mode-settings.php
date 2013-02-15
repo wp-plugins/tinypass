@@ -161,7 +161,6 @@ function tinypass_mode_settings() {
 					<?php __tinypass_pricing_display($ps) ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Customize your preview period")) ?>
 					<?php __tinypass_metered_display($ps) ?>
-					<?php __tinypass_appeal_display($ps) ?>
 					<?php __tinypass_counter_display($ps) ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>
 					<?php __tinypass_purchase_option_table_display($ps) ?>
@@ -299,10 +298,11 @@ function tinypass_mode_settings() {
 			})
 
 			$('#tp-show-paywalls').bind('click', function(event){
-				$('#tp_mode_details').show();
+				$('#tp_mode_details').slideDown('slow');
 				$(this).hide();
 				$('#tp-hide-paywalls').show();
 			})
+		
 	<?php
 	if (isset($_REQUEST['rid'])) {
 		echo "$('#tp-hide-paywalls').trigger('click');";

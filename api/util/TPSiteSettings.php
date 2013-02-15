@@ -192,7 +192,7 @@ class TPSiteSettings {
 		}
 
 		$ps = new TPPaySettings($form->toArray());
-		$ps->setMode(TPPaySettings::MODE_PPV);
+//		$ps->setMode(TPPaySettings::MODE_PPV);
 		return $ps;
 	}
 
