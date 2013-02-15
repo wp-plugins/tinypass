@@ -19,8 +19,8 @@ class TPPaySettings {
 	const MODE_STRICT = 3;
 	const MODE_OFF_NAME = 'Off';
 	const MODE_PPV_NAME = 'Pay-Per-View';
-	const MODE_METERED_NAME = 'New York';
-	const MODE_STRICT_NAME = 'Boston';
+	const MODE_METERED_NAME = 'Metered';
+	const MODE_STRICT_NAME = 'Restricted';
 	const MODE_PPV_NAME_REAL = 'Pay-Per-View';
 	const MODE_METERED_NAME_REAL = 'Preview';
 	const MODE_STRICT_NAME_REAL = 'Strict';
