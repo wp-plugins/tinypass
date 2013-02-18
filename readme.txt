@@ -115,6 +115,12 @@ We love questions! Just email support@tinypass.com and we'll get right back to y
 
 == Changelog ==
 
+2.1
+Nicer settings page
+RID are exposed at the post
+Multiple paywalls are allowed
+Additional meter features
+
 2.0.8
 TP button will properly render on a page with multiple posts
 
