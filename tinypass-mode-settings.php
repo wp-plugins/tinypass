@@ -136,6 +136,7 @@ function tinypass_mode_settings() {
 					<div style="float:right">
 						<input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo $ps->getResourceId() ?>">
 						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo $ps->getEnabled() ?>">
+						<input type="hidden" readonly="true" name="tinypass[resource_name]" value="Pay-per-view">
 					</div>
 					<?php $num = 1; ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
@@ -157,6 +158,7 @@ function tinypass_mode_settings() {
 					</div>
 					<?php $num = 1; ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
+					<?php __tinypass_name_display($ps) ?>
 					<?php __tinypass_tag_display($ps) ?>
 					<?php __tinypass_pricing_display($ps) ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Customize your preview period")) ?>
@@ -178,6 +180,7 @@ function tinypass_mode_settings() {
 					</div>
 					<?php $num = 1; ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Pick and price your content")) ?>
+					<?php __tinypass_name_display($ps) ?>
 					<?php __tinypass_tag_display($ps) ?>
 					<?php __tinypass_pricing_display($ps) ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Messaging & appearances")) ?>

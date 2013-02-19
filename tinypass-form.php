@@ -159,7 +159,7 @@ function tinypass_post_form(TPPaySettings $ps, $postID = null) {
 
 				<div class="">
 					<div class="inside">
-					<h3><?php _e("Enter up to 3 price options") ?></h3>
+						<h3><?php _e("Enter up to 3 price options") ?></h3>
 						<table class="tinypass_price_options_form">
 							<tr>
 								<th width="100"><?php _e('Price') ?></th>
@@ -244,24 +244,24 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 		<div class="body">
 
 			<div class="postbox">
-					<!--
-				<h3><?php _e('Where should clicking on the counter bring users?'); ?> </h3>
-				<div class="inside">
-					<div class="label">
-						<input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_NOTHING ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_NOTHING)) ?>>
-						Counter is not clickable
-					</div>
-					<div class="label">
-						<input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_PAGE ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_PAGE)) ?>>
-						Open the dedicated information page on your site in a new tab ( defined below )
-					</div>
-					<div class="label">
-						<input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_APPEAL ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_APPEAL)) ?> >
-						Open the pop-up appeal over the current page (appeal must be enabled first) 
-					</div>
-					<br>
+				<!--
+			<h3><?php _e('Where should clicking on the counter bring users?'); ?> </h3>
+			<div class="inside">
+				<div class="label">
+					<input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_NOTHING ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_NOTHING)) ?>>
+					Counter is not clickable
 				</div>
-					-->
+				<div class="label">
+					<input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_PAGE ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_PAGE)) ?>>
+					Open the dedicated information page on your site in a new tab ( defined below )
+				</div>
+				<div class="label">
+					<input type="radio" name="tinypass[ct_onclick]" value="<?php echo TPPaySettings::CT_ONCLICK_APPEAL ?>" <?php checked($ps->isCounterOnClick(TPPaySettings::CT_ONCLICK_APPEAL)) ?> >
+					Open the pop-up appeal over the current page (appeal must be enabled first) 
+				</div>
+				<br>
+			</div>
+				-->
 				<h3><?php _e('Customize it'); ?> </h3>
 				<div class="inside">
 					<div class="label">Where should the counter appear?
@@ -279,7 +279,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 					<div class="">
 						Override the default appeal design by creating a custom template file
 						<br> <br>
-						<?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
+				<?php echo get_template_directory() ?>/<b>tinypass_counter_display.php</b>
 					</div>
 				</div>
 				-->
@@ -345,7 +345,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
 					<div class="">
 						Override the default appeal design by creating a custom template file
 						<br> <br>
-						<?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
+				<?php echo get_template_directory() ?>/<b>tinypass_appeal_display.php</b>
 					</div>
 				</div>
 				-->
@@ -480,9 +480,9 @@ function __tinypass_purchase_page_display(TPPaySettings $ps) { ?>
 <?php
 
 /**
- * Tag display section
+ * Display the resource name field
  */
-function __tinypass_tag_display(TPPaySettings $ps) {
+function __tinypass_name_display(TPPaySettings $ps) {
 
 	$name = stripslashes(esc_attr($ps->getResourceName()));
 
@@ -509,6 +509,15 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 		</div>
 		<div class="clear"></div>
 	</div>
+
+<?php } ?>
+<?php
+
+/**
+ * Tag display section
+ */
+function __tinypass_tag_display(TPPaySettings $ps) {
+	?>
 
 	<div class="tp-section">
 		<div class="info">
@@ -631,7 +640,7 @@ function __tinypass_custom_rid_display(TPPaySettings $ps) { ?>
 						<p class="">Leave this field empty for default RID value of <b>'wp_post_XXX'</b> where XXX is the current wordpress post ID</p>
 						<p class="">Changing RID will cause previous purchases to be 'disconnected'.  Users that have already made a purchase will no longer have access.</p>
 						<p class="">RIDs should NOT be modified after purchases have been made!</p>
-						
+
 						<div class="clear"></div>
 
 					</div>
@@ -643,6 +652,7 @@ function __tinypass_custom_rid_display(TPPaySettings $ps) { ?>
 
 <?php } ?>
 <?php
+
 function __tinypass_payment_messaging_post_display(TPPaySettings $ps) { ?>
 
 	<div class="tp-section" id="">
@@ -707,18 +717,18 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
 					</div>
 				</div>
 			</div>
-				<!--
-			<div class="postbox">
-				<h3><?php _e('Create a custom purchase layout'); ?> </h3>
-				<div class="inside"> 
-					<div class="">
-						Override the default purchase layout by creating a custom template file
-						<br> <br>
-						<?php echo get_template_directory() ?>/<b><?php echo TINYPASS_PURCHASE_TEMPLATE ?></b>
-					</div>
+			<!--
+		<div class="postbox">
+			<h3><?php _e('Create a custom purchase layout'); ?> </h3>
+			<div class="inside"> 
+				<div class="">
+					Override the default purchase layout by creating a custom template file
+					<br> <br>
+			<?php echo get_template_directory() ?>/<b><?php echo TINYPASS_PURCHASE_TEMPLATE ?></b>
 				</div>
 			</div>
-				-->
+		</div>
+			-->
 		</div>
 		<div class="clear"></div>
 	</div>
