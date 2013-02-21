@@ -116,7 +116,7 @@ We love questions! Just email support@tinypass.com and we'll get right back to y
 == Changelog ==
 
 2.1.2
-Adding missing scripts for landing/confirmation pages
+Adding missing scripts for landing/confirmation pages.
 
 2.1.1
 Removed PPV resource name as it is not required
