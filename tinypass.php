@@ -5,7 +5,7 @@
   Plugin URI: http://www.tinypass.com
   Description: Tinypass is the best way to charge for access to content on your WordPress site.  To get started: 1) Click the "Activate" link to the left of this description, 2) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a free Tinypass publisher account and configure the Tinypass plugin for your WordPress site
   Author: Tinypass
-  Version: 2.1.3
+  Version: 2.1.4
   Author URI: http://www.tinypass.com
  */
 
@@ -186,11 +186,15 @@ function tinypass_intercept_content($content) {
 	//For PPV mode
 	if ($tagOptions->isMode(TPPaySettings::MODE_PPV) && $tagOptions->isEnabled()) {
 
-		$tagOffer = TPPaySettings::create_offer($tagOptions, "wp_post_" . strval($post->ID), $post->post_title);
+		$rid = "wp_post_" . strval($post->ID);
+		$tagOffer = TPPaySettings::create_offer($tagOptions, $rid, $post->post_title);
 		//If a offer on the post is defined then use that one
 		if ($postOffer != null) {
 			$tagOffer = null;
 		}
+
+		$tagToken = $store->getAccessToken($rid);
+
 	} else if ($tagOptions->isMode(TPPaySettings::MODE_METERED) && $tagOptions->isEnabled()) {
 		//Only check metered if the mode is metered and it is enabled
 
