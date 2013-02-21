@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe
 Requires at least: 3.1.0
 Tested up to: 3.4.2
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 
 
 Tinypass is the best way to charge for access to content on your WordPress site.
@@ -115,8 +115,11 @@ We love questions! Just email support@tinypass.com and we'll get right back to y
 
 == Changelog ==
 
+2.1.3
+Close out comments when access is denied
+
 2.1.2
-Adding missing scripts for landing/confirmation pages.
+Adding missing scripts for landing/confirmation pages
 
 2.1.1
 Removed PPV resource name as it is not required
