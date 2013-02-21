@@ -110,6 +110,8 @@ function tinypass_intercept_content($content) {
 		$req = new TPPurchaseRequest($tagOffer);
 		$req->setCallback('tinypass_redirect');
 		$button1 = $req->generateTag();
+		
+		$tpstate->add_scripts = true;
 
 		if (preg_match('/\[tinypass\s+rid.*\]/', $content)) {
 			$content = preg_replace('/\[tinypass\srid+.*\]/', $button1, $content);
