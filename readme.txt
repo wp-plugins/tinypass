@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe
 Requires at least: 3.1.0
 Tested up to: 3.4.2
-Stable tag: 2.1.0
+Stable tag: 2.1.2
 
 
 Tinypass is the best way to charge for access to content on your WordPress site.
@@ -41,17 +41,6 @@ Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Metered Ac
 4. In Tinypass->Settings, checking "Tinypass Enabled" will turn Tinypass on for your entire site. This is an easy way to manage Tinypass at a global level. If "Tinypass Enabled" is NOT checked, any content you've protected with Tinypass will become free to access. 
 
 5. Make sure to switch from "Sandbox" to "Production" in Tinypass->Settings when you're ready to start accepting payments.
-
-To customize the access denied message you can register a filter.
-
-add_filter('tinypass_access_denied', 'showCustom');
-
-//$params = array contain button information and other messaging
-function showCustom($params){
-	return "Buy now for only " . $params['button1'];
-}
-
-
 
 **For complete instructions for working with Tinypass on your WordPress site, please visit [our developer site](http://developer.tinypass.com/main/wordpress "Tinypass WordPress Plugin For Developer")**
 
@@ -106,7 +95,7 @@ Every site has different content and a unique audience. That's why Tinypass supp
 
 = Where can I learn more about using Tinypass for WordPress? =
 
-We're glad you asked! For a complete set of instructions for working with Tinypass for WordPress, please visit [our developer site](http://developer.tinypass.com/main/wordpress "Tinypass Wordpress Plugin for Developers").
+We're glad you asked! For a complete set of instructions for working with Tinypass for WordPress, please visit [our developer side](www.developer.tinypass.com/main/wordpress "Tinypass Wordpress Plugin for Developers").
 
 = How do my visitors pay? =
 
@@ -126,15 +115,17 @@ We love questions! Just email support@tinypass.com and we'll get right back to y
 
 == Changelog ==
 
-2.0.11
-Custom RID in Tinypass per post settings
+2.1.2
+Adding missing scripts for landing/confirmation pages
 
-2.0.10
-Allow Tinypass on post types besides page and post
-Created tinypass_access_denied filter for customizing the error screen
+2.1.1
+Removed PPV resource name as it is not required
 
-2.0.9
-Post teaser logic is slightly smarter
+2.1
+Nicer settings page
+RID are exposed at the post
+Multiple paywalls are allowed
+Additional meter features
 
 2.0.8
 TP button will properly render on a page with multiple posts
