@@ -47,6 +47,8 @@ class TPSecurityUtils {
 	public static function encrypt($keyString,  $value) {
 		$origKey = $keyString;
 
+		$delim = '_0_0_';
+
 		if(strlen($keyString) > 32)
 			$keyString = substr($keyString, 0, 32);
 		if (strlen($keyString) < 32)
@@ -66,11 +68,11 @@ class TPSecurityUtils {
 			mcrypt_module_close($cipher);
 
 			$safe = TPSecurityUtils::urlensafe($cipherText);
-			return  $safe . '____' . TPSecurityUtils::hashHmacSha256($origKey, $safe);
+			return  $safe . $delim . TPSecurityUtils::hashHmacSha256($origKey, $safe);
 		}
 
 		$safe = TPSecurityUtils::urlensafe($value);
-		return  $safe . '____' . TPSecurityUtils::hashHmacSha256($origKey, $safe);
+		return  $safe . $delim . TPSecurityUtils::hashHmacSha256($origKey, $safe);
 
 	}
 
