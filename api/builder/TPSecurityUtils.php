@@ -2,6 +2,8 @@
 
 class TPSecurityUtils {
 
+	const DELIM = '~~~';
+
 	public static function hashCode($s) {
 		if($s == null || strlen($s) == 0) return "0";
 
@@ -47,8 +49,6 @@ class TPSecurityUtils {
 	public static function encrypt($keyString,  $value) {
 		$origKey = $keyString;
 
-		$delim = '_0_0_';
-
 		if(strlen($keyString) > 32)
 			$keyString = substr($keyString, 0, 32);
 		if (strlen($keyString) < 32)
@@ -68,11 +68,11 @@ class TPSecurityUtils {
 			mcrypt_module_close($cipher);
 
 			$safe = TPSecurityUtils::urlensafe($cipherText);
-			return  $safe . $delim . TPSecurityUtils::hashHmacSha256($origKey, $safe);
+			return  $safe . TPSecurityUtils::DELIM . TPSecurityUtils::hashHmacSha256($origKey, $safe);
 		}
 
 		$safe = TPSecurityUtils::urlensafe($value);
-		return  $safe . $delim . TPSecurityUtils::hashHmacSha256($origKey, $safe);
+		return  $safe . TPSecurityUtils::DELIM . TPSecurityUtils::hashHmacSha256($origKey, $safe);
 
 	}
 
@@ -85,15 +85,20 @@ class TPSecurityUtils {
 	}
 
 	public static function decrypt($keyString, $data) {
+
+		$pos = strrpos($data, TPSecurityUtils::DELIM);
+		if($pos > 0 ){
+			$data = substr($data, 0, $pos);
+		}
+
 		$data = (TPSecurityUtils::urldesafe($data));
 		if(strlen($keyString) > 32)
 			$keyString = substr($keyString, 0, 32);
 		if (strlen($keyString) < 32)
 			$keyString = str_pad($keyString, 32, 'X');
 
-//		$data = pack('H*', $data);
+		$iv = TPSecurityUtils::genRandomString(16);
 
-		$iv =  '1234567812345678';
 		$cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
 
 		if (mcrypt_generic_init($cipher, $keyString, $iv) != -1) {
