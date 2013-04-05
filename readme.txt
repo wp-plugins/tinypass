@@ -115,6 +115,9 @@ We love questions! Just email support@tinypass.com and we'll get right back to y
 
 == Changelog ==
 
+2.1.5
+API Update:  enhance message with hmac.  Should not effect any existing functionality
+
 2.1.4
 Bug: PPV now checking the tagoffer for access
 
