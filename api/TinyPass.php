@@ -74,7 +74,7 @@ class TinyPass {
 
 class TPConfig {
 
-	public static $VERSION = "2.0.6";
+	public static $VERSION = "2.0.7";
 	public static $MSG_VERSION = "2.0p";
 
 	public static $CONTEXT = "/v2";
