@@ -15,6 +15,7 @@ class TPRID {
 	public function __toString() {
 		return $this->id;
 	}
+
 	public function toString() {
 		return $this->id;
 	}
@@ -26,10 +27,11 @@ class TPRID {
 			return new TPRID($s);
 		}else if(is_a($s, 'TPRID')) {
 			return $s;
+		} else {
+			return "";
 		}
 	}
 
 }
-
 
 ?>

@@ -100,26 +100,6 @@ class TPPriceOption {
 		return true;
 	}
 
-	public function isRecurring() {
-		return $this->recurring;
-	}
-
-	public function getTrialPeriod() {
-		return $this->trialPeriod;
-	}
-
-	public function getBillingPeriod() {
-		return $this->accessPeriod;
-	}
-
-	public function setRecurringBilling($billingPeriod, $trialPeriod = null) {
-		$this->recurring = true;
-		$this->accessPeriod = $billingPeriod;
-		if ($trialPeriod)
-			$this->trialPeriod = $trialPeriod;
-		return $this;
-	}
-
 	public function __toString() {
 		$sb = "";
 		$sb.("Price:").($this->getPrice());
@@ -143,11 +123,6 @@ class TPPriceOption {
 				$sb.("\tSplit:").($key).(":").($value);
 		}
 
-		if($this->isRecurring()) {
-			$sb.("\n\tBilling Period:").($this->getBillingPeriod());
-			$sb.("\tTrial Period:").($this->getTrialPeriod());
-		}
-	
 		return $sb;
 	}
 

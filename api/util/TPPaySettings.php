@@ -512,17 +512,19 @@ class TPPaySettings {
 
 		for ($i = 1; $i <= $ps->getNumPrices(); $i++) {
 
-			$po = new TPPriceOption($ps->getPrice($i));
+
+			$priceString = $ps->getPrice($i);
+			if($ps->isRecurring($i)){
+				$priceString = '[' . $ps->getPrice($i) . '|' . $ps->getRecurring($i) . '| * ]';
+			}
+
+			$po = new TPPriceOption($priceString);
 
 			if ($ps->getAccess($i) != '')
 				$po->setAccessPeriod($ps->getAccess($i));
 
 			if ($ps->getCaption($i) != '')
 				$po->setCaption(stripslashes($ps->getCaption($i)));
-
-			if ($ps->isRecurring($i)) {
-				$po->setRecurringBilling($ps->getRecurring($i));
-			}
 
 			$pos[] = $po;
 		}

@@ -45,27 +45,32 @@ class TPSecurityUtils {
 	}
 
 	public static function encrypt($keyString,  $value) {
+		$origKey = $keyString;
+
 		if(strlen($keyString) > 32)
 			$keyString = substr($keyString, 0, 32);
 		if (strlen($keyString) < 32)
 			$keyString = str_pad($keyString, 32, 'X');
 
 		$cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
-		$iv =  '1234567812345678';
-		$key192 = $keyString;
-		$cleartext = $value;
 
-		if (mcrypt_generic_init($cipher, $key192, $iv) != -1) {
+		$iv = TPSecurityUtils::genRandomString(16);
+
+		if (mcrypt_generic_init($cipher, $keyString, $iv) != -1) {
 			$blockSize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB);
-			$padding   = $blockSize - (strlen($cleartext) % $blockSize);
-			$cleartext .= str_repeat(chr($padding), $padding);
-// PHP pads with NULL bytes if $cleartext is not a multiple of the block size..
-			$cipherText = mcrypt_generic($cipher,$cleartext );
+			$padding   = $blockSize - (strlen($value) % $blockSize);
+			$value .= str_repeat(chr($padding), $padding);
+			// PHP pads with NULL bytes if $value is not a multiple of the block size..
+			$cipherText = mcrypt_generic($cipher,$value);
 			mcrypt_generic_deinit($cipher);
 			mcrypt_module_close($cipher);
-			return TPSecurityUtils::urlensafe(($cipherText));
+
+			$safe = TPSecurityUtils::urlensafe($cipherText);
+			return  $safe . '____' . TPSecurityUtils::hashHmacSha256($origKey, $safe);
 		}
-		return TPSecurityUtils::urlensafe(($value));
+
+		$safe = TPSecurityUtils::urlensafe($value);
+		return  $safe . '____' . TPSecurityUtils::hashHmacSha256($origKey, $safe);
 
 	}
 

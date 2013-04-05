@@ -162,12 +162,6 @@ class TPJsonMsgBuilder {
 		if($po->getEndDateInSecs() != null && $po->getEndDateInSecs() != 0)
 			$map["ed"] = $this->nuller($po->getEndDateInSecs());
 
-		if($po->isRecurring()) {
-			$map["recur"] = "true";
-			if($po->getTrialPeriod() != null && $po->getTrialPeriod() != '')
-				$map["tp"] = $po->getTrialPeriod();
-		}
-
 		$map["cpt"] = $this->nuller($po->getCaption());
 
 		if(count($po->getSplitPays()) > 0) {

@@ -68,6 +68,7 @@ class TPMeter {
 		return $this->accessToken->isMeterViewBased();
 	}
 
+
 	public function getTrialViewCount() {
 		return $this->accessToken->getTrialViewCount();
 	}
