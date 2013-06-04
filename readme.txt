@@ -3,7 +3,7 @@ Contributors: wordpress@tinypass.com
 Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe, payments
 Requires at least: 3.1.0
 Tested up to: 3.4.2
-Stable tag: 1.0.10
+Stable tag: 3.0.0
 
 
 Tinypass is the best way to charge for access to content on your WordPress site.
@@ -25,6 +25,20 @@ For more on Tinypass, visit [tinypass.com](http://www.tinypass.com "Tinypass - A
 Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Metered Access, Micropayments, Pay what you want (custom pricing), Price Windowing, Multiple Payment Options, Currencies 
 
 == Installation ==
+
+1. In your WordPress dashboard, go to Plugins->Add New and either upload Tinypass (if you've already downloaded the plugin), or search for the Tinypass plugin within WordPress and simply click "install".
+
+2. If you haven't already, go to [our registration page](https://dashboard.tinypass.com/register "Tinypass registration page") to create a free publisher account.
+
+3. In your WordPress dashboard, setup your Paywall or Applause by clicking the "Start" button next to the respective product.
+
+  -- After you have created your paywall you'll need to copy the Paywall ID into the Tinypass dashboard on your Wordpress site located at the Tinypass->Paywall dashboard menu.  
+	-- If you want to continue testing, you can setup [a sandbox account](https://sandbox.tinypass.com/register "Tinypass Sandbox") and follow the same procedure above to retretreive the Paywall ID.
+
+5. Make sure to switch from "Sandbox" to "Production" in Tinypass->Settings when you're ready to start accepting payments.
+
+**For complete instructions for working with Tinypass on your WordPress site, please visit [our documentation and FAQ](http://publisher.tinypass.com "Tinypass For Publishers")**
+
 
 
 = Requirements =
