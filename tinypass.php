@@ -9,19 +9,11 @@
   Author URI: http://www.tinypass.com
  */
 
-function tinypass_include_legacy() {
-	include_once dirname(__FILE__) . '/legacy/legacy.php';
-}
-
-function tinypass_include_jslite() {
-	include_once dirname(__FILE__) . '/jslite/tinypass.php';
-}
-
 $current = get_option('tinypass_version');
 
-if (1==1 && $current < '3.0.0' || get_option('tinypass_legacy') == 1) {
-	tinypass_include_legacy();
+if ($current < '3.0.0' || get_option('tinypass_legacy') == 1) {
+	include_once dirname(__FILE__) . '/legacy/legacy.php';
 } else {
-	tinypass_include_jslite();
+	include_once dirname(__FILE__) . '/jslite/tinypass.php';
 }
 ?>
