@@ -1,0 +1,240 @@
+hr  {
+  height: 0px;  
+  border: 0;  
+  border-top: 1px solid #CACACA; 
+}
+
+input {
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #DFDFDF;
+}
+
+.inside hr {
+  border: 0;
+  border-top: 1px solid #DFDFDF;
+  height: 0px;
+  margin-top: 20px;
+}
+
+/*
+TinyPass admin form sytles
+*/
+.clear {
+  clear:both;
+}
+
+.tp-hide {
+  display:none;
+}
+
+#tp-error {
+  color:red;
+}
+
+.tp-error {
+  border:1px solid red !important;
+}
+
+.tp-bg {
+  background-color:#F7F7F7;
+}
+
+.tp-section-header {
+  width:1050px;
+  margin-top:50px;
+  height:40px;
+  line-height:38px;
+  font-size:26px;
+  clear: both;
+}
+
+.tp-section-header1 {
+  margin-top:0px;
+}
+
+.tp-section-header div.num {
+  float: left;
+  background: url('images/section-header-point.png') no-repeat top left;
+  height: 40px;
+  width: 40px;
+  color: white;
+  text-align: center;
+  line-height: 40px;
+  margin-right: 10px;
+}
+
+.tp-section {
+  margin-top:40px;
+  font-size:12px;
+  clear:both;
+}
+
+.tp-section input, .tp-section select, .tp-section textarea{
+  font-size:12px;
+}
+
+.tp-section .info {
+  float:left;
+  width:200px;
+}
+
+.tp-section .info .image {
+  margin-top:20px;
+}
+
+
+.tp-section .body {
+  margin-left:70px;
+  float:left;
+  width:900px;
+}
+
+.tp-section div.inline-label {
+  display:inline;
+}
+
+.tp-section .info .heading {
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.tp-section .info .desc {
+  color:#777;
+}
+
+.tp-section .postbox .inside div.label {
+  font-size:12px;
+  margin-top:20px;
+  margin-bottom:8px;
+  padding-left:3px;
+}
+
+#poststuff .tp-section .postbox .inside p.help {
+  margin:0px 0px 0px 3px;
+}
+
+#poststuff .tp-settings .postbox h3 {
+  border-top: 1px solid #DFDFDF;
+  font-size: 12px;
+  font-weight: 100;
+  padding-left: 7px;
+}
+
+#poststuff .tp-settings .postbox h3:first-child {
+  border-top: none;
+}
+
+#poststuff h2 {
+  margin-top: 20px;
+  font-weight: normal;
+  font-size: 2.0em;
+  margin-bottom: 20px;
+  padding: 0 0 3px;
+  clear: left;
+}
+
+.tp-settings h2 {
+  font-weight:bold;
+  padding-left:0px;
+}
+
+#tp_mode_details { 
+  margin-top:45px;
+  padding-left:25px;
+}
+#tp_mode_details .choice {
+  /*border:1px solid red;*/
+  margin-right:8px;
+  width:340px;
+  float:left;
+  text-align: center;
+}
+
+#tp_mode_details .choice .inner {
+  width: 310px;
+  height: 375px;
+  padding-top: 60px;
+}
+
+#tp_mode_details .choice .inner div.name {
+  margin-top:20px;
+  font-size:15pt;
+}
+#tp_mode_details .choice .inner div.sub {
+  margin-top:10px;
+  float:none;
+  text-align: center;
+  width:auto;
+  font-weight:bold;
+  font-size:11px;
+}
+
+#tp_mode_details .choice .inner div.info {
+  margin-top: 10px;
+  font-size: 11px;
+  float: none;
+  text-align: center;
+  width: auto;
+  padding: 0px 20px;
+}
+
+#tp_mode_details .choice .inner div.example {
+  margin-top:10px;
+  font-size:11px;
+  float:none;
+  text-align: center;
+  width:auto;
+}
+
+#tp_mode_details .choice-selected .inner {
+  background-image: url('./images/slider-selected.png');
+  background-repeat: no-repeat;
+}
+
+.tag-entry {
+  border-top: 1px solid #DFDFDF;
+  height: 40px;
+  padding-top: 15px;
+  padding-left: 10px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.tag-holder {
+  height: 40px;
+  padding-top: 10px;
+  padding-left: 10px;
+  background-color: white;
+}
+
+.tag-holder div.tag {
+  float:left;
+  height:30px;
+  margin-right:15px;
+}
+
+.tag-holder div.tag .text {
+  float:left;
+  height:29px;
+  background-color:#4182DC;
+  color:white;
+  line-height:30px;
+  padding-left:10px;
+  padding-right:10px;
+  font-weight:bold;
+}
+
+
+.tag-holder div.tag .remove {
+  background-image:url('./images/tag-remove.png');
+  background-repeat: no-repeat;
+  float:right;
+  height:30px;
+  width:33px;
+  cursor:pointer;
+}
+
