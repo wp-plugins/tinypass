@@ -29,7 +29,7 @@ function tinypass_activate() {
 
 	tinypass_upgrades();
 
-	$data = get_plugin_data(plugin_dir_path(__FILE__) . "/tinypass.php");
+	$data = get_plugin_data(TINYPASS_PLUGIN_PATH);
 	$version = $data['Version'];
 	update_option('tinypass_version', $version);
 }

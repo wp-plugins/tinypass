@@ -8,10 +8,6 @@
 define('TINYPASSS_PLUGIN_PATH', plugins_url('', __FILE__));
 define('TINYPASS_TPM_JS', 'http://code.tinypass.com/tpl/d1/tpm.js');
 
-register_activation_hook(__FILE__, 'tinypass_activate');
-register_deactivation_hook(__FILE__, 'tinypass_deactivate');
-register_uninstall_hook(__FILE__, 'tinypass_uninstall');
-
 if (!class_exists('TPMeterState')) {
 
 	class TPMeterState {

@@ -12,9 +12,6 @@ define('TINYPASS_COUNTER_TEMPLATE', 'tinypass_counter_display.php');
 define('TINYPASS_APPEAL_TEMPLATE', 'tinypass_appeal_display.php');
 define('TINYPASS_EMPTY', 'tinypass_empty.php');
 
-register_activation_hook(__FILE__, 'tinypass_activate');
-register_deactivation_hook(__FILE__, 'tinypass_deactivate');
-register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 class TPState {
 
