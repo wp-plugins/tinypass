@@ -64,6 +64,9 @@ The Tinypass plugin was designed to sell content in a way that makes sense for W
 
 == Screenshots ==
 
+1. The paywall editor within your Tinypass dashboard 
+2. Screenshot of Tinypass curtain
+
 == Other Notes ==
 
 == Upgrade Notice ==
