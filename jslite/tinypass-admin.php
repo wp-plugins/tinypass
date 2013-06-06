@@ -16,8 +16,6 @@ function tinypass_add_admin_pages() {
 	add_menu_page('Tinypass', 'Tinypass', 'manage_options', 'tinypass.php', 'tinypass_mode_settings', TINYPASS_FAVICON);
 	add_submenu_page('tinypass.php', 'Paywall', 'Paywall', 'manage_options', 'tinypass.php', 'tinypass_mode_settings');
 	add_submenu_page('tinypass.php', 'General', 'General', 'manage_options', 'TinyPassSiteSettings', 'tinypass_site_settings');
-
-	add_submenu_page('tinypass.php', 'Switch Version', '', 'manage_options', 'TinyPassSwitch', 'tinypass_switch_version');
 }
 
 /* Adding scripts to admin pages */

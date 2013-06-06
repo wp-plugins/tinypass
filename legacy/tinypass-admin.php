@@ -18,7 +18,6 @@ function tinypass_add_admin_pages() {
 	add_submenu_page('tinypass.php', 'General', 'General', 'manage_options', 'TinyPassSiteSettings', 'tinypass_site_settings');
 
 	add_submenu_page('tinypass.php', 'Edit Paywall', '', 'manage_options', 'TinyPassEditPaywall', 'tinypass_mode_settings');
-	add_submenu_page('tinypass.php', 'Switch Version', '', 'manage_options', 'TinyPassSwitch', 'tinypass_switch_version');
 
 	wp_enqueue_script('suggest');
 }

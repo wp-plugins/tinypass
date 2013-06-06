@@ -66,11 +66,17 @@ function ajax_tp_updateRID() {
 
 function tinypass_paywalls_list() {
 
+	if(isset($_REQUEST['switch'])){
+		tinypass_switch_version();
+		return;
+	}
+
 	$storage = new TPStorage();
 	$pws = $storage->getPaywalls(true);
 
 	if (count($pws) == 0)
 		wp_redirect(menu_page_url("TinyPassEditPaywall"));
+
 	?>
 
 	<div id = "poststuff">

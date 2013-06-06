@@ -6,6 +6,11 @@
  */
 function tinypass_mode_settings() {
 
+	if(isset($_REQUEST['switch'])){
+		tinypass_switch_version();
+		return;
+	}
+
 	$storage = new TPStorage();
 	$errors = array();
 
