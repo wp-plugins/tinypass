@@ -73,11 +73,8 @@ function tinypass_deactivate() {
 }
 
 function tinypass_uninstall() {
-
 	tinypass_include();
-
 	delete_option('tinypass_legacy');
-
 	$storage = new TPStorage();
 	$storage->deleteAll();
 }

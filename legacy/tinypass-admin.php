@@ -18,6 +18,7 @@ function tinypass_add_admin_pages() {
 	add_submenu_page('tinypass.php', 'General', 'General', 'manage_options', 'TinyPassSiteSettings', 'tinypass_site_settings');
 
 	add_submenu_page('tinypass.php', 'Edit Paywall', '', 'manage_options', 'TinyPassEditPaywall', 'tinypass_mode_settings');
+	add_submenu_page('tinypass.php', 'Switch Version', '', 'manage_options', 'TinyPassSwitch', 'tinypass_switch_version');
 
 	wp_enqueue_script('suggest');
 }
@@ -62,5 +63,4 @@ function tinypass_add_admin_scripts() {
 	wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
 	wp_enqueue_style('jquery-ui-1.8.2.custom.css', TINYPASSS_PLUGIN_PATH . 'css/jquery-ui-1.8.2.custom.css');
 }
-
 ?>
