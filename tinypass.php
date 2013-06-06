@@ -15,7 +15,7 @@ function tinypass_switch_version() {
 	$isLegacy = get_option('tinypass_legacy');
 	update_option('tinypass_legacy', !$isLegacy);
 
-	if (!isLegacy) {
+	if (!$isLegacy) {
 		echo "Switch to legacy plugin";
 	} else {
 		echo "Switching to JSLITE";
