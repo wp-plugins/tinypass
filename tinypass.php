@@ -17,7 +17,7 @@ register_uninstall_hook(__FILE__, 'tinypass_uninstall');
 
 $tinypass_current_version = get_option('tinypass_version');
 
-if ($tinypass_current_version == '' || $tinypass_current_version < '3.0.0' || get_option('tinypass_legacy') == 1) {
+if ($tinypass_current_version < '3.0.0' || get_option('tinypass_legacy') == 1) {
 	include_once dirname(__FILE__) . '/legacy/legacy.php';
 } else {
 	include_once dirname(__FILE__) . '/jslite/jslite.php';
