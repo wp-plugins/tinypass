@@ -25,7 +25,7 @@ class add_tinypass_button {
 
 
 		// Set path to editor_plugin.js
-		$URLPATH = TINYPASSS_PLUGIN_PATH . "/tinymce/";
+		$URLPATH = TINYPASS_PLUGIN_PATH . "/tinymce/";
 		$this->path = site_url($URLPATH);
 	
 		// Modify the version when tinyMCE plugins are changed.

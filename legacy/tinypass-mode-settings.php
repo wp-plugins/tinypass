@@ -79,11 +79,11 @@ function tinypass_mode_settings() {
 				<?php endif; ?>
 				<?php __tinypass_section_head($ps, 1, __("Paywall mode"), '<div id="tp-hide-paywalls">
           <span>Hide paywall details</span>
-          <img src="' . TINYPASSS_IMAGE_DIR . 'closer.png">
+          <img src="' . TINYPASS_IMAGE_DIR . 'closer.png">
         </div>
         <div id="tp-show-paywalls">
           <span>Show paywall details</span>
-          <img src="' . TINYPASSS_IMAGE_DIR . 'opener.png">
+          <img src="' . TINYPASS_IMAGE_DIR . 'opener.png">
         </div>');
 				?>
 
@@ -91,7 +91,7 @@ function tinypass_mode_settings() {
 				<div id="tp_mode_details">
 					<div id="tp_mode1_details" class="choice" mode="<?php echo TPPaySettings::MODE_PPV ?>" >
 						<div class="inner">
-							<img src="<?php echo TINYPASSS_IMAGE_DIR ?>/icon-ppv.png">
+							<img src="<?php echo TINYPASS_IMAGE_DIR ?>/icon-ppv.png">
 							<div class="name"><?php echo TPPaySettings::MODE_PPV_NAME ?></div>
 							<div class="sub">Purchase individual items</div>
 							<div class="info">Sell access to individual blog posts. Set some default price options or tweak them per post.</div>
@@ -100,7 +100,7 @@ function tinypass_mode_settings() {
 					</div>
 					<div id="tp_mode2_details" class="choice" mode="<?php echo TPPaySettings::MODE_METERED ?>" >
 						<div class="inner">
-							<img src="<?php echo TINYPASSS_IMAGE_DIR ?>/icon-metered.png">
+							<img src="<?php echo TINYPASS_IMAGE_DIR ?>/icon-metered.png">
 							<div class="name"><?php echo TPPaySettings::MODE_METERED_NAME ?></div>
 							<div class="sub">Preview period</div>
 							<div class="info">Users can look at your content for a certain number of views, or for a certain time period.</div>
@@ -109,7 +109,7 @@ function tinypass_mode_settings() {
 					</div>
 					<div id="tp_mode3_details" class="choice" mode="<?php echo TPPaySettings::MODE_STRICT ?>" >
 						<div class="inner">
-							<img src="<?php echo TINYPASSS_IMAGE_DIR  ?>/icon-hard.png">
+							<img src="<?php echo TINYPASS_IMAGE_DIR  ?>/icon-hard.png">
 							<div class="name"><?php echo TPPaySettings::MODE_STRICT_NAME ?></div>
 							<div class="sub">No preview</div>
 							<div class="info">All of your tagged content is restricted by the paywall right from the beginning.</div>

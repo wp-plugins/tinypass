@@ -1,11 +1,15 @@
 <?php
 
 /*
-  Plugin Name: TinyPass JSLite
+  Plugin Name: TinyPass
+  Plugin URI: http://www.tinypass.com
+  Description: TinyPass enables metered access to your WordPress site
+  Author: Tinypass
   Version: 1.0.10
+  Author URI: http://www.tinypass.com
  */
 
-define('TINYPASSS_PLUGIN_PATH', plugins_url('', __FILE__));
+define('TINYPASS_PLUGIN_PATH', plugin_dir_path(__FILE__) . "/tinypass.php");
 define('TINYPASS_TPM_JS', 'http://code.tinypass.com/tpl/d1/tpm.js');
 
 if (!class_exists('TPMeterState')) {

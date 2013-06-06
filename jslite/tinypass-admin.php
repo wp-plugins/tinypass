@@ -28,8 +28,8 @@ function tinypass_add_admin_scripts($hook) {
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui');
 		wp_enqueue_script('suggest');
-		wp_enqueue_script('tinypass_admin', TINYPASSS_PLUGIN_PATH . '/js/tinypass_admin.js', array(), false, false);
-		wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . '/css/tinypass.css');
+		wp_enqueue_script('tinypass_admin', TINYPASS_PLUGIN_PATH . '/js/tinypass_admin.js', array(), false, false);
+		wp_enqueue_style('tinypass.css', TINYPASS_PLUGIN_PATH . '/css/tinypass.css');
 	}
 }
 

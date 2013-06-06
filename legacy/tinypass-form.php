@@ -239,7 +239,7 @@ function __tinypass_counter_display(TPPaySettings $ps) {
 				Show a small counter on the edge of the screen so users know how many free views they have left.
 			</div>
 			<div class="image">
-				<img src="<?php echo TINYPASSS_IMAGE_DIR ?>/support-counter.png">
+				<img src="<?php echo TINYPASS_IMAGE_DIR ?>/support-counter.png">
 			</div>
 		</div>
 		<div class="body">
@@ -315,7 +315,7 @@ function __tinypass_appeal_display(TPPaySettings $ps) {
 				Pick what it says, how it looks, and when it appears.
 			</div>
 			<div class="image">
-				<img src="<?php echo TINYPASSS_IMAGE_DIR ?>/support-appeal.png">
+				<img src="<?php echo TINYPASS_IMAGE_DIR ?>/support-appeal.png">
 			</div>
 		</div>
 		<div class="body">
@@ -693,7 +693,7 @@ function __tinypass_purchase_option_table_display(TPPaySettings $ps) {
 				This contains the purchase buttons for users on restricted pages.
 			</div>
 			<div class="image">
-				<img src="<?php echo TINYPASSS_IMAGE_DIR  ?>/support-table.png">
+				<img src="<?php echo TINYPASS_IMAGE_DIR  ?>/support-table.png">
 			</div>
 		</div>
 		<div class="body">

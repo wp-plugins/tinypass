@@ -5,8 +5,8 @@
   Version: 2.1.5
  */
 
-define('TINYPASSS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
-define('TINYPASSS_IMAGE_DIR', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)) . 'css/images/');
+define('TINYPASS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
+define('TINYPASS_IMAGE_DIR', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)) . 'css/images/');
 define('TINYPASS_PURCHASE_TEMPLATE', 'tinypass_purchase_display.php');
 define('TINYPASS_COUNTER_TEMPLATE', 'tinypass_counter_display.php');
 define('TINYPASS_APPEAL_TEMPLATE', 'tinypass_appeal_display.php');
@@ -53,9 +53,9 @@ add_action('wp_footer', 'tinypass_footer');
 
 function tinypass_init() {
 	ob_start();
-	wp_register_script('tinypass_site', TINYPASSS_PLUGIN_PATH . 'js/tinypass_site.js', array('jquery-ui-dialog'), false, true);
+	wp_register_script('tinypass_site', TINYPASS_PLUGIN_PATH . 'js/tinypass_site.js', array('jquery-ui-dialog'), false, true);
 	wp_register_script('tinypass_js', 'http://code.tinypass.com/tinypass.js');
-	wp_enqueue_style('tinypass.css', TINYPASSS_PLUGIN_PATH . 'css/tinypass.css');
+	wp_enqueue_style('tinypass.css', TINYPASS_PLUGIN_PATH . 'css/tinypass.css');
 }
 
 /**
