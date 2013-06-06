@@ -14,9 +14,9 @@ Tinypass is a simple, powerful plugin that allows any online publisher to easily
 
 Any site, large or small, can use Tinypass to easily build a new revenue stream from paid content. And while you're still free to earn money from advertising anywhere on your site, we've seen that a simple paid content plan can quickly surpass what you can earn from advertising, even if you're only selling access to a small percentage of your site's content. And since it doesn't cost anything to get started with Tinypass, we make it easy to experiment with charging for content.  
 
-Selling content is **easy** with Tinypass. Just create a free publisher account at Tinypass.com, download our plugin, then decide what content you want to charge for. In minutes you can use our simple tagging method to build a subscription plan, bundles of content.
+Selling content is **easy** with Tinypass. Just create a free publisher account at Tinypass.com, download our plugin, then decide what content you want to charge for. In minutes you can use our simple tagging method to build a subscription plan and bundles of content.
 
-And for your visitors, buying access to content through Tinypass couldn't be easier. We offer a **wide choice of payment methods**, we don't require your visitors to create an account before making a purchase, and all transactions happen in a quick, secure environment. Gone are the days of clunky shopping carts and confusing checkouts! 
+For your visitors, buying access to content through Tinypass couldn't be easier. We offer a **wide choice of payment methods**, we don't require your visitors to create an account before making a purchase, and all transactions happen in a quick, secure environment. Gone are the days of clunky shopping carts and confusing checkouts! 
 
 For more on Tinypass, visit [tinypass.com](http://www.tinypass.com "Tinypass - Access control & payment platform")
 
@@ -26,13 +26,13 @@ Features: Access Control, Paywall, Pay Per Article, Pay Per Category, Metered Ac
 
 == Installation ==
 
-1. In your WordPress dashboard, go to Plugins->Add New and either upload Tinypass (if you've already downloaded the plugin), or search for the Tinypass plugin within WordPress and simply click "install".
+1. In your WordPress dashboard, go to Plugins->Add New and either upload Tinypass (if you've already downloaded the plugin), or search for "Tinypass" in WordPress plugins, then simply click "install".
 
 2. If you haven't already, go to [our registration page](https://dashboard.tinypass.com/register "Tinypass registration page") to create a free publisher account.
 
 3. In your WordPress dashboard, setup your Paywall or Applause by clicking the "Start" button next to the respective product.
 
-  -- After you have created your paywall you'll need to copy the Paywall ID into the Tinypass dashboard on your Wordpress site located at the Tinypass->Paywall dashboard menu.  
+	-- After you have created your paywall you'll need to copy the Paywall ID into the Tinypass dashboard on your Wordpress site located at the Tinypass->Paywall dashboard menu.  
 	-- If you want to continue testing, you can setup [a sandbox account](https://sandbox.tinypass.com/register "Tinypass Sandbox") and follow the same procedure above to retretreive the Paywall ID.
 
 5. Make sure to switch from "Sandbox" to "Production" in Tinypass->Settings when you're ready to start accepting payments.
@@ -48,7 +48,7 @@ None
 
 = What is Tinypass? =
 
-Tinypass is a flexible, powerful, enterprise-grade tool for selling access to any kind of digital content. We enable publishers and content creators to charge in any amount, on their own sites, with pricing rules that they control.
+Tinypass is a flexible, powerful, enterprise-grade tool for selling access to any kind of digital content. We enable publishers and content creators to charge any amount, on their own sites, with pricing rules that they control.
 
 = So it's like a paywall? = 
 
@@ -56,7 +56,7 @@ We don't love the term "paywall", because it implies a binary either-you-pay-or-
 
 = How do I use Tinypass? =
 
-You can deploy Tinypass in one of two ways: either you can use one of our existing plug-ins for popular CMS platforms (Wordpress and Drupal are currently available, with more on the way), or you can use our API to integrate Tinypass into another existing system. Currently we offer libraries for Java, .NET, and PHP.
+You can deploy Tinypass in one of two ways: either you can use one of our existing plug-ins for popular CMS platforms like Wordpress, or you can use our API to integrate Tinypass into another existing system. Currently we offer libraries for Java, .NET, and PHP.
 
 The Tinypass plugin was designed to sell content in a way that makes sense for WordPress, and there's no need to work with any of the code if you don't want to.
 
