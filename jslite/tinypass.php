@@ -9,7 +9,8 @@
   Author URI: http://www.tinypass.com
  */
 
-define('TINYPASS_PLUGIN_PATH', plugin_dir_path(__FILE__) . "/tinypass.php");
+define('TINYPASS_PLUGIN_FILE_PATH', plugin_dir_path(__FILE__) . "/tinypass.php");
+define('TINYPASS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
 define('TINYPASS_TPM_JS', 'http://code.tinypass.com/tpl/d1/tpm.js');
 
 if (!class_exists('TPMeterState')) {

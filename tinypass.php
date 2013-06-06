@@ -9,7 +9,7 @@
   Author URI: http://www.tinypass.com
  */
 
-define('TINYPASS_PLUGIN_PATH', plugin_dir_path(__FILE__) . "/tinypass.php");
+define('TINYPASS_PLUGIN_FILE_PATH', plugin_dir_path(__FILE__) . "/tinypass.php");
 
 function tinypass_switch_version() {
 	$isLegacy = get_option('tinypass_legacy');
