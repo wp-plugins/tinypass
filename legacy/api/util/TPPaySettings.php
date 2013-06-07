@@ -53,7 +53,7 @@ class TPPaySettings {
 	const PD_DENIED_SUB2 = 'pd_denied_sub2';
 	const PD_TYPE = 'pd_type';
 	const OFFER_ORDER = 'pd_order';
-	const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with TinyPass';
+	const DEFAULT_DENIED_MESSAGE = 'To continue, purchase with Tinypass';
 	const DEFAULT_DENIED_MESSAGE2 = 'Get instant access with just a few clicks';
 
 	public static $MODE_NAMES = array(
