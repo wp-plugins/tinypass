@@ -1,35 +1,6 @@
-hr  {
-  height: 0px;  
-  border: 0;  
-  border-top: 1px solid #CACACA; 
-}
-
-input {
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #DFDFDF;
-}
-
-.inside hr {
-  border: 0;
-  border-top: 1px solid #DFDFDF;
-  height: 0px;
-  margin-top: 20px;
-}
-
 /*
 TinyPass admin form sytles
 */
-.clear {
-  clear:both;
-}
-
-.tp-hide {
-  display:none;
-}
-
 #tp-error {
   color:red;
 }
@@ -49,10 +20,6 @@ TinyPass admin form sytles
   line-height:38px;
   font-size:26px;
   clear: both;
-}
-
-.tp-section-header1 {
-  margin-top:0px;
 }
 
 .tp-section-header div.num {
@@ -128,74 +95,7 @@ TinyPass admin form sytles
   border-top: none;
 }
 
-#poststuff h2 {
-  margin-top: 20px;
-  font-weight: normal;
-  font-size: 2.0em;
-  margin-bottom: 20px;
-  padding: 0 0 3px;
-  clear: left;
-}
-
-.tp-settings h2 {
-  font-weight:bold;
-  padding-left:0px;
-}
-
-#tp_mode_details { 
-  margin-top:45px;
-  padding-left:25px;
-}
-#tp_mode_details .choice {
-  /*border:1px solid red;*/
-  margin-right:8px;
-  width:340px;
-  float:left;
-  text-align: center;
-}
-
-#tp_mode_details .choice .inner {
-  width: 310px;
-  height: 375px;
-  padding-top: 60px;
-}
-
-#tp_mode_details .choice .inner div.name {
-  margin-top:20px;
-  font-size:15pt;
-}
-#tp_mode_details .choice .inner div.sub {
-  margin-top:10px;
-  float:none;
-  text-align: center;
-  width:auto;
-  font-weight:bold;
-  font-size:11px;
-}
-
-#tp_mode_details .choice .inner div.info {
-  margin-top: 10px;
-  font-size: 11px;
-  float: none;
-  text-align: center;
-  width: auto;
-  padding: 0px 20px;
-}
-
-#tp_mode_details .choice .inner div.example {
-  margin-top:10px;
-  font-size:11px;
-  float:none;
-  text-align: center;
-  width:auto;
-}
-
-#tp_mode_details .choice-selected .inner {
-  background-image: url('./images/slider-selected.png');
-  background-repeat: no-repeat;
-}
-
-.tag-entry {
+.tp-tag-entry {
   border-top: 1px solid #DFDFDF;
   height: 40px;
   padding-top: 15px;
@@ -204,20 +104,20 @@ TinyPass admin form sytles
   border-bottom-right-radius: 4px;
 }
 
-.tag-holder {
+.tp-tag-holder {
   height: 40px;
   padding-top: 10px;
   padding-left: 10px;
   background-color: white;
 }
 
-.tag-holder div.tag {
+.tp-tag-holder div.tag {
   float:left;
   height:30px;
   margin-right:15px;
 }
 
-.tag-holder div.tag .text {
+.tp-tag-holder div.tag .text {
   float:left;
   height:29px;
   background-color:#4182DC;
@@ -229,7 +129,7 @@ TinyPass admin form sytles
 }
 
 
-.tag-holder div.tag .remove {
+.tp-tag-holder div.tag .remove {
   background-image:url('./images/tag-remove.png');
   background-repeat: no-repeat;
   float:right;

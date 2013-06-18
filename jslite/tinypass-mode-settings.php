@@ -55,7 +55,7 @@ function tinypass_mode_settings() {
 			<div id="tp_mode4_panel" class="tp_mode_panel">
 				<form action="" method="post" autocomplete="off">
 					<?php wp_nonce_field(); ?>
-					<input class="tp_mode" name="tinypass[mode]" type="hidden" value="<?php echo TPPaySettings::MODE_METERED_LIGHT ?>">
+					<input class="tp_mode" name="tinypass[mode]" type="hidden" value="<?php echo esc_attr( TPPaySettings::MODE_METERED_LIGHT ) ?>">
 					<div style="float:right">
 						<input type="hidden" readonly="true" name="tinypass[resource_id]" value="<?php echo esc_attr($ps->getResourceId()); ?>">
 						<input type="hidden" readonly="true" name="tinypass[resource_name]" value="na">
@@ -81,7 +81,7 @@ function tinypass_mode_settings() {
 		jQuery(function(){
 			var $ = jQuery;
 
-			$(".tag-holder").click(function(event){
+			$(".tp-tag-holder").click(function(event){
 				if($(event.target).hasClass("remove"))
 					$(event.target).parent().remove();
 			})
@@ -91,18 +91,18 @@ function tinypass_mode_settings() {
 				if(tag == "")
 					return;
 
-				$(".tag-holder", scope).append("<div class='tag'><div class='text'>" + tag + "</div><div class='remove'></div>" 
+				$(".tp-tag-holder", scope).append("<div class='tag'><div class='text'>" + tag + "</div><div class='remove'></div>" 
 					+ "<input type='hidden' name='tinypass[tags][]' value='" + tag  + "'>" 
 					+ "</div>"
 			);
 				$(".premium_tags", scope).val("");
 				$(".premium_tags", scope).focus();
 			}
-			$(".tag-entry .add_tag").click(function(){
+			$(".tp-tag-entry .add_tag").click(function(){
 				addTag();
 			});
 
-			$(".tag-entry .premium_tags").keypress(function(event){
+			$(".tp-tag-entry .premium_tags").keypress(function(event){
 				if(event.which == 13){
 					addTag();
 					event.stopPropagation();
@@ -123,4 +123,5 @@ function tinypass_mode_settings() {
 	<?php endif; ?>
 
 
-<?php } ?>
+	<?php
+}

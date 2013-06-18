@@ -9,7 +9,7 @@
   Author URI: http://www.tinypass.com
  */
 
-define('TINYPASS_PLUGIN_FILE_PATH', plugin_dir_path(__FILE__) . "/tinypass.php");
+define( 'TINYPASS_PLUGIN_FILE_PATH',  __FILE__);
 define('TINYPASS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
 define('TINYPASS_TPM_JS', 'http://code.tinypass.com/tpl/d1/tpm.js');
 
@@ -50,7 +50,7 @@ function tinypass_init() {
 
 	$ss = tinypass_load_settings();
 
-	if ($ss->isEnabled()) {
+	if ( $ss->isEnabled() && !is_admin() ) {
 		wp_enqueue_script('tpm.js', TINYPASS_TPM_JS);
 		add_filter('the_content', 'tinypass_intercept_content', 5);
 	}
@@ -164,4 +164,3 @@ function tinypass_offer_shortcode($attr) {
 	return '<a href="#" onclick="getTPMeter().showOffer();return false;">' . $text . '</a>';
 }
 
-?>

@@ -7,7 +7,7 @@
 /**
  * show settings section head
  */
-function __tinypass_section_head(TPPaySettings $ps, $num, $text = '', $html = '') {
+function __tinypass_section_head( TPPaySettings $ps, $num, $text = '', $html = '' ) {
 	?>
 
 	<div class="tp-section-header">
@@ -22,7 +22,7 @@ function __tinypass_section_head(TPPaySettings $ps, $num, $text = '', $html = ''
 /**
  * Alternative settings section head 
  */
-function __tinypass_section_head_alt($text = '') {
+function __tinypass_section_head_alt( $text = '' ) {
 	?>
 
 	<div class="tp-section-header">
@@ -35,7 +35,7 @@ function __tinypass_section_head_alt($text = '') {
 /**
  * Show the metered content section
  */
-function __tinypass_save_buttons(TPPaySettings $ps, $edit = false) {
+function __tinypass_save_buttons( TPPaySettings $ps, $edit = false ) {
 	?>
 
 	<p>
@@ -45,10 +45,10 @@ function __tinypass_save_buttons(TPPaySettings $ps, $edit = false) {
 <?php } ?>
 <?php
 
-function __tinypass_mlite_display(TPPaySettings $ps) {
+function __tinypass_mlite_display( TPPaySettings $ps ) {
 
-	$prodId = stripslashes(esc_attr($ps->getPaywallIDProd()));
-	$sandId = stripslashes(esc_attr($ps->getPaywallIDSand()));
+	$prodId = stripslashes( esc_attr( $ps->getPaywallIDProd() ) );
+	$sandId = stripslashes( esc_attr( $ps->getPaywallIDSand() ) );
 	?>
 	<div class="tp-section">
 
@@ -66,21 +66,21 @@ function __tinypass_mlite_display(TPPaySettings $ps) {
 		<div class="body">
 
 			<div class="postbox">
-				<h3><?php _e('Paywall ID'); ?> </h3>
+				<h3><?php _e( 'Paywall ID' ); ?> </h3>
 				<div class="inside"> 
 
 					<div class="tp-simple-table">
-						<input name="tinypass[mlite_pwid_prod]" size="20" value="<?php echo esc_attr($prodId); ?>" >
+						<input name="tinypass[mlite_pwid_prod]" size="20" value="<?php echo esc_attr( $prodId ); ?>" >
 					</div>
 
 				</div>
 			</div>
 			<div class="postbox">
-				<h3><?php _e('Sandbox Paywall ID'); ?> </h3>
+				<h3><?php _e( 'Sandbox Paywall ID' ); ?> </h3>
 				<div class="inside"> 
 
 					<div class="tp-simple-table">
-						<input name="tinypass[mlite_pwid_sand]" size="20" value="<?php echo esc_attr($sandId); ?>" >
+						<input name="tinypass[mlite_pwid_sand]" size="20" value="<?php echo esc_attr( $sandId ); ?>" >
 					</div>
 
 				</div>
@@ -95,7 +95,7 @@ function __tinypass_mlite_display(TPPaySettings $ps) {
 /**
  * Tag display section
  */
-function __tinypass_tag_display(TPPaySettings $ps) {
+function __tinypass_tag_display( TPPaySettings $ps ) {
 	?>
 
 	<div class="tp-section">
@@ -105,21 +105,21 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 		</div>
 		<div class="body">
 			<div class="postbox"> 
-				<h3><?php echo _e("Select the tags of the content you want restricted") ?></h3>
+				<h3><?php echo _e( "Select the tags of the content you want restricted" ) ?></h3>
 				<div class=""> 
-					<div class="tag-holder">
-						<?php foreach ($ps->getPremiumTagsArray() as $tag): ?>
+					<div class="tp-tag-holder">
+						<?php foreach ( $ps->getPremiumTagsArray() as $tag ): ?>
 							<div class="tag">
 								<div class="text"><?php echo $tag ?></div>
 								<div class="remove"></div>
-								<input type="hidden" name="tinypass[tags][]" value="<?php echo esc_attr($tag); ?>">
+								<input type="hidden" name="tinypass[tags][]" value="<?php echo esc_attr( $tag ); ?>">
 							</div>
 						<?php endforeach; ?>
 					</div>
 					<div class="clear"></div>
-					<div class="tag-entry tp-bg">
+					<div class="tp-tag-entry tp-bg">
 						<input type="text" class="premium_tags" autocomplete="off" >
-						<a class="add_tag button-secondary"><?php _e('Add') ?></a>
+						<a class="add_tag button-secondary"><?php _e( 'Add' ) ?></a>
 					</div>
 				</div>
 			</div>
@@ -132,7 +132,7 @@ function __tinypass_tag_display(TPPaySettings $ps) {
 /**
  * Misc options display section
  */
-function __tinypass_misc_display(TPPaySettings $ps) {
+function __tinypass_misc_display( TPPaySettings $ps ) {
 	?>
 	<div class="tp-section">
 		<div class="info">
@@ -141,16 +141,17 @@ function __tinypass_misc_display(TPPaySettings $ps) {
 		</div>
 		<div class="body">
 			<div class="postbox"> 
-				<h3><?php echo _e("&nbsp;") ?></h3>
+				<h3><?php echo _e( "&nbsp;" ) ?></h3>
 				<div class="inside"> 
-					<input type="checkbox" id="cb_track_homepage"  name="tinypass[mlite_track_homepage]" value="1" <?php echo checked($ps->isTrackHomePage()) ?>>
-					<label for="cb_track_homepage"><?php echo _e("Track on home page visit - visiting your homepage will count as a view") ?></label>
+					<input type="checkbox" id="cb_track_homepage"  name="tinypass[mlite_track_homepage]" value="1" <?php echo checked( $ps->isTrackHomePage() ) ?>>
+					<label for="cb_track_homepage"><?php echo _e( "Track on home page visit - visiting your homepage will count as a view" ) ?></label>
 					<br> <br>
-					<input type="checkbox" id="cb_disabled_for_admins" name="tinypass[mlite_disabled_for_admins]" value="1" <?php echo checked($ps->isDisabledForPriviledgesUsers()) ?>>
-					<label for="cb_disabled_for_admins"><?php echo _e("Disable Tinypass for privileges users - TinyPass will be skipped for all non Subscriber users") ?></label>
+					<input type="checkbox" id="cb_disabled_for_admins" name="tinypass[mlite_disabled_for_admins]" value="1" <?php echo checked( $ps->isDisabledForPriviledgesUsers() ) ?>>
+					<label for="cb_disabled_for_admins"><?php echo _e( "Disable Tinypass for privileges users - TinyPass will be skipped for all non Subscriber users" ) ?></label>
 				</div>
 			</div>
 		</div>
 		<div class="clear"></div>
 	</div>
-<?php } ?>
+<?php
+}

@@ -47,8 +47,8 @@ function tinypass_site_settings() {
 						<div class="postbox">
 							<h3><?php _e('Environment') ?> </h3>
 							<div class="inside">
-								<input type="radio" id="cb_sand" name="tinypass[env]" value="0" <?php echo checked($ss->isSand(), true) ?>><label for="cb_sand">&nbsp;<?php _e('Sandbox - for testing only'); ?></label><br>
-								<input type="radio" id="cb_prod" name="tinypass[env]" value="1" <?php echo checked($ss->isProd(), true) ?>><label for="cb_prod">&nbsp;<?php _e('Live - for live payments'); ?></label>
+								<input type="radio" id="tp_cb_sand" name="tinypass[env]" value="0" <?php echo checked( $ss->isSand(), true ) ?>><label for="tp_cb_sand">&nbsp;<?php _e( 'Sandbox - for testing only' ); ?></label><br>
+								<input type="radio" id="tp_cb_prod" name="tinypass[env]" value="1" <?php echo checked( $ss->isProd(), true ) ?>><label for="tp_cb_prod">&nbsp;<?php _e( 'Live - for live payments' ); ?></label>
 							</div>
 						</div>
 					</div>
@@ -92,4 +92,5 @@ function tinypass_site_settings() {
 			</form>
 		</div>
 	</div>
-<?php } ?>
+<?php
+}

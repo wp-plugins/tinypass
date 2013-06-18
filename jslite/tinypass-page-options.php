@@ -40,4 +40,5 @@ function tinypass_page_options_display($post) {
 	<?php wp_nonce_field('tp-post-save-nonce', 'tp-post-save-nonce'); ?>
 	<input type="checkbox" name="tinypass[enabled]" id="tp_page_enabled" <?php checked($ps->isEnabled()) ?> ><label for="tp_page_enabled">&nbsp;Protect this page<label>
 
-		<?php } ?>
+		<?php
+		}

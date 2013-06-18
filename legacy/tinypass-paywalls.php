@@ -129,6 +129,8 @@ function tinypass_display_card($rid, TPPaySettings $ps) {
 	foreach ($tags as $name) {
 		$td = get_term_by('name', $name, 'post_tag');
 		$count += $td->count;
+		$td = get_term_by('name', $name, 'story_tag');
+		$count += $td->count;
 	}
 	?>
 
