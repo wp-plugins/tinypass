@@ -88,7 +88,14 @@ class TPStorage {
 	}
 
 	function getPaywallByTag($ss, $postID) {
-		$post_terms = wp_get_post_terms($postID, array('post_tag', 'story_tag'), array());
+		$taxes = array('post_tag', 'story_tag');
+		$matched = array();
+		foreach($taxes as $tname) {
+			if(taxonomy_exists($tname)) {
+				$matched[] = $tname;
+			}
+		}
+		$post_terms = wp_get_post_terms($postID, $matched, array());
 		$walls = $this->getPaywalls(true);
 		foreach ($post_terms as $term) {
 			foreach ($walls as $id => $pw) {

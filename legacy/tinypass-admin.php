@@ -11,8 +11,6 @@ require_once (dirname(__FILE__) . '/tinypass-paywalls.php');
 add_action("admin_menu", 'tinypass_add_admin_pages');
 
 function tinypass_add_admin_pages() {
-
-
 	add_menu_page('Tinypass', 'Tinypass', 'manage_options', 'tinypass.php', 'tinypass_paywalls_list', TINYPASS_FAVICON);
 	add_submenu_page('tinypass.php', 'Paywalls', 'Paywalls', 'manage_options', 'tinypass.php', 'tinypass_paywalls_list');
 	add_submenu_page('tinypass.php', 'General', 'General', 'manage_options', 'TinyPassSiteSettings', 'tinypass_site_settings');
@@ -62,4 +60,5 @@ function tinypass_add_admin_scripts() {
 	wp_enqueue_style('tinypass.css', TINYPASS_PLUGIN_PATH . 'css/tinypass.css');
 	wp_enqueue_style('jquery-ui-1.8.2.custom.css', TINYPASS_PLUGIN_PATH . 'css/jquery-ui-1.8.2.custom.css');
 }
+
 ?>

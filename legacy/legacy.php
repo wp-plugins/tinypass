@@ -5,8 +5,9 @@
   Version: 2.1.5
  */
 
-define('TINYPASS_PLUGIN_PATH', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
-define('TINYPASS_IMAGE_DIR', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)) . 'css/images/');
+define('TINYPASS_PLUGIN_FILE_PATH', __FILE__);
+define('TINYPASS_PLUGIN_PATH', plugin_dir_url(__FILE__));
+define('TINYPASS_IMAGE_DIR', plugin_dir_url(__FILE__) . 'css/images/');
 define('TINYPASS_PURCHASE_TEMPLATE', 'tinypass_purchase_display.php');
 define('TINYPASS_COUNTER_TEMPLATE', 'tinypass_counter_display.php');
 define('TINYPASS_APPEAL_TEMPLATE', 'tinypass_appeal_display.php');
