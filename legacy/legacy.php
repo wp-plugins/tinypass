@@ -335,6 +335,9 @@ function tinypass_append_ticket($content) {
 		$resource1 = $request1->getPrimaryOffer()->getResource()->getName();
 		$resource2 = $request2->getPrimaryOffer()->getResource()->getName();
 
+		$rid1 = $request1->getPrimaryOffer()->getResource()->getRID();
+		$rid2 = $request2->getPrimaryOffer()->getResource()->getRID();
+
 		$button1 = $request1->generateTag();
 		$button2 = $request2->generateTag();
 
@@ -352,7 +355,9 @@ function tinypass_append_ticket($content) {
 				"resource1" => $resource1,
 				"resource2" => $resource2,
 				"sub1" => $sub1,
-				"sub2" => $sub2
+				"sub2" => $sub2,
+				"rid1" => $rid1,
+				"rid2" => $rid2
 		);
 
 		if (has_filter("tinypass_access_denied"))
