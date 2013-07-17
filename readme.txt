@@ -1,6 +1,6 @@
 === Tinypass ===
 Contributors: wordpress@tinypass.com
-Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, pay-per-item, monetize, sell, billing, subscription, paid content, transaction, pay, pay-per-view, premium, money, payment, subscribe, payments
+Tags: tinypass, premium content, paywall, paid content, content monetization, monetization, micropayments, access control, sell content, sell access, subscriptions, earn money, make money, paypal, visa, payment options, master card, sell digital goods, monetize, sell, billing, subscription, paid content, transaction, pay, premium, money, payment, subscribe, payments
 Requires at least: 3.1.0
 Tested up to: 3.4.2
 Stable tag: 3.0.0
@@ -10,7 +10,7 @@ Tinypass is the best way to charge for access to content on your WordPress site.
 
 == Description ==
 
-Tinypass is a simple, powerful plugin that allows any online publisher to easily sell access to any type of content, whether it's a blog post, a site subscription, a digital download, or even a pay-per-view video. Tinypass can accept payments as small as **2 cents ($0.02)**, supports **24 currencies**, and doesn't require changing your site's existing structure or layout. We make it easy to charge for content! 
+Tinypass is a simple, powerful plugin that allows any online publisher to easily sell access to any type of content, whether it's a blog post or a site subscription. Tinypass can accept payments as small as **2 cents ($0.02)**, supports **24 currencies**, and doesn't require changing your site's existing structure or layout. We make it easy to charge for content! 
 
 Any site, large or small, can use Tinypass to easily build a new revenue stream from paid content. And while you're still free to earn money from advertising anywhere on your site, we've seen that a simple paid content plan can quickly surpass what you can earn from advertising, even if you're only selling access to a small percentage of your site's content. And since it doesn't cost anything to get started with Tinypass, we make it easy to experiment with charging for content.  
 
