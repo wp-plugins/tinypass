@@ -9,7 +9,6 @@
   Author URI: http://www.tinypass.com
  */
 
-define('TINYPASS_PLUGIN_FILE_PATH',  __FILE__);
 define('TINYPASS_PLUGIN_PATH', plugin_dir_url(__FILE__));
 define('TINYPASS_IMAGE_DIR', plugin_dir_url(__FILE__) . 'css/images/');
 define('TINYPASS_TPM_JS', 'http://code.tinypass.com/tpl/d1/tpm.js');

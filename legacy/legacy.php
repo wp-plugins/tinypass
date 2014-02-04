@@ -5,7 +5,6 @@
   Version: 2.1.5
  */
 
-define('TINYPASS_PLUGIN_FILE_PATH', __FILE__);
 define('TINYPASS_PLUGIN_PATH', plugin_dir_url(__FILE__));
 define('TINYPASS_IMAGE_DIR', plugin_dir_url(__FILE__) . 'css/images/');
 define('TINYPASS_PURCHASE_TEMPLATE', 'tinypass_purchase_display.php');
