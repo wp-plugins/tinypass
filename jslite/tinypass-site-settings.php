@@ -31,6 +31,17 @@ function tinypass_site_settings() {
 			<div id="message" class="updated fade"><p><strong><?php _e('Options saved.') ?></strong></p></div>
 		<?php endif; ?>
 
+		<div class="postbox" style="margin-right: 20px;">
+			<div class="inside"> 
+				<div class="tp-simple-table">
+					<h2>Paywall Settings</h2>
+					<p>Most of the paywall settings are controlled from the Tinypass dashboard.</p>
+					<p style="float: right"><a href="https://sandbox.tinypass.com/publisher/paywall" target="_blank">Sandbox Dashboard</a></p>
+					<p><a href="https://dashboard.tinypass.com/publisher/paywall" target="_blank" class="button-primary">Go to Live Dashboard</a></p>
+				</div>
+			</div>
+		</div>
+
 		<div class="">
 			<form action="" method="post" id="tinypass-conf">
 

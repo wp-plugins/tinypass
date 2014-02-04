@@ -61,6 +61,16 @@ function tinypass_mode_settings() {
 						<input type="hidden" readonly="true" name="tinypass[resource_name]" value="na">
 						<input type="hidden" readonly="true" name="tinypass[en]" value="<?php echo esc_attr($ps->getEnabled()); ?>">
 					</div>
+					<div class="postbox" style="margin-right: 20px;">
+						<div class="inside"> 
+							<div class="tp-simple-table">
+								<h2>Paywall Settings</h2>
+								<p>Most of the paywall settings are controlled from the Tinypass dashboard.</p>
+								<p style="float: right"><a href="https://sandbox.tinypass.com/publisher/paywall" target="_blank">Sandbox Dashboard</a></p>
+								<p><a href="https://dashboard.tinypass.com/publisher/paywall" target="_blank" class="button-primary">Go to Live Dashboard</a></p>
+							</div>
+						</div>
+					</div>
 					<?php $num = 0; ?>
 					<?php __tinypass_section_head($ps, ++$num, __("Setup your paywall")) ?>
 					<?php __tinypass_mlite_display($ps) ?>
