@@ -5,7 +5,7 @@
   Plugin URI: http://www.tinypass.com
   Description: Tinypass is the best way to charge for access to content on your WordPress site.  1) Go to http://developer.tinypass.com/main/wordpress and follow the installation instructions to create a Tinypass publisher account and configure the Tinypass plugin for your WordPress site
   Author: Tinypass
-  Version: 3.0.0
+  Version: 3.0.2
   Author URI: http://www.tinypass.com
  */
 

@@ -6,7 +6,7 @@ Tested up to: 3.4.2
 Stable tag: 3.0.2
 
 
-Tinypass is the best way to charge for access to content on your WordPress site
+Tinypass is the best way to charge for access to content on your WordPress site.
 
 == Description ==
 
